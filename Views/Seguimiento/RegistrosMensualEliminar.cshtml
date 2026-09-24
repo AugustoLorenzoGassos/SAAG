@@ -1,0 +1,59 @@
+﻿@model Seguimiento.Models.TblRegistroMensual
+
+@{
+    ViewData["Title"] = "Eliminar Reporte Mensual";
+}
+
+<div class="container mt-4">
+    <form id="formRegistroMensual" action="/Seguimiento/RegistrosMensualEliminar" method="POST">
+        <div class="card">
+            <!-- Encabezado -->
+            <div class="card-header bg-secondary bg-gradient text-white">
+                <h4 class="m-0">Registro mensual - Eliminar</h4>
+            </div>
+            <!-- Datos del usuario y laboratorio -->
+            <div class="card-body">
+                <!-- Token de seguridad Anti-Forgery Obligatorio -->
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.IdReporteMensual)
+                @Html.HiddenFor(model => model.IdUsuario)
+                @Html.HiddenFor(model => model.FechaCaptura)
+                <!-- Información General -->
+                <div class="row mb-4">
+                        <div class="col-md-4">
+                        Laboratorio móvil:
+                        <p class="text-muted">@(Model.IdLaboratorioNavigation.NombreLaboratorio ?? "N/A")</p>
+                    </div>
+                    <div class="col-md-4">
+                        Mes de Reporte:
+                        <p class="text-muted">@ViewBag.mesReporte</p>
+                    </div>
+                    <div class="col-md-4">
+                        Año de Reporte:
+                        <p class="text-muted">@(Model.AñoReporte?.ToString() ?? "N/A")</p>
+                    </div>
+                </div>
+                @if (ViewBag.totalAcciones > 0)
+                {
+                    <h6 class="alert alert-warning text-center">Este registro mensual tiene @ViewBag.totalAcciones acciones registradas. Al eliminar el registro se perderán las acciones asociadas al mismo.</h6>                
+                }
+            </div>
+            <!-- Pie de página-->
+            <div class="card-footer">
+                <!--Botones para las acciones-->
+                <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                    <div class="me-md-2">
+                        <a id="btnRegresarListaReportes" href="@Url.Action("RegistrosMensualInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-tasks me-1" aria-hidden="true"></i>Regresar a la lista de registros mensuales
+                        </a>
+                    </div>
+                    <div class="mt-2 mt-md-0">
+                        <button type="submit" id="btnEliminar" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-trash me-1" aria-hidden="true"></i>Eliminar registro
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

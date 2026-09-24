@@ -1,0 +1,175 @@
+﻿@model Seguimiento.Models.TblRegistroMensualDetalle
+
+@{
+    ViewData["Title"] = "Agregar acción";
+}
+
+<div class="container mt-4">
+    @*@if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @ViewBag.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    } *@
+    <form action="/Seguimiento/GuardarAccionRegistroMensual" method="POST">
+        <div class="card">
+            <!--Encabezado-->
+            <div class="card-header bg-secondary bg-gradient text-white">
+                <h4 class="m-0">Registro mensual de actividades - Agregar acción de seguimiento</h4>
+            </div>
+            <div class="card-body">
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.IdReporteMensual)
+                <div class="row">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            Laboratorio:<br />@ViewBag.nombreLabotario
+                        </div>
+                        <div class="col-12 col-md-4">
+                            Mes:<br />@ViewBag.mesReporte
+                        </div>
+                        <div class="col-12 col-md-4">
+                            Año:<br />@ViewBag.anioReporte
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <!-- Fecha del Reporte -->
+                        <div class="col-12 col-md-6 form-group">
+                            <label for="fechaReporte">Fecha próxima cita:</label>
+                            <input type="date" id="fechaReporte" name="fechaReporte" class="form-control" required />
+                        </div>
+                        <!-- Productor -->
+                        <div class="col-12 col-md-6 form-group">
+                            <label for="IdProductor">Productor:</label>
+                            <select id="IdProductor" name="IdProductor" class="form-control" required>
+                                <option value="" disabled selected>Seleccione un Productor... </option>
+                            </select>
+                        </div>
+                    </div>
+                    <h5>Conteo y Diagnósticos (Captura)</h5>
+                    <!-- Indicadores cuantitativos / Diagnósticos (Shorts) -->
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label for="CpsMcm">CPS MCM:</label>
+                            <input type="number" id="CpsMcm" name="CpsMcm" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="CpcFlotac">CPC Flotac:</label>
+                            <input type="number" id="CpcFlotac" name="CpcFlotac" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="CpcSedim">CPC Sedim:</label>
+                            <input type="number" id="CpcSedim" name="CpcSedim" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label for="CpcBearm">CPC Bearm:</label>
+                            <input type="number" id="CpcBearm" name="CpcBearm" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="DxScBh">DX SC BH:</label>
+                            <input type="number" id="DxScBh" name="DxScBh" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="DxScSc">DX SC SC:</label>
+                            <input type="number" id="DxScSc" name="DxScSc" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 form-group">
+                            <label for="Mastitis">Mastitis:</label>
+                            <input type="number" id="Mastitis" name="Mastitis" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="DiasGestacion">Días de Gestación:</label>
+                            <input type="number" id="DiasGestacion" name="DiasGestacion" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="AsesoramientoZoosanitarui">Asesoramiento Zoosanitario:</label>
+                            <input type="number" id="AsesoramientoZoosanitarui" name="AsesoramientoZoosanitarui" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="ProfilaxisEquina">Profilaxis Equina:</label>
+                            <input type="number" id="ProfilaxisEquina" name="ProfilaxisEquina" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="Total">Total:</label>
+                            <input type="number" id="Total" name="Total" class="form-control" defaultValue="0" min="0" max="32767" required />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                 <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                    <div class="me-md-2">
+                        <!-- Acción para regresar a la lista de registros mensuales -->
+                        <a href="@Url.Action("RegistrosMensualActividades", "Seguimiento", new { id = ViewBag.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-bars me-3" aria-hidden="true"></i>Regresar a la lista de visitas
+                        </a>
+                    </div>
+                    <div class="mt-2 mt-md-0">
+                        <button type="submit" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-save me-3" aria-hidden="true"></i>
+                            Guardar acción de seguimiento
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const numeroInput = document.getElementById('IdReporteMensual');
+        const mes = document.getElementById('mesreporte');
+        //Coloca el valor del id del reporte mensual en el input correspondiente
+        numeroInput.value = '@ViewBag.IdReporteMensual'; // Asigna el valor del ViewBag al input
+        //Llena el combo con el catálogo de productores
+        cargarProductores();
+    });
+
+    async function cargarProductores() 
+    {
+        //Obtiene el elemento select del DOM
+        const cmbProductores = document.getElementById("IdProductor");
+        //Sección para realizar la petición al controlador y llenar el combo (Try, catch para manejar errores))
+        try 
+        {
+            // Realizar la petición GET al controlador
+            const response = await fetch('/Seguimiento/ObtenerProductores');
+            //Error en la respuesta HTTP
+            if (!response.ok) 
+            {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            // Convertir la respuesta a JSON del controlador
+            const data = await response.json();
+            // Limpiar opciones anteriores excepto la opción por defecto
+            cmbProductores.innerHTML = '<option value="" disabled selected>Seleccione un productor... </option>';
+            // Recorrer el arreglo devuelto y agregar las opciones al select
+            data.forEach(item => 
+            {
+                const option = document.createElement("option");
+                var nombre = item.nombreProductor + ' ' + item.apellidoPaternoProductor + ' ' + item.apellidoMaternoProductor
+                option.value = item.idProductor;
+                option.textContent = nombre;
+                cmbProductores.appendChild(option);
+            });
+        
+        } 
+        catch (error) 
+        {
+            console.error("Error al cargar la lista de productores:", error);
+        }
+    }
+
+</script>

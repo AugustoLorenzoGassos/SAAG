@@ -1,0 +1,165 @@
+﻿@model Seguimiento.Models.CatalogoProductoresUpp
+
+@{
+    ViewData["Title"] = "Registro de productores - Eliminar UPP";
+}
+
+<div class="container">
+    <form action="/Seguimiento/UPPProductorUPPAsociadaEliminar" method="post">
+        @Html.HiddenFor(model => model.IdProductor)
+        @Html.HiddenFor(model => model.IdProductorUpp)
+        @Html.HiddenFor(model => model.IdUsuario)
+        @Html.HiddenFor(model => model.FechaCaptura)
+        @Html.HiddenFor(model => model.FechaActualizacion)
+        @Html.AntiForgeryToken()
+        <div class="card">
+            <div class="card-header bg-secondary bg-gradient text-white">
+                <h4 class="m-0">Registro de productores - Eliminar UPP</h4>
+            </div>
+            <div class="card-body">
+                <h4>Productor: @ViewBag.nombreProductor</h4>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <label for="claveUPP">Clave UPP:</label>
+                        <input type="text" id="claveUPP" name="claveUPP" value="@Model.ClaveUpp" class="form-control" readonly />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="nombreUPP">Nombre UPP:</label>
+                        <input type="text" id="nombreUPP" name="nombreUPP" value="@Model.NombreUpp" class="form-control" readonly />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="cveMunicipio">Municipio:</label>
+                        <select id="cveMunicipio" name="cveMunicipio" value="@Model.CveMunicipio" class="form-control" readonly>
+                            <option value="000" disabled selected>Seleccione un municipio... </option>
+                        </select>
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="cveLocalidad">Loclaidad:</label>
+                        <select id="cveLocalidad" name="cveLocalidad" value="@Model.CveLocalidad" class="form-control" readonly>
+                            <option value="0000" disabled selected>Seleccione una localidad... </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <label for="latitud">Latitud:</label>
+                        <input type="number" id="latitud" name="latitud" value="@Model.Latitud" class="form-control" readonly />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="longitud">Longitud:</label>
+                        <input type="number" id="longitud" name="longitud" value="@Model.Longitud" class="form-control" readonly />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="totalHato">Hato:</label>
+                        <input type="number" id="totalHato" name="totalHato" value="@Model.TotalHato" class="form-control" readonly />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="totalProbados">Probados:</label>
+                        <input type="number" id="totalProbados" name="totalProbados" value="@Model.TotalProbados" class="form-control" readonly />
+                    </div>
+                </div>
+                <h6 class="text-center w-100 mt-1 mb-1">Especies trabajadas</h6>
+                <div class="row">
+                    <div class="col-12 col-md-3 mb-1 mb-md-0 form-group">
+                        <input type="checkbox" id="especieTrabajadaBovino" name="especieTrabajadaBovino" class="pt-2 me-2" value="True" readonly @(Model.EspecieTrabajadaBovino == true ? "checked" : "") />Bovino
+                    </div>
+                    <div class="col-12 col-md-3 mb-1 mb-md-0 form-group">
+                        <input type="checkbox" id="especieTrabajadaEquino" name="especieTrabajadaEquino" class="pt-2 me-2" value="True" readonly @(Model.EspecieTrabajadaEquino == true ? "checked" : "") />Equino
+                    </div>
+                    <div class="col-12 col-md-3 mb-1 mb-md-0 form-group">
+                        <input type="checkbox" id="especieTrabajadaOvino" name="especieTrabajadaOvino" class="pt-2 me-2" value="True" readonly @(Model.EspecieTrabajadaOvino == true ? "checked" : "") />Ovino
+                    </div>
+                    <div class="col-12 col-md-3 mb-1 mb-md-0 form-group">
+                        <input type="checkbox" id="especieTrabajadaPorcino" name="especieTrabajadaPorcino" class="pt-2 me-2" value="True" readonly @(Model.EspecieTrabajadaPorcino == true ? "checked" : "") />Porcino
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <!-- Botones de acción en flex responsivo -->
+                <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                    <div class="me-md-2">
+                        <!-- Acción para regresar a la lista de registros mensuales -->
+                        <a href="@Url.Action("UPPProductorUPPAsociadas", "Seguimiento", new { id = Model.IdProductor })" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de UPP's
+                        </a>
+                    </div>
+                    <div class="mt-2 mt-md-0">
+                        <!-- Botón para guardar un registro nuevo -->
+                        <button type="submit" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-trash me-1" aria-hidden="true"></i>
+                            Eliminar UPP
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    //Carga del DOM
+    document.addEventListener('DOMContentLoaded', () => {
+        const cmbMunicipios = document.getElementById("cveMunicipio");
+        const idMunicipio = '@Model.CveMunicipio';
+        const idLoclidad = '@Model.CveLocalidad';
+
+        cmbMunicipios.addEventListener('change', (e) => {
+            const idMunicipio = e.target.value;
+            cargarLocalidades(idMunicipio); // Cargas las localidades según el municipio
+        });
+
+        cargarMinicipios();
+        if (idMunicipio !== "") {
+            cargarLocalidades('@Model.CveMunicipio');
+        }
+
+    });
+
+    async function cargarMinicipios() {
+        const cmbMunicipios = document.getElementById("cveMunicipio");
+        try {
+            const response = await fetch('/Seguimiento/ObtenerMunicipios');
+            const idMunicipio = "@Model.CveMunicipio";
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            const data = await response.json();
+            cmbMunicipios.innerHTML = '<option value="" disabled selected>Seleccione un municipio... </option>';
+            data.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.claveMunicipio;
+                option.textContent = item.nombreMunicipio;
+                if (item.claveMunicipio == idMunicipio) { option.selected = true; }
+                cmbMunicipios.appendChild(option);
+            });
+        }
+        catch (error) {
+            console.error("Error al cargar la lista de productores:", error);
+        }
+    }
+
+    async function cargarLocalidades(id) {
+        const cmbLocalidad = document.getElementById("cveLocalidad");
+        try {
+            const response = await fetch(`/Seguimiento/ObtenerLocalidades/${id}`);
+            const idLocalidad = '@Model.CveLocalidad';
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            const data = await response.json();
+            cmbLocalidad.innerHTML = '<option value="" disabled selected>Seleccione una localidad... </option>';
+            data.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item.claveLocalidad;
+                option.textContent = item.nombreLocalidad;
+                if (item.claveLocalidad == idLocalidad) { option.selected = true; }
+                cmbLocalidad.appendChild(option);
+            });
+        }
+        catch (error) {
+            console.error("Error al cargar la lista de productores:", error);
+        }
+    }
+
+</script>

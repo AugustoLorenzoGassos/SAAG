@@ -1,0 +1,123 @@
+﻿@model Seguimiento.Models.TblRegistroMensualDetalle
+
+@{
+    ViewData["Title"] = "Eliminar acción";
+}
+
+<div class="container mt-4">
+    <form action="/Seguimiento/ElimimarAccionRegistroMensual" method="POST" class="form-registro-detalle">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(Model => Model.IdReporteMensualAccion)
+        @Html.HiddenFor(Model => Model.IdReporteMensual)
+        @Html.HiddenFor(Model => Model.FechaCaptura)
+        <div class="card">
+            <div class="card-header bg-secondary bg-gradient text-white">
+                <h4 class="m-0">Registro mensual de actividades - Eliminar acción de seguimiento</h4>
+            </div>
+            <div class="card-body">
+                <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-between">
+                    <div class="me-md-2 mt-2 mt-md-0">
+                        <strong>Laboratorio:</strong><br /> @ViewBag.nombreLabotario
+                    </div>
+                    <div class="me-2">
+                        <strong>Mes:</strong> <br />@ViewBag.mesReporte
+                    </div>
+                    <div class="mt-2 mt-md-0">
+                        <strong>Año:</strong> <br />@ViewBag.anioReporte
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <!-- Fecha del Reporte -->
+                    <div class="col-12 col-md-6 form-group">
+                        <label for="FechaReporte">Fecha de Reporte:</label>
+                        <input type="date" id="FechaReporte" name="FechaReporte" value="@Model.FechaReporte?.ToString("yyyy-MM-dd")" class="form-control" readonly />
+                    </div>
+                    <!-- Productor -->
+                    <div class="col-12 col-md-6 form-group">
+                        <label for="IdProductor">Productor:</label>
+                        <input type="text" id="IdProductor" name="IdProductor" value="@ViewBag.nombreProductor" class="form-control" readonly />
+                    </div>
+                </div>
+                <h5>Conteo y Diagnósticos (Captura)</h5>
+                <!-- Indicadores cuantitativos / Diagnósticos (Shorts) -->
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label for="CpsMcm">CPS MCM:</label>
+                        <input type="number" id="CpsMcm" name="CpsMcm" value="@Model.CpsMcm" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="CpcFlotac">CPC Flotac:</label>
+                        <input type="number" id="CpcFlotac" name="CpcFlotac" value="@Model.CpcFlotac" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="CpcSedim">CPC Sedim:</label>
+                        <input type="number" id="CpcSedim" name="CpcSedim" value="@Model.CpcSedim" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label for="CpcBearm">CPC Bearm:</label>
+                        <input type="number" id="CpcBearm" name="CpcBearm" value="@Model.CpcBearm" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="DxScBh">DX SC BH:</label>
+                        <input type="number" id="DxScBh" name="DxScBh" value="@Model.DxScBh" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="DxScSc">DX SC SC:</label>
+                        <input type="number" id="DxScSc" name="DxScSc" value="@Model.DxScSc" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label for="Mastitis">Mastitis:</label>
+                        <input type="number" id="Mastitis" name="Mastitis" value="@Model.Mastitis" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="DiasGestacion">Días de Gestación:</label>
+                        <input type="number" id="DiasGestacion" name="DiasGestacion" value="@Model.DiasGestacion" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <label for="AsesoramientoZoosanitarui">Asesoramiento Zoosanitario:</label>
+                        <input type="number" id="AsesoramientoZoosanitarui" name="AsesoramientoZoosanitarui" value="@Model.AsesoramientoZoosanitarui" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="ProfilaxisEquina">Profilaxis Equina:</label>
+                        <input type="number" id="ProfilaxisEquina" name="ProfilaxisEquina" value="@Model.ProfilaxisEquina" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="Total">Total:</label>
+                        <input type="number" id="Total" name="Total" value="@Model.Total" class="form-control" defaultValue="0" min="0" max="32767" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <!-- Botones de Acción -->
+                <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                    <div class="me-md-2">
+                        <!-- Acción para regresar a la lista visitas -->
+                        <a href="@Url.Action("RegistrosMensualActividades", "Seguimiento", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-bars me-3" aria-hidden="true"></i>Regresar a la lista de acciones
+                        </a>
+                    </div>
+                    <div class="mt-2 mt-md-0">
+                        <button type="submit" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-trash me-3" aria-hidden="true"></i>
+                            Eliminar acción de seguimiento
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+
+

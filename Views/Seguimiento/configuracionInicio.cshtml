@@ -1,0 +1,14 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Configuración";
+    var session = HttpContextAccessor.HttpContext?.Session;
+    string rolUsuario = session?.GetString("RolUsuario");
+}
+
+<div class="container">
+    <p class="text-center alert alert-warning">
+        En construcción
+    </p>
+</div>
+

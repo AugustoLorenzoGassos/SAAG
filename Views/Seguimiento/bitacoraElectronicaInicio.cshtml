@@ -1,0 +1,92 @@
+﻿@model Seguimiento.Models.TblRegistroMensual
+
+@{
+    ViewData["Title"] = "Bitácora Electrónica";
+}
+
+<div class="container mt-4">
+    <div class="card w-100">
+        <!-- Encabezado -->
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h4 class="m-0">Bitácora electrónica - Visitas</h4>
+        </div>
+        <!-- Datos del usuario y laboratorio -->
+        <div class="card-body bg-white">
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    Laboratorio:<br />@(Model.IdLaboratorioNavigation.NombreLaboratorio ?? "N/A")
+                </div>
+                <div class="col-12 col-md-4">
+                    Mes:<br />@ViewBag.mesReporte
+                </div>
+                <div class="col-12 col-md-4">
+                    Año:<br />@(Model.AñoReporte?.ToString() ?? "N/A")
+                </div>
+            </div>
+            <!--Lista de registros en la bitácora-->
+            @* <h5 class="text-dark text-center alert alert-success p-2 mt-3">Visitas registradas</h5> *@
+            @if (Model.TblBitacoraElectronicas != null && Model.TblBitacoraElectronicas.Any())
+            {
+                <div class="table-responsive table-striped mt-3">
+                    <table class="table table-striped table-hover table-bordered" id="tablaBitacora">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha de visita</th>
+                                <th>Número de caso</th>
+                                <th>Folio</th>
+                                <th>UPP - Productor</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detalle in Model.TblBitacoraElectronicas)
+                            {
+                                <tr>
+                                    <td>@detalle.FechaBitacora?.ToString("dd/MM/yyyy")</td>
+                                    <td>@detalle.CasoBitacora</td>
+                                    <td>@detalle.FolioBitacora</td>
+                                    <td>@detalle.IdProductorUppNavigation.ClaveUpp - @detalle.IdProductorUppNavigation.IdProductorNavigation.NombreProductor @detalle.IdProductorUppNavigation.IdProductorNavigation.ApellidoPaternoProductor @detalle.IdProductorUppNavigation.IdProductorNavigation.ApellidoMaternoProductor</td>
+                                    <td>
+                                        <button class="btn" title="Editar bitácora electrónica" onclick="editarVisita(@detalle.IdBitacoraElectronica)">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                        <button class="btn" title="Eliminar bitácora electrónica" onclick="eliminarVista(@detalle.IdBitacoraElectronica)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>    
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+        <!-- Pie de página con botones de acción -->
+        <div class="card-footer">
+            <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                <div class="me-md-2">
+                    <a id="btnRegresarListaReportes" href="@Url.Action("RegistrosMensualInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                        <i class="fa fa-tasks me-3" aria-hidden="true"></i>Regresar a la lista de registros mensuales
+                    </a>
+                </div>
+                <div class="mt-2 mt-md-0">
+                    <a id="btnRegistrarAcciones" href="@Url.Action("bitacoraElectronicaAgregar", "Seguimiento", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                        <i class="fa fa-plus-square me-3 p-1" aria-hidden="true"></i>Agregar vistas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function editarVisita(IdBitacora){
+        window.location.href = `/Seguimiento/bitacoraElectronicaEditar/${IdBitacora}`;
+    }
+
+    function eliminarVista(IdBitacora){
+        window.location.href = `/Seguimiento/bitacoraElectronicaEliminar/${IdBitacora}`;
+    }
+
+</script>

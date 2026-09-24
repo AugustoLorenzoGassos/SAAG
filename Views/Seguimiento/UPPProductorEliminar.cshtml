@@ -1,0 +1,104 @@
+﻿@model Seguimiento.Models.CatalogoProductore
+
+@{
+    ViewData["Title"] = "Eliminar productor";
+}
+
+<div class="container mt-4">
+    <form action="/Seguimiento/UPPProductorEliminar" method="post">
+        @Html.HiddenFor(model => model.IdProductor)
+        @Html.AntiForgeryToken()
+        <div class="card">
+            <div class="card-header bg-secondary bg-gradient text-white">
+                <h4  class="m-0">Regisgtro UPP - Eliminar productor</h4>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.UPPRegistradas > 0)
+                {
+                    <h6 class="alert alert-warning text-center">El productor tiene registradas @ViewBag.UPPRegistradas Unidades Produtivas Pecuarias.<br />Al eliminar al productor se perderá la información asociada a estas unidades.</h6>
+                }
+                <div class="row mt-4">
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="curpProductor">CURP:</label>
+                        <input type="text" id="curpProductor" name="curpProductor" value="@Model.CurpProductor" class="form-control" required />
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="nombreProductor">Nombre:</label>
+                        <input type="text" id="nombreProductor" name="nombreProductor" value="@Model.NombreProductor" class="form-control" required />
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="apellidoPaternoProductor">Apellido paterno:</label>
+                        <input type="text" id="apellidoPaternoProductor" name="apellidoPaternoProductor" value="@Model.ApellidoPaternoProductor" class="form-control" required />
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="apellidoMaternoProductor">Apellido materno:</label>
+                        <input type="text" id="apellidoMaternoProductor" name="apellidoMaternoProductor" value="@Model.ApellidoMaternoProductor" class="form-control" required />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <label for="generoProductor">Sexo</label>
+                        <div class="form-group">
+                            <input type="radio" id="generoProductorH" name="generoProductor" class="p-1 me-2" value="H" @(Model.GeneroProductor == "H" ? "checked" : "") />Hombre
+                            <input type="radio" id="generoProductorM" name="generoProductor" class="p-1 me-2" value="M" @(Model.GeneroProductor == "M" ? "checked" : "") />Mujer
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="telefonoProductor">Telefono:</label>
+                        <input type="tel" id="telefonoProductor" name="telefonoProductor" value="@Model.TelefonoProductor" class="form-control" required />
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="correoProductor">Correo electrónico:</label>
+                        <input type="email" id="correoProductor" name="correoProductor" value="@Model.CorreoProductor" class="form-control" required />
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="domicilioProductor">Domicilio:</label>
+                        <input type="text" id="domicilioProductor" name="domicilioProductor" value="@Model.DomicilioProductor" class="form-control" required />
+                    </div>
+                </div>
+                <label class="text-center w-100 mt-1 mb-1">Especies registgradas</label>
+                <div class="row">
+                    <div class="col-12 col-md-3 mb-1 mb-md-0 form-group">
+                        <input type="checkbox" id="especieRegistadaBovino" name="especieRegistadaBovino" class="pt-2 me-2" value="True" @(Model.EspecieRegistadaBovino == true ? "checked" : "") />Bovino
+                    </div>
+                    <div class="col-12 col-md-3 mb-1 mb-md-0 form-group">
+                        <input type="checkbox" id="especieRegistadaEquino" name="especieRegistadaEquino" class="pt-2 me-2" value="True" @(Model.EspecieRegistadaEquino == true ? "checked" : "") />Equino
+                    </div>
+                    <div class="col-12 col-md-3 mb-1 mb-md-0 form-group">
+                        <input type="checkbox" id="especieRegistadaOvino" name="especieRegistadaOvino" class="pt-2 me-2" value="True" @(Model.EspecieRegistadaOvino == true ? "checked" : "") />Ovino
+                    </div>
+                    <div class="col-12 col-md-3 mb-1 mb-md-0 form-group">
+                        <input type="checkbox" id="especieRegistadaPorcino" name="especieRegistadaPorcino" class="pt-2 me-2" value="True" @(Model.EspecieRegistadaPorcino == true ? "checked" : "") />Porcino
+                    </div>
+                </div>
+                @*<div class="row">
+                    <div class="col-12 col-md-3">
+                        <label for="generoProductor">Municpio</label>
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="telefonoProductor">Localidad:</label>
+                    </div>
+                    <div class="col-12 col-md-3 form-group"></div>
+                    <div class="col-12 col-md-3 form-group"></div>
+                </div>*@
+            </div>
+            <div class="card-footer">
+                <!-- Botones de acción en flex responsivo -->
+                <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                    <div class="me-md-2 mt-2 mt-md-0">
+                        <!-- Acción para regresar a la lista de registros mensuales -->
+                        <a href="@Url.Action("UPPInicio", "Seguimiento")" class="btn btn-light">
+                            <i class="fa fa-bars me-3" aria-hidden="true"></i>Regresar a la lista de productores
+                        </a>
+                    </div>
+                    <div class="me-2">
+                        <!-- Botón para guardar un registro nuevo -->
+                        <button type="submit" id="btnGuardar" class="btn btn-light">
+                            <i class="fa fa-trash me-3" aria-hidden="true"></i>Eliminar registro
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

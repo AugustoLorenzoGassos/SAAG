@@ -1,0 +1,154 @@
+﻿@model Seguimiento.Models.SolicitudInternacion
+
+@{
+    ViewData["Title"] = "Movilización de ganado - Solicitudes de internación";
+}
+
+<div class="container mt-4">
+    <h2>Detalles de la solicitud de internación</h2>
+    <div class="card">
+        <div class="card-header bg-secondary text-white bg-gradient">
+            <h4 class="m-0">Solicitud de internación</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <label for="fechaSolicitud">Fecha de Solicitud:</label>
+                    <input id="fechaSolicitud" name="FechaSolicitud" type="text" class="form-control" value="@Model.FechaSolicitud" placeholder="fecha de solicitud" />
+                </div>
+                <div class="col-12 col-md-6">
+                    <label for="nombreSolicitante">Nombre de quien solicita:</label>
+                    <input id="nombreSolicitante" name="NombreSolicitante" type="text" class="form-control" value="@Model.NombreSolicitante" placeholder="Nombre de quien solicita" />
+                </div>
+            </div>
+            <h6 class="mt-3 mb-0"><strong>Datos del traslado</strong></h6>
+            <hr />
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <label for="tipoGanado">Tipo de Ganado:</label>
+                    <input id="tipoGanado" name="TipoGanado" type="text" class="form-control" value="@Model.TipoGanadoNavigation.DescTipoGanado" placeholder="Tipo de Ganado" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="motivoInternacion">Motivo de Internación:</label>
+                    <input id="motivoInternacion" name="NombreSolicitante" type="text" class="form-control" value="@Model.MotivoTrasladoNavigation.DescMotivoTraslado" placeholder="Nombre de quien solicita" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="certificadoZoosanitario">Certificado zoosanitario para movilización:</label>
+                    <input id="certificadoZoosanitario" name="CertificadoMovilizacion" type="text" class="form-control" value="@Model.CertificadoMovilizacion" placeholder="Certificado zoosanitario para movilización" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <label for="origenTraslado">Origen:</label>
+                    <input id="origenTraslado" name="Origen" type="text" class="form-control" value="@Model.Origen" placeholder="Origen" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="destinoTraslado">Destino:</label>
+                    <input id="destinoTraslado" name="Destino" type="text" class="form-control" value="@Model.Destino" placeholder="Destino" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="nombreUpp">Nombre de la UPP:</label>
+                    <input id="nombreUpp" name="ClaveUpp" type="text" class="form-control" value="@Model.ClaveUpp" placeholder="UPP" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <label for="hembras">Hembras:</label>
+                <input id="hembras" name="HembrasMovilizar" type="number" class="form-control" value="@Model.HembrasMovilizar" placeholder="Hembras" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="machos">Machos:</label>
+                    <input id="machos" name="MachosMovilizar" type="number" class="form-control" value="@Model.MachosMovilizar" placeholder="Machos" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="total">Total:</label>
+                    <input id="total" name="Total" type="text" class="form-control " placeholder="Total" readonly />
+                </div>
+            </div>
+            <h6 class="mt-3 mb-0"><strong>Datos del vehículo</strong></h6>
+            <hr />
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <label for="numeroPlacas">Número de Placas:</label>
+                    <input id="numeroPlacas" name="PlacasVehiculo" type="text" class="form-control" value="@Model.PlacasVehiculo" placeholder="Número de Placas" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="marcaVehiculo">Marca del Vehículo:</label>
+                    <input id="marcaVehiculo" name="MarcaVehiculo" type="text" class="form-control" value="@Model.MarcaVehúclo" placeholder="Marca del Vehículo" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="nombreChofer">Nombre del Chofer:</label>
+                    <input id="nombreChofer" name="NombreChofer" type="text" class="form-control" value="@Model.NombreChofer" placeholder="Nombre del Chofer" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <label for="numeroFlejes">Número de Flejes:</label>
+                    <input id="numeroFlejes" name="NumeroFlejes" type="text" class="form-control" value="@Model.NumeroFlejes" placeholder="Número de Flejes" />
+                </div>
+                <div class="col-12 col-md-4">
+                </div>
+                <div class="col-12 col-md-4">
+                </div>
+            </div>
+                
+            <p id="mensajeDocumentos" class="alert alert-dark p-2 text-center mt-2 d-none">Documentos cargados</p>
+            <ul id="listaDocumentos" class="list-group d-none">
+            </ul>
+        </div>
+        <div class="card-footer">
+            <a href="@Url.Action("movilizacionGanadoInicio", "Seguimiento")" class="btn btn-ligth">
+                <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de solicitues
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        cargarListaDocumentos();
+    });
+
+    async function cargarListaDocumentos() {
+
+        try {
+            const response = await fetch(`/Seguimiento/SolicitudesInternacionDocumentos?idSolicitud=${@Model.IdSolicitudInternacion}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensaje || "Error al obtener la información.");
+            }
+            const documentos = await response.json();
+            // Validar si la lista viene vacía
+            if (documentos.length === 0) {
+                document.getElementById('mensajeDocumentos').classList.remove('d-none');
+                document.getElementById('listaDocumentos').classList.remove('d-none');
+                document.getElementById('listaDocumentos').innerHTML = `<li class="list-group-item text-muted alert alert-warning">No hay documentos registrados para esta solicitud.</li>`;
+                //return;
+            } else {
+                document.getElementById('listaDocumentos').classList.remove('d-none');
+                document.getElementById('mensajeDocumentos').classList.remove('d-none');
+                document.getElementById('listaDocumentos').innerHTML = '';
+                // Recorrer los registros y crear los elementos <li>
+                documentos.forEach(doc => {
+                    const fecha = doc.fechaCarga ? new Date(doc.fechaCarga).toLocaleDateString() : 'N/A';
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-start';
+                    li.innerHTML = `
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">
+                                    <a class="me-2 text-decoration-none text-dark" href='/obtener-documento/${doc.nombreDocumento}' target='_blank'><i class="fa fa-file-text-o me-2" aria-hidden="true"></i></a>${doc.nombreDocumento ?? 'Documento sin nombre'} - ${doc.tipoDocumento ?? 'Archivo descripción del documento'}
+                                </div>
+                                <small class="text-muted">${doc.observaciones ?? 'Sin observaciones'}</small>
+                            </div>
+                            <span class="badge bg-secondary rounded-pill">${fecha}</span>
+                        `;
+                    document.getElementById('listaDocumentos').appendChild(li);
+                });
+            }
+        } catch (err) {
+            console.error("Error en la solicitud:", err);
+        }
+    }
+
+</script>

@@ -1,0 +1,125 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Mappa de UPP's";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h3 class="card-title">Mapa de UPP's</h3>
+        </div>
+        <div class="card-body">
+            <div class="row my-2">
+                <div class="col-12">
+                    <label for="cmbMunicipio" class="form-label">Municipio:</label>
+                    <select id="cmbMunicipio" class="form-select">
+                        <option value="000">Selecciona un municipio...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="text-end">
+                <button id="btnExportar" class="btn btn-secondary mb-3">
+                    <i class="fa fa-download"></i> Exportar a PNG
+                </button>
+            </div>
+            <div id="mapa" style="height: 800px; width: 100%;"></div>
+        </div>
+        <div class="card-footer">
+            <div class="me-md-2 mt-2 mt-md-0">
+                <a href="@Url.Action("UPPInicio", "Seguimiento")" class="btn btn-light">
+                    <i class="fa fa-bars me-3" aria-hidden="true"></i>Regresar a la lista de productores
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var map;
+    var marcadoresGroup
+    var listaUpp = @Html.Raw(Json.Serialize(Model));
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+
+        var limitesVeracruz = L.latLngBounds(
+            L.latLng(17.10, -98.60), // Esquina Suroeste
+            L.latLng(22.50, -93.50)  // Esquina Noreste
+        );
+        
+        map = L.map('mapa', {
+            maxBounds: limitesVeracruz,
+            maxBoundsViscosity: 1.0,
+            minZoom: 7,
+            maxZoom: 18
+        });
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        marcadoresGroup = L.layerGroup().addTo(map);
+        setTimeout(() => { map.invalidateSize(); }, 200);
+
+        renderizarMapa(listaUpp);
+        cargarRegiones();
+        cargarMunicipios();
+
+    });
+
+    document.getElementById('cmbMunicipio').addEventListener('change', function () {
+
+        var idMunicipioSeleccionado = this.value;
+
+        if(idMunicipioSeleccionado === "000") {
+            renderizarMapa(listaUpp); // Mostrar todos los puntos si no hay municipio seleccionado
+            return;
+        } else {
+            var datosFiltrados = listaUpp.filter(upp => 
+                !idMunicipioSeleccionado || upp.cveMunicipio == idMunicipioSeleccionado
+            );
+            renderizarMapa(datosFiltrados);
+        }
+
+    });
+
+    function renderizarMapa(listaPuntos) 
+    {
+        marcadoresGroup.clearLayers();
+        if (listaPuntos && listaPuntos.length > 0) {
+            var bounds = [];
+            listaPuntos.forEach(upp => {
+                if (upp.latitud && upp.longitud) {
+                    L.marker([upp.latitud, upp.longitud])
+                        .addTo(marcadoresGroup)
+                        .bindPopup(`<b>${upp.claveUpp}</b><br>${upp.nombreUpp} - ${upp.nombreMunicipio}`)
+                        .openPopup();
+                    bounds.push([upp.latitud, upp.longitud]);
+                }
+            });
+            if (bounds.length > 0) {
+                map.fitBounds(bounds); // Ajusta el zoom para ver todos los puntos
+            }
+        }
+    }
+
+    document.getElementById('btnExportar').addEventListener('click', function() {
+        var mapaElemento = document.getElementById('mapa');
+
+        // Convertir el div del mapa a un Canvas de HTML5
+        html2canvas(mapaElemento, {
+            useCORS: true, // Permite cargar las imágenes de OpenStreetMap sin bloqueos de seguridad
+            allowTaint: true
+        }).then(function(canvas) {
+            // Crear un enlace temporal de descarga
+            var enlace = document.createElement('a');
+            enlace.download = 'Mapa_UPPs.png'; // Nombre del archivo resultante
+            enlace.href = canvas.toDataURL('image/png'); // O 'image/jpeg' si prefieres JPG
+            enlace.click();
+        });
+    });
+
+</script>

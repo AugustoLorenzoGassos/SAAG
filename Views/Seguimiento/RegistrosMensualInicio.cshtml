@@ -1,0 +1,245 @@
+﻿@{
+    ViewData["Title"] = "Registro mensual de actividades";
+}
+
+<div class="container mt-4">
+    <div class="card w-100">
+        <!-- Encabezado de la tarjeta -->
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h4 class="m-0">Registro mensual</h4>
+        </div>
+        <!-- Cuerpo de la tarjeta  -->
+        <div class="card-body bg-white">
+            <form id="formRegistroMensual">
+                <!-- Token de seguridad Anti-Forgery Obligatorio -->
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <!-- Selección de Laboratorio -->
+                    <div class="col-md-4 mb-3">
+                        <label for="cmbLaboratorios" class="form-label">Laboratorio:</label>
+                        <select id="cmbLaboratorios" name="IdLaboratorio" class="form-select">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <!-- Selección de Mes -->
+                    <div class="col-md-4 mb-3">
+                        <label for="cmbMes" class="form-label">Mes del Reporte:</label>
+                        <select id="cmbMes" name="MesReporte" class="form-select">
+                            <option value="">Seleccione el mes... </option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+                    <!-- Año del Reporte -->
+                    <div class="col-md-4 mb-3">
+                        <label for="txtAño" class="form-label">Año del Reporte:</label>
+                        <input type="number" id="txtAño" name="AñoReporte" class="form-control" min="2020" max="2030"/>
+                    </div>
+                </div>
+                <!--Descargas a excel-->
+                <div class="text-end">
+                    <button id="btnDescargar" class="btn btn-secondary">
+                        <i class="fa fa-file-excel-o me-1" aria-hidden="true"></i>Descargar a excel
+                    </button>
+                </div>
+                <!-- Tabla de Resultados -->
+                <div class="table-responsive mt-3 w-100">
+                    <table class="table table-striped table-hover table-bordered" id="tablaRegistros">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-center">Laboratorio</th>
+                                <th class="text-center">Mes</th>
+                                <th class="text-center">Año</th>
+                                <th class="text-center">Fecha de captura</th>
+                                <th class="text-center">Usuario</th>
+                                <th class="text-center" style="width: 150px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyRegistros">
+                            <tr>
+                                <td colspan="7" class="text-center">Presione "Fiiltrar registro mensual" para obtener los datos.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Controles de Paginación -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <small class="text-muted" id="infoPaginacion"></small>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0" id="ulPaginacion"></ul>
+                    </nav>
+                </div>
+            </form>
+            <!-- Mensaje de respuesta-->
+            <div id="mensajeRespuesta" class="mt-3"></div>
+        </div>
+        <!-- Pie de la tarjeta con botones de acción -->
+        <div class="card-footer">
+            <!-- Botones de acción en flex responsivo -->
+            <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                <div class="me-md-2">
+                    <button type="button" id="btnGuardar" class="btn btn-light w-100 w-md-auto" onclick="cargarTabla();">
+                        <!-- Botón para filtrar registros -->
+                        <i class="fa fa-search me-1" aria-hidden="true"></i> Filtrar registro mensual
+                    </button>
+                </div>
+                <div class="mt-2 mt-md-0">
+                    <!-- Acción para agregar un nuevo registro mensual -->
+                    <a href="@Url.Action("RegistosMensualAgregar", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                        <i class="fa fa-plus-square me-1" aria-hidden="true"></i> Agregar registro mensual
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () 
+    {
+        const txtAño = document.getElementById("txtAño");
+        if (txtAño) 
+        {
+            txtAño.value = new Date().getFullYear();
+        }
+        cargarLaboratorios();
+        cargarTabla();
+    });
+
+    document.getElementById('btnDescargar')?.addEventListener('click', function (e) {
+        e.preventDefault();
+        urlDescargaActual = '/Seguimiento/RegistroMensualDescarga';
+
+        // 1. Instancias el objeto URL basado en tu variable base
+        const url = new URL(urlDescargaActual, window.location.origin);
+
+        const idLaboratorio = document.getElementById('cmbLaboratorios').value;
+        const mesReporte = document.getElementById('cmbMes').value;
+        const anioReporte = document.getElementById('txtAño').value;
+        if (idLaboratorio) url.searchParams.append('idLaboratorio', idLaboratorio);
+        if (mesReporte) url.searchParams.append('mesReporte', mesReporte);
+        if (anioReporte) url.searchParams.append('anioReporte', anioReporte);
+
+        // // 3. Asignas la URL con los parámetros generados
+        window.location.href = url.toString();
+
+    });
+
+    //Función para cargar la tabla de registros mensuales según los filtros seleccionados
+    async function cargarTabla() 
+    {
+        const idLaboratorio = document.getElementById('cmbLaboratorios').value;
+        const mesReporte = document.getElementById('cmbMes').value;
+        const anioReporte = document.getElementById('txtAño').value;
+
+        const tbody = document.getElementById('tbodyRegistros');
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center">Cargando datos...</td></tr>';
+
+        // Construcción de parámetros de consulta
+        const params = new URLSearchParams();
+        if (idLaboratorio) params.append('idLaboratorio', idLaboratorio);
+        if (mesReporte) params.append('mesReporte', mesReporte);
+        if (anioReporte) params.append('anioReporte', anioReporte);
+        if (params.toString().length > 0) 
+        {
+            try 
+            {
+                const response = await fetch(`/Seguimiento/ObtenerListaLaboratorioRegistroMensual?${params.toString()}`);
+                if (!response.ok) 
+                {
+                    throw new Error(`Error en la petición: ${response.statusText}`);
+                }
+                const data = await response.json();
+                renderizarTabla(data);
+            } 
+            catch (error) 
+            {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error al cargar los datos.</td></tr>';
+            }
+        }
+        else 
+        {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center">Seleccione filtros válidos.</td></tr>';
+        }
+    }
+
+    function renderizarTabla(datos) 
+    {
+        const tbody = document.getElementById('tbodyRegistros');
+        const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        tbody.innerHTML = '';
+
+        if (!datos || datos.length === 0) 
+        {
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center">No se encontraron registros.</td></tr>';
+            return;
+        }
+
+        datos.forEach(item => 
+        {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.nombreLaboratorio ?? '-'}</td>
+                <td>${meses[parseInt(item.mesReporte) - 1] ?? '-'}</td>
+                <td>${item.añoReporte ?? '-'}</td>
+                <td>${item.fechaCaptura ?? '-'}</td>
+                <td>${item.usuarioNombre ?? '-'}</td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
+                        <!-- Bitácora electrónica -->
+                        <button type="button" class="btn" onclick="verBitacora(${item.idReporteMensual})" title="Bitácora electrónica">
+                            <i class="fa fa-address-card" aria-hidden="true"></i>
+                        </button>
+                        <!-- Acciones de seguimiento -->
+                        <button type="button" class="btn" onclick="verAccionesSeguimiento(${item.idReporteMensual})" title="Acciones de seguimiento">
+                            <i class="fa fa-tasks"></i>
+                        </button>
+                        <!-- Editar -->
+                        <button type="button" class="btn" onclick="editarRegistro(${item.idReporteMensual})" title="Editar registro mensual">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <!-- Eliminar -->
+                        <button type="button" class="btn" onclick="eliminarRegistro(${item.idReporteMensual})" title="Eliminar registro mensual">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        inicializarPaginacion();
+    }
+    
+    //Función para ver detalles de un registro mensual
+    function verAccionesSeguimiento(idReporteMensual) 
+    {
+        window.location.href = `/Seguimiento/RegistrosMensualActividades/${idReporteMensual}`;
+    }
+    //Función para vel las acciones registradas en la bitácora
+    function verBitacora(idReporteMensual) {
+        window.location.href = `/Seguimiento/bitacoraElectronicaInicio/${idReporteMensual}`;
+    }
+    //Función para editar la información de un registro mensual
+    function editarRegistro(idReporteMensual)
+    {
+        window.location.href = `/Seguimiento/RegistrosMensualEditar/${idReporteMensual}`;
+    }
+    //Función para elimianr un registro mensual
+    function eliminarRegistro(idReporteMensual)
+    {
+        window.location.href = `/Seguimiento/RegistrosMensualEliminar/${idReporteMensual}`;
+    }
+
+</script>

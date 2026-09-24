@@ -1,0 +1,92 @@
+﻿@model Seguimiento.Models.CatalogoProductore
+
+@{
+    ViewData["Title"] = "Registro de productores - UPP asociadas";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h4 class="m-0">Registro de productores - UPP asociadas</h4>
+        </div>
+        <div class="card-body">
+            <h6>Productor: @Model.NombreProductor @Model.ApellidoPaternoProductor @Model.ApellidoMaternoProductor</h6>
+            @if (Model.CatalogoProductoresUpps != null && Model.CatalogoProductoresUpps.Any())
+            {
+                <div class="table-responsive table-striped">
+                    <table class="table table-striped table-hover table-bordered" style="font-size:small" id="tablaRegistrosDetalles">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Clave UPP</th>
+                                <th>Nombre UPP</th>
+                                <th>Municipio</th>
+                                <th>Localidad</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var detalle in Model.CatalogoProductoresUpps)
+                            {
+                                <tr>
+                                    <td>@detalle.ClaveUpp</td>
+                                    <td>@detalle.NombreUpp</td>
+                                    <td>@detalle.CatalogoLocalidade.ClaveMunicipioNavigation.NombreMunicipio</td>
+                                    <td>@detalle.CatalogoLocalidade.NombreLocalidad</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
+                                            <button type="button" class="btn" onclick="editarUPP(@detalle.IdProductorUpp);" title="Editar acción de seguimiento">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn" onclick="eliminarUPP(@detalle.IdProductorUpp);" title="Eliminar acción">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                   </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            { 
+                <div class="alert alert-success text-center" role="alert">
+                    No hay detalles registrados para este reporte.
+                </div>
+            }
+        </div>
+        <div class="card-footer">
+            <!-- Botones de acción en flex responsivo -->
+            <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                <div class="me-md-2">
+                    <!-- Acción para regresar a la lista de registros mensuales -->
+                        <a href="@Url.Action("UPPInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de productores
+                        </a>
+                </div>
+                <div class="mt-2 mt-md-0">
+                    <!-- Botón para guardar un registro nuevo -->
+                    <a href="@Url.Action("UPPProductorUPPAsociadaAgregar", "Seguimiento", new {id = Model.IdProductor})" class="btn btn-light w-100 w-md-auto">
+                        <i class="fa fa-plus-square me-1" aria-hidden="true"></i>Agregar UPP
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function editarUPP(id)
+    {
+        const url = `@Url.Action("UPPProductorUPPAsociadaEditar", "Seguimiento")?id=${id}`;
+        window.location.href = url;
+    }
+
+    function eliminarUPP(id)
+    {
+        const url = `@Url.Action("UPPProductorUPPAsociadaEliminar", "Seguimiento")?id=${id}`;
+        window.location.href = url;
+    }
+
+</script>

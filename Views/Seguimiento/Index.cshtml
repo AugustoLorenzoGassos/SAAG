@@ -1,0 +1,211 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Inicio";
+    var session = HttpContextAccessor.HttpContext?.Session;
+    string rolUsuario = session?.GetString("RolUsuario");
+}
+
+<div class="container w-75">
+    <!-- Carousel básico: .carousel .slide -->
+    <div id="mi_carrusel" class="carousel slide" data-bs-ride="carousel">
+        <!-- Guiones indicadores del slide mostrado -->
+        <div class="carousel-indicators">
+            <button data-bs-target="#mi_carrusel" data-bs-slide-to="0" class="active"></button>
+            <button data-bs-target="#mi_carrusel" data-bs-slide-to="1"></button>
+            <button data-bs-target="#mi_carrusel" data-bs-slide-to="2"></button>
+            <button data-bs-target="#mi_carrusel" data-bs-slide-to="3"></button>
+            <button data-bs-target="#mi_carrusel" data-bs-slide-to="4"></button>
+        </div>
+        
+        <!-- Slides del carrusel -->
+        <div class="carousel-inner rounded" style="overflow: hidden;">
+            <!-- 0. Configuración del sistema -->
+            <div class="carousel-item active position-relative">
+                <img src="~/catalogos.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" style="background: rgba(0, 0, 0, 0.2);">
+                    <h3 class="fw-bold text-white">Configuración del sistema</h3>
+                    <p class="text-white">Administración de usuarios, permisos y actualización de catálogos de uso general</p>
+                    @if (rolUsuario == "A")
+                    {
+                        <a href="#" class="btn btn-dark border-dark">Ingresar</a>
+                    }
+                </div>
+            </div>
+            <!-- 1. Padrones de beneficiarios -->
+            <div class="carousel-item position-relative">
+                <img src="~/padrones.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" style="background: rgba(0, 0, 0, 0.2);">
+                    <h3 class="fw-bold text-white">Padrones de beneficiarios</h3>
+                    <p class="text-white">Consulta de la información de los padrones de beneficiarios y su ubicación geográfica</p>
+                    <ul class="w-75 text-start text-white mx-auto">
+                        <li>Apicultura</li>
+                        <li>Proyecto Desarrollo de la Acuacultura Sustentable Veracruzana</li>
+                        <li>Impulso y Fomento a la Producción de Aves de Postura de Traspatio</li>
+                        <li>Fortalecimiento a la Producción Lechera y Mejoramiento Genético en Bovinos con Tecnología Reporductiva</li>
+                    </ul>
+                    <a href="@Url.Action("padronesBeneficiariosInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
+                </div>
+            </div>
+            <!-- 2. Regisro de UPP -->
+            <div class="carousel-item position-relative">
+                <img src="~/UPP.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" style="background: rgba(0, 0, 0, 0.2);">
+                    <h3 class="fw-bold text-white">Unidades de Producción Pecuaria</h3>
+                    <p class="text-white">Registro de información de las Unidades de Producción Pecuaria (UPP)</p>
+                    <a href="@Url.Action("UPPInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
+                </div>
+            </div>
+            <!-- 3. Laboratorio Móvil -->
+            <div class="carousel-item position-relative">
+                <img src="~/laboratorioMovil.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" style="background: rgba(0, 0, 0, 0.2);">
+                    <h3 class="fw-bold text-white">Laboratorio móvil</h3>
+                    <p class="text-white">Registro de las acciones realizadas por los laboratorios móviles.</p>
+                    <a href="@Url.Action("RegistrosMensualInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
+                </div>
+            </div>
+            <!-- 4. Movilización de ganado -->
+            <div class="carousel-item position-relative">
+                <img src="~/ganado.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100 px-5" style="background: rgba(0, 0, 0, 0.2);">
+                    <h3 class="fw-bold text-white">Movilización de ganado</h3>
+                    <p class="text-white">Registro de las acciones realizadas para la movilizacíón de ganado.</p>
+                    <ul class="w-75 text-start text-white mx-auto">
+                        <li>Permisos de internación</li>
+                    </ul>
+                    <a href="@Url.Action("movilizacionGanadoInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Controles de anterior/siguiente -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#mi_carrusel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mi_carrusel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+
+    </div>
+</div>
+
+@*<div class="container-fluid d-flex flex-column flex-md-row flex-md-wrap w-100 justify-content-around">
+    <!--Configuración del sistema-->
+    @if (rolUsuario == "A")
+    {
+        <div class="card mb-3 me-md-3 col-md-3">
+            <div class="card-header bg-secondary bg-gradient text-white">
+                <h6>Configuración del sistema</h6>
+            </div>
+            <div class="card-body">
+                <img src="~/catalogos.jpg" class="d-block w-100 h-100 rounded rounded-2">
+            </div>
+            <div class="card-footer">
+                <a href="#" class="btn btn-light w-100 w-md-auto">
+                    <i class="fa fa-sign-in me-1" aria-hidden="true"></i>Ingresar
+                </a>
+            </div>
+        </div>
+    }
+    <!--Catálogo de UPP-->
+    <div class="card mb-3 me-md-3 col-md-3">
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h6>Padrones de beneficiarios</h6>
+        </div>
+        <div class="card-body">
+            <img src="~/logo-sedarpa.png" class="d-block w-100 h-100 rounded rounded-2">
+        </div>
+        <div class="card-footer">
+            <a href="@Url.Action("padronesBeneficiariosInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                <i class="fa fa-sign-in me-1" aria-hidden="true"></i>Ingresar
+            </a>
+        </div>
+    </div>
+    <!--Catálogo de UPP-->
+    <div class="card mb-3 me-md-3 col-md-3">
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h6>Registro de UPP</h6>
+        </div>
+        <div class="card-body">
+            <img src="~/UPP.jpg" class="d-block w-100 h-100 rounded rounded-2">
+        </div>
+        <div class="card-footer">
+            <a href="@Url.Action("UPPInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                <i class="fa fa-sign-in me-1" aria-hidden="true"></i>Ingresar
+            </a>
+        </div>
+    </div>
+    <!--Seguimiento de actividades-->
+    <div class="card mb-3 me-md-3 col-md-3">
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h6>Registro mesual de actividades </h6>
+        </div>
+        <div class="card-body">
+            <img src="~/laboratorioMovil.jpeg" class="d-block w-100 h-100 rounded rounded-2">
+        </div>
+        <div class="card-footer">
+            <a href="@Url.Action("RegistrosMensualInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                <i class="fa fa-sign-in me-1" aria-hidden="true"></i>Ingresar
+            </a>
+        </div>
+    </div>
+    <!--Movilización de ganado-->
+    <div class="card mb-3 me-md-3 col-md-3">
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h6>Movilización de ganado</h6>
+        </div>
+        <div class="card-body">
+            <img src="~/ganado.jpg" class="d-block w-100 h-100 rounded rounded-2">
+        </div>
+        <div class="card-footer">
+            <a href="@Url.Action("movilizacionGanadoInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                <i class="fa fa-sign-in me-1" aria-hidden="true"></i>Ingresar
+            </a>
+        </div>
+    </div>
+</div>*@
+
+@* <div class="container w-50">
+    <!-- Carousel básico: .carousel .slide 
+    Todas las partes son opcionales -->
+    <div id="mi_carrusel" class="carousel slide" data-bs-ride="carousel">
+        <!-- Guiones indicadores del slide mostrado -->
+        <div class="carousel-indicators">
+            <button data-bs-target="#mi_carrusel" data-bs-slide-to="0" class="active"></button>
+            <button data-bs-target="#mi_carrusel" data-bs-slide-to="1"></button>
+        </div>
+        <!-- Slides del carrusel -->
+        <div class="carousel-inner" style="box-shadow: 7px 7px 2px rgba(0, 0, 0, 0.1);">
+            <!--Bitácora electrónica-->
+            <div class="carousel-item active">
+                <img src="~/ganado.jpg" class="d-block w-100 border rounded">
+                <div class="carousel-caption">
+                    <h3>Bitácora electrónica</h3>
+                    <p>Llevar un registro de atención a productortes en el estado de veracruz</p>
+                    <a href="@Url.Action("bitacoraElectronica", "Seguimiento")" class="btn btn-dark">Ingresar</a>
+                </div>
+            </div>
+            <!--Laboratorio Móvil-->
+            <div class="carousel-item">
+                <img src="~/laboratorioMovil.jpeg" class="d-block w-100">
+                <div class="carousel-caption">
+                    <h3>Laboratorio Móvil</h3>
+                    <p>Registro mesual de actividades en los laboratorios móviles</p>
+                    <a href="@Url.Action("RegistrosMensualInicio", "Seguimiento")" class="btn btn-dark">Ingresar</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controles triangulares de anterior/siguiente -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#mi_carrusel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mi_carrusel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+
+</div>
+ *@

@@ -1,0 +1,197 @@
+﻿@{
+    ViewData["Title"] = "Captura de Registro Mensual";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h4>Registro mensual de actividades - Crear registro mensual</h4>
+        </div>
+        <div class="card-body bg-white">
+            <form id="formRegistroMensual">
+                <!-- Token de seguridad Anti-Forgery Obligatorio -->
+                @Html.AntiForgeryToken()
+                <!-- Sección de selección de laboratorio, mes y año -->
+                <div class="row">
+                    <!-- Selección de Laboratorio -->
+                    <div class="col-md-4 mb-3">
+                        <label for="cmbLaboratorios" class="form-label">Laboratorio:</label>
+                        <select id="cmbLaboratorios" name="IdLaboratorio" class="form-select" required>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <!-- Selección de Mes -->
+                    <div class="col-md-4 mb-3">
+                        <label for="cmbMes" class="form-label">Mes del Reporte:</label>
+                        <select id="cmbMes" name="MesReporte" class="form-select" required>
+                            <option value="">Seleccione el mes... </option>
+                            <option value="1">Enero</option>
+                            <option value="2">Febrero</option>
+                            <option value="3">Marzo</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Mayo</option>
+                            <option value="6">Junio</option>
+                            <option value="7">Julio</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Septiembre</option>
+                            <option value="10">Octubre</option>
+                            <option value="11">Noviembre</option>
+                            <option value="12">Diciembre</option>
+                        </select>
+                    </div>
+
+                    <!-- Año del Reporte -->
+                    <div class="col-md-4 mb-3">
+                        <label for="txtAño" class="form-label">Año del Reporte:</label>
+                        <input type="number" id="txtAño" name="AñoReporte" class="form-control" min="2020" max="2030" required />
+                    </div>
+                </div>
+            </form>
+            <!-- Mensaje de respuesta-->
+            <div id="mensajeRespuesta" class="mt-3"></div>
+        </div>
+        <div class="card-footer">
+            <!-- Botones de acción en flex responsivo -->
+            <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                <div class="me-md-2 mt-2 mt-md-0">
+                    <!-- Acción para regresar a la lista de registros mensuales -->
+                    <a href="@Url.Action("listaRegistrosMensual", "Seguimiento")" class="btn btn-success" onclick="enviarParametrosRegisroMensual();">
+                        <i class="fa fa-bars me-3" aria-hidden="true"></i>Regresar a la lista de registros mensuales
+                    </a>
+                </div>
+                <div class="me-2">
+                    <!-- Botón para guardar un registro nuevo -->
+                    <button type="submit" id="btnGuardar" class="btn btn-success">
+                        <i class="fa fa-save me-3" aria-hidden="true"></i>Guardar Registro
+                    </button>
+                </div>
+                <div class="mt-2 mt-md-0">
+                    <!-- Acción para registrar acciones de laboratorio móvil, inicialmente oculto -->
+                    <a id="btnRegistrarAcciones" href="@Url.Action("laboratorioMovilVerRegistroMensual", "Seguimiento", new { id = 0, id1 = 0, id2 = 0 })" class="btn btn-success" style="display: none;">
+                        <i class="fa fa-tasks me-3" aria-hidden="true"></i>Registrar acciones de laboratorio móvil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    //Inicio del script, se ejecuta cuando el DOM está completamente cargado
+    document.addEventListener("DOMContentLoaded", function () 
+    {
+        //Poner datos en el DOM una vez que se haya terminado de cargar la página
+        const txtAño = document.getElementById("txtAño");
+        if (txtAño) {
+            txtAño.value = new Date().getFullYear();
+        }
+        //Agrega el evento de envío del formulario
+        const form = document.getElementById("formRegistroMensual");
+        if (form) {
+            form.addEventListener("submit", guardarRegistro);
+        }
+        //Llena el combo de laboratorios al cargar la página
+        cargarLaboratorios();
+    });
+
+    //Función para cargar los laboratorios en el combo
+    async function cargarLaboratorios() 
+    {
+        //Obtiene el elemento select del DOM
+        const cmbLaboratorios = document.getElementById("cmbLaboratorios");
+        //Sección para realizar la petición al controlador y llenar el combo (Try, catch para manejar errores))
+        try 
+        {
+            // Realizar la petición GET al controlador
+            const response = await fetch('/Seguimiento/ObtenerLaboratorios');
+            //Error en la respuesta HTTP
+            if (!response.ok) 
+            {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            // Convertir la respuesta a JSON del controlador
+            const data = await response.json();
+            // Limpiar opciones anteriores excepto la opción por defecto
+            cmbLaboratorios.innerHTML = '<option value="">Seleccione un laboratorio... </option>';
+            // Recorrer el arreglo devuelto y agregar las opciones al select
+            data.forEach(item => 
+            {
+                const option = document.createElement("option");
+                option.value = item.idLaboratoio;
+                option.textContent = item.nombreLaboratorio;
+                cmbLaboratorios.appendChild(option);
+           });
+        
+        } 
+        catch (error) 
+        {
+            console.error("Error al cargar la lista de laboratorios:", error);
+        }
+    }
+
+    //Función para guardar el registro mensual en la base de datos
+    async function guardarRegistro(event) 
+    {
+        //Obtiene los objetos del DOM y prepara la información para enviarla al controlador
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const mensajeDiv = document.getElementById("mensajeRespuesta");
+        const btnGuardar = document.getElementById("btnGuardar");
+        const btnRegistrarAcciones = document.getElementById("btnRegistrarAcciones");
+        // Deshabilitar botón durante el envío
+        btnGuardar.disabled = true;
+        mensajeDiv.innerHTML = '<div class="alert alert-info">Guardando registro...</div>';
+        //Seccion try y cacha para el evento
+        try 
+        {
+            //Envia el formulario al controlador para guardar el registro
+            const response = await fetch('/Seguimiento/GuardarRegistroMensual', 
+            {
+                method: 'POST',
+                body: formData
+            });
+            //Obtiene el resultado
+            const result = await response.json();
+            //Valida el resultado y muestra el mensaje correspondiente en el DOM
+            if (response.ok && result.exito) 
+            {
+                mensajeDiv.innerHTML = `<div class="alert alert-success">${result.mensaje}</div>`;
+                form.reset();
+                btnRegistrarAcciones.style.display = "inline-block";
+                // Restaurar año actual tras resetear el formulario
+                document.getElementById("txtAño").value = new Date().getFullYear();
+                window.location.href = `/Seguimiento/laboratorioMovilVerRegistroMensual/${result.registro}`;
+            } else 
+            {
+                mensajeDiv.innerHTML = `<div class="alert alert-danger">${result.mensaje}</div>`;
+            }
+        } 
+        catch (error) 
+        {
+            //En caso de que no se haya podido realizar la petición, se muestra un mensaje de error en el DOM
+            console.error("Error en la solicitud:", error);
+            mensajeDiv.innerHTML = '<div class="alert alert-danger">Ocurrió un error al procesar el guardado.</div>';
+        } 
+        finally 
+        {
+            btnGuardar.disabled = false;
+        }
+    }
+
+    function enviarParametrosRegisroMensual() 
+    {
+        const cmbLaboratorios = document.getElementById("cmbLaboratorios");
+        const cmbMes = document.getElementById("cmbMes");
+        const txtAño = document.getElementById("txtAño");
+        if (cmbLaboratorios && cmbMes && txtAño) 
+        {
+            // Construir la URL con los parámetros
+            const url = `@Url.Action("laboratorioMovilVerRegistroMensual", "Seguimiento")?id=${idLaboratorio}`;
+            // Redirigir a la URL construida
+            window.location.href = url;
+        }
+    }
+
+</script>

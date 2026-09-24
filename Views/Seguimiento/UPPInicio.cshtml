@@ -1,0 +1,207 @@
+﻿@{
+    ViewData["Title"] = "Registro de UPP";
+}
+
+<div class="container mt-4">
+    <div class="card w-100">
+        <!-- Encabezado de la tarjeta -->
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h4 class="m-0">Registro de productores</h4>
+        </div>
+        <!-- Cuerpo de la tarjeta  -->
+        <div class="card-body bg white">
+            <div class="row">
+                <div class="col-12 col-md-3 mb-3">
+                    <label for="txtCURP" class="form-label">CURP:</label>
+                    <input id="txtCURP" class="form-control" placeholder="Escribe la CURP del productor" />
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <label for="txtNombre" class="form-label">Nombre:</label>
+                    <input id="txtNombre" class="form-control" placeholder="Escribe el nombre del productor" />
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <label for="txtPaterno" class="form-label">Apellido paterno:</label>
+                    <input id="txtPaterno" class="form-control" placeholder="Escribe el ap. paterno del productor" />
+                </div>
+                <div class="col-12 col-md-3 mb-3">
+                    <label for="txtMaterno" class="form-label">Apellido materno:</label>
+                    <input id="txtMaterno" class="form-control" placeholder="Escribe el ap. materno del productor" />
+                </div>
+            </div>
+            <!--Descargas a excel-->
+            <div class="text-end">
+                <button id="btnDescargar" class="btn btn-secondary">
+                    <i class="fa fa-file-excel-o me-1" aria-hidden="true"></i>Descargar a excel
+                </button>
+            </div>
+            <div class="table-responsive mt-3 w-100">
+                <table class="table table-striped table-hover table-bordered" id="tablaRegistros">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center">CURP</th>
+                            <th class="text-center">Nombre</th>
+                            <th class="text-center">Apellido paterno</th>
+                            <th class="text-center">Apellido materno</th>
+                            <th class="text-center" style="width: 150px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyRegistros">
+                        <tr>
+                            <td colspan="7" class="text-center">Presione "Fiiltrar productor" para obtener los datos.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- Controles de Paginación -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted" id="infoPaginacion"></small>
+                <nav>
+                    <ul class="pagination pagination-sm mb-0" id="ulPaginacion"></ul>
+                </nav>
+            </div>
+        </div>
+        <!--Pie de página de la tarjeta-->
+        <div class="card-footer">
+            <!-- Botones de acción en flex responsivo -->
+            <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                <div class="me-md-2">
+                    <button type="button" id="btnFiltrar" class="btn btn-light w-100 w-md-auto" onclick="cargarTabla();">
+                        <!-- Botón para filtrar registros -->
+                        <i class="fa fa-search me-1" aria-hidden="true"></i>Filtrar productor
+                    </button>
+                </div>
+                <div class="me-md-2 mt-2 mt-md-0">
+                    <!-- Acción para agregar un nuevo productor -->
+                    <a href="@Url.Action("UPPInicioMostarMapa", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                        <i class="fa fa-map-marker me-1" aria-hidden="true"></i>Mostrar mapa de UPP's
+                    </a>
+                </div>
+                <div class="mt-2 mt-md-0">
+                    <!-- Acción para agregar un nuevo productor -->
+                    <a href="@Url.Action("UPPProductorAgregar", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                        <i class="fa fa-plus-square me-1" aria-hidden="true"></i>Agregar productor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() 
+    {
+        cargarTabla();
+    });
+    
+    document.getElementById('btnDescargar')?.addEventListener('click', function (e) {
+        e.preventDefault();
+        urlDescargaActual = '/Seguimiento/UPPDescargaCompleta';
+
+        // 1. Instancias el objeto URL basado en tu variable base
+        const url = new URL(urlDescargaActual, window.location.origin);
+
+        const CURP = document.getElementById('txtCURP').value;
+        const nombre = document.getElementById('txtNombre').value;
+        const paterno = document.getElementById('txtPaterno').value;
+        const materno = document.getElementById('txtMaterno').value;
+        const params = new URLSearchParams();
+
+        if (CURP) url.searchParams.append('CURP', CURP);
+        if (nombre) url.searchParams.append('nombre', nombre);
+        if (paterno) url.searchParams.append('paterno', paterno);
+        if (materno) url.searchParams.append('materno', materno);
+
+        // // 3. Asignas la URL con los parámetros generados
+        window.location.href = url.toString();
+
+    });
+
+    //Envía la petición de la información con los parámetros
+    async function cargarTabla()
+    {
+        //Obtiene los valores para los filtros
+        const CURP = document.getElementById('txtCURP').value;
+        const nombre = document.getElementById('txtNombre').value;
+        const paterno = document.getElementById('txtPaterno').value;
+        const materno = document.getElementById('txtMaterno').value;
+        //Limpia la tabla
+        const tbody = document.getElementById('tbodyRegistros');
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Cargando datos...</td></tr>';
+        //Gdenera la variable para los parámetros
+        const params = new URLSearchParams();
+        if (CURP) params.append('CURP', CURP);
+        if (nombre) params.append('nombre', nombre);
+        if (paterno) params.append('paterno', paterno);
+        if (materno) params.append('materno', materno);
+        //Envía la petición patra extraer registros de la base de datos de acuerdo al filtro. Si no hay filtros se cargan todos los registos
+        try 
+        {
+            const response = await fetch(`/Seguimiento/ObtenerListaProductores?${params.toString()}`);
+            if (!response.ok) 
+            {
+                throw new Error(`Error en la petición: ${response.statusText}`);
+            }
+            const data = await response.json();
+            if (data.length == 0)
+            {
+                throw new Error("No se recuperaron registros con el filtro o la tabla esta vacía");
+            }
+            else 
+            {
+                renderizarTabla(data);
+            }
+        } 
+        catch (error) 
+        {
+            console.error(error);
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">${error}.</td></tr>`
+        }
+    }
+    //Llena la tabla de la página
+    function renderizarTabla(datos) 
+    {
+        const tbody = document.getElementById('tbodyRegistros');
+        tbody.innerHTML = '';
+        datos.forEach(item => 
+        {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.curpProductor ?? '-'}</td>
+                <td>${item.nombreProductor ?? '-'}</td>
+                <td>${item.apellidoPaternoProductor ?? '-'}</td>
+                <td>${item.apellidoMaternoProductor ?? '-'}</td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
+                        <!--Mostrar UPP del productor-->
+                        <button type="button" class="btn" onclick="verUPPProductor(${item.idProductor});" title="UPPs asociadas al productor">
+                            <i class="fa fa-tasks"></i>
+                        </button>
+                        <button type="button" class="btn" onclick="editarProductor(${item.idProductor});" title="Editar datos del productor">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" class="btn" onclick="eliminarProductor(${item.idProductor});" title="Eliminar registro del productor">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+                `;
+            tbody.appendChild(tr);
+        });
+        inicializarPaginacion();
+    }
+    //Función para enviar la edición del registro
+    function editarProductor(idProductor)
+    {
+        window.location.href = `/Seguimiento/UPPProductorEditar/${idProductor}`;
+    }
+    //Función para eliminar un registro
+    function eliminarProductor(idProductor) {
+        window.location.href = `/Seguimiento/UPPProductorEliminar/${idProductor}`;
+    }
+    //Función para ver las UPP asocadas al productor
+    function verUPPProductor(idProductor){
+        window.location.href = `/Seguimiento/UPPProductorUPPAsociadas/${idProductor}`;
+    }
+
+</script>

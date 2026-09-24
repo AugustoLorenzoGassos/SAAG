@@ -1,0 +1,147 @@
+﻿@{
+    ViewData["Title"] = "Autentificación";
+}
+
+<div class="container d-flex justify-content-center">
+    <div class="row w-100 justify-content-center">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-4 p-sm-5">
+
+                    <!-- Mensaje de error dinámico -->
+                        <div id="alertError" class="alert alert-danger" style="display: none;" role="alert"></div>
+
+                    <!-- Encabezado -->
+                    <div class="text-center mb-4">
+                        <h3 class="fw-bold text-success">Bienvenido</h3>
+                        <p class="text-muted small">Ingresa tus credenciales para acceder</p>
+                    </div>
+
+                    <!-- Formulario -->
+                    <form id="formLogin" method="post">
+                        @Html.AntiForgeryToken()
+                        <!-- Campo Usuario / Email -->
+                        <div class="input-group flex-lg-nowrap m-2">
+                            <span class="input-group-text" id="addon-wrapping">
+                                <i class="fa fa-user-o" aria-hidden="true"></i>
+                            </span>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Usuario" required autocomplete="username" />
+                        </div>
+
+                        <!-- Campo Contraseña -->
+                        
+                        <div class="input-group flex-lg-nowrap m-2">
+                            <span class="input-group-text" id="addon-wrapping">
+                                <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                            </span>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required autocomplete="current-password" />
+                        </div>
+
+                        <!-- Opciones adicionales: Recordarme y Olvidé contraseña -->
+                        <div class="d-flex justify-content-between align-items-center mb-4 small">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe" />
+                                <label class="form-check-label text-secondary" for="rememberMe">
+                                    Recordarme
+                                </label>
+                            </div>
+                            <a href="#" class="text-decoration-none text-success">¿Olvidaste tu contraseña?</a>
+                        </div>
+
+                        <!-- Botón de Envío -->
+                        <div class="d-grid mb-3">
+                            <button id="btnLogin" type="submit" class="btn btn-light btn-lg rounded-3" onclick="validarUsuario(document.getElementById('username').value, document.getElementById('password').value)">
+                                <i class="fa fa-sign-in me-3" aria-hidden="true"></i>Iniciar Sesión
+                            </button>
+                        </div>
+
+                        <!-- Registro -->
+                        <div class="text-center mt-3 small">
+                            <span class="text-muted text-success">¿No tienes una cuenta?</span>
+                            <a href="#" class="text-decoration-none fw-bold ms-1 text-success">Regístrate</a>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', () => 
+{
+
+    const formLogin = document.getElementById('formLogin');
+    const alertError = document.getElementById('alertError');
+    const btnLogin = document.getElementById('btnLogin');
+
+    formLogin.addEventListener('submit', async (e) => {
+        
+        e.preventDefault(); // Evita el recargo de página predeterminado
+        
+        // Ocultar alertas previas
+        alertError.style.display = 'none';
+        alertError.textContent = '';
+
+        const idUsuario = document.getElementById('username').value.trim();
+        const contraseñaUsuario = document.getElementById('password').value;
+        const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+
+        //Vallida el token de verificación
+        if (!tokenElement) {
+            mostrarError("Error de seguridad: Token de verificación no encontrado.");
+            return;
+        }
+
+        // Preparar payload codificado como formulario (application/x-www-form-urlencoded)
+        const formData = new URLSearchParams();
+        formData.append('idUsuario', idUsuario);
+        formData.append('contraseñaUsuario', contraseñaUsuario);
+        formData.append('__RequestVerificationToken', tokenElement.value);
+
+        try {
+            btnLogin.disabled = true;
+            btnLogin.textContent = "Validando...";
+
+            const response = await fetch('/Seguimiento/ValidarUsuario', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData.toString()
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error en el servidor: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.exito) {
+                // Redireccionar a la vista indicada por el controlador
+                window.location.href = data.redirectUrl;
+            } else {
+                mostrarError(data.mensaje);
+            }
+        } catch (error) {
+            console.error("Error en la petición:", error);
+            mostrarError("Ocurrió un error al intentar iniciar sesión. Intente nuevamente.");
+        } finally {
+            btnLogin.disabled = false;
+            btnLogin.textContent = "Ingresar";
+        }
+
+    });
+
+    function mostrarError(mensaje) {
+        alertError.textContent = mensaje;
+        alertError.style.display = 'block';
+    }
+
+});
+
+
+</script>

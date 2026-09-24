@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = "Movilización de ganado - Solicitudes de internación";
+}
+
+<div class="container mt-4">
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
+            @*<a class="navbar-brand" href="#">Navbar</a>*@
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" onclick="mostrarPermisosInternacion();">Permisos de internación</a>
+                    </li>
+                </ul>
+                @*<form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>*@
+            </div>
+        </div>
+    </nav>
+    <div id="TblSolicitudesInternacion" class="card d-none mt-3">
+        <div class="card-header bg-secondary text-white bg-gradient ">
+            <h4 class="m-0">Movilización de ganado - Permisos de internación</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12 col-md-4">
+                    <label for="txtSolicitud" class="form-label">Id de la solicitud:</label>
+                    <input type="number" id="txtSolicitud" class="form-control" placeholder="Id de la solicitud" onkeyup="filtrarTabla()" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="txtNombre" class="form-label">Nombre del solicitante:</label>
+                    <input type="text" id="txtNombre" class="form-control" placeholder="Nombre del solicitante" onkeyup="filtrarTabla()" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="txtFecha" class="form-label">Fecha de la solicitud:</label>
+                    <input type="date" id="txtFecha" class="form-control" placeholder="Fecha de la solicitud" onkeyup="filtrarTabla()" />
+                </div>
+            </div>
+            <!--Tabla para mostrar las solicitudes de internación-->
+            <table class="table table-striped mt-4 table-hover table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Id. solicitud</th>
+                        <th>Fecha solicitud</th>
+                        <th>Nombre del solicitante</th>
+                        <th>Tipo de ganado</th>
+                        <th>Motivo del traslado</th>
+                        <th>Origen</th>
+                        <th>Destino</th>    
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyRegistros">
+                </tbody>
+            </table>
+            <!-- Controles de Paginación -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <small class="text-muted" id="infoPaginacion"></small>
+                <nav>
+                    <ul class="pagination pagination-sm mb-0" id="ulPaginacion"></ul>
+                </nav>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                <div class="me-md-2">
+                    <button type="button" id="btnGuardar" class="btn btn-light w-100 w-md-auto" onclick="mostrarPermisosInternacion();">
+                        <!-- Botón para filtrar registros -->
+                        <i class="fa fa-search me-1" aria-hidden="true"></i> Filtrar registro mensual
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function formatearFecha(fechaIso) {
+        if (!fechaIso) return '-';
+        // Divide "2026-09-03" por el guion
+        const partes = fechaIso.split('T')[0].split('-'); 
+        if (partes.length !== 3) return fechaIso;
+    
+        const [year, month, day] = partes;
+        return `${day}/${month}/${year}`; // Retorna "03/09/2026"
+    }
+
+    async function mostrarPermisosInternacion() 
+    {
+        //Varianles para el filtro
+        const id = document.getElementById('txtSolicitud').value;
+        const nombre = document.getElementById('txtNombre').value;
+        const Fecha = document.getElementById('txtFecha').value;
+
+        //Preparación de la tabla para mostrar los datos
+        document.getElementById("TblSolicitudesInternacion").classList.remove("d-none");
+        const tbody = document.getElementById("tbodyRegistros");
+        tbody.innerHTML = "";
+
+        const params = new URLSearchParams();
+        if (id) params.append('id', id);
+        if (nombre) params.append('nombre', nombre);
+        if (Fecha) params.append('fecha', Fecha);   
+
+        //Obtención de los datos desde el servidor
+        try 
+        {
+            const response = await fetch(`/Seguimiento/SolicitudesInternacion?${params.toString()}`);
+            if (!response.ok) 
+            {
+                throw new Error(`Error en la petición: ${response.statusText}`);
+            }
+            const data = await response.json();
+            if (!data || data.length === 0) 
+            {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center">No se encontraron registros.</td></tr>';
+                return;
+            }
+            else 
+            {
+                //Limpia la tabla y la llena con la información regresada por el controlador
+                tbody.innerHTML = '';
+                data.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                                <td>${item.idSolicitudInternacion ?? '-'}</td>
+                                <td>${formatearFecha(item.fechaSolicitud ?? '-')}</td>
+                                <td>${item.nombreSolicitante ?? '-'}</td>
+                                <td>${item.descTipoGanado ?? '-'}</td>
+                                <td>${item.descMotivoTraslado ?? '-'}</td>
+                                <td>${item.origen ?? '-'}</td>
+                                <td>${item.destino ?? '-'}</td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
+                                        <!-- Acciones de seguimiento -->
+                                                <button type="button" class="btn btn-detalles" onclick="mostrarDetalles(${item.idSolicitudInternacion})">
+                                            <i class="fa fa-address-card" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            `;
+                    tbody.appendChild(tr);
+                });
+                //Coloca los controles para la paginación
+                inicializarPaginacion();
+            }
+        }
+        catch (error) 
+        {
+            console.error(error);
+            tbody.innerHTML = '<tr><td colspan="9" class="text-center text-danger">Error al cargar los datos.</td></tr>';
+        }
+    }
+
+    function mostrarDetalles(idSolicitud) 
+    {
+        // Redirige a la vista de detalles de la solicitud
+        window.location.href = `/Seguimiento/SolicitudesInternacionDetalle/${idSolicitud}`;
+    }
+
+
+</script>

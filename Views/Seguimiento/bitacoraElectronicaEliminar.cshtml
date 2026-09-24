@@ -1,0 +1,271 @@
+﻿@model Seguimiento.Models.TblBitacoraElectronica
+
+@{
+    ViewData["Title"] = "Eliminar visita";
+}
+
+<div class="container mt-4">
+    <form action="/Seguimiento/bitacoraElectronicaEliminar" method="POST" class="form-registro-detalle">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.IdBitacoraElectronica)
+        @Html.HiddenFor(model => model.IdReporteMensual)
+        @Html.HiddenFor(model => model.FechaCaptura)
+        @Html.HiddenFor(model => model.IdUsuario)
+        <div class="card w-100">
+            <div class="card-header bg-secondary bg-gradient text-white">
+                <h4 class="m-0">Bitácora electrónica - Eliminar visita</h4>
+            </div>
+            <div class="card-body bg-white">
+                <!--Información del registro mensual-->
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        Laboratorio:<br />@ViewBag.nombreLabotario
+                    </div>
+                    <div class="col-12 col-md-4">
+                        Mes:<br />@ViewBag.mesReporte
+                    </div>
+                    <div class="col-12 col-md-4">
+                        Año:<br />@ViewBag.anioReporte
+                    </div>
+                </div>
+                <!--Información general-->
+                <div class="row mt-4">
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="FechaBitacora">Fecha de vista:</label>
+                        <input type="date" id="FechaBitacora" name="FechaBitacora" readonly value="@Model.FechaBitacora?.ToString("yyyy-MM-dd")" class="form-control" required />
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="CasoBitacora">Número de caso:</label>
+                        <input type="text" id="CasoBitacora" name="CasoBitacora" readonly value="@Model.CasoBitacora" class="form-control" required />
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="FolioBitacora">Folio:</label>
+                        <input type="text" id="FolioBitacora" name="FolioBitacora" readonly value="@Model.FolioBitacora" class="form-control" required />
+                    </div>
+                    <div class="col-12 col-md-3 form-group">
+                        <label for="IdProductor">UPP - Productor:</label>
+                        <input type="text" class="form-control" readonly value="@Model.IdProductorUppNavigation.ClaveUpp - @Model.IdProductorUppNavigation.IdProductorNavigation.NombreProductor @Model.IdProductorUppNavigation.IdProductorNavigation.ApellidoPaternoProductor @Model.IdProductorUppNavigation.IdProductorNavigation.ApellidoMaternoProductor" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-6 form-group">
+                        <label for="CitaProxima">Próxima vista:</label>
+                        <input type="date" id="CitaProxima" name="CitaProxima" readonly value="@Model.CitaProxima?.ToString("yyyy-MM-dd")" class="form-control" required />
+                    </div>
+                    <div class="col-12 col-md-6 form-group">
+                        <label for="MedicoResponsable">Médico responsable:</label>
+                        <input type="text" id="MedicoResponsable" name="MedicoResponsable" readonly value="@Model.MedicoResponsable" class="form-control" required />
+                    </div>
+                </div>
+                <!--Tabs para el registro de la información-->
+                <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="desparasitacion-tab" data-bs-toggle="tab" data-bs-target="#desparasitacion-tab-pane" type="button" role="tab" aria-controls="desparasitacion-tab-pane" aria-selected="true">Desparasitación</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="vacunacion-tab" data-bs-toggle="tab" data-bs-target="#vacunacion-tab-pane" type="button" role="tab" aria-controls="vacunacion-tab-pane" aria-selected="false">Vacunación</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reproduccion-tab" data-bs-toggle="tab" data-bs-target="#reproduccion-tab-pane" type="button" role="tab" aria-controls="reproduccion-tab-pane" aria-selected="false">Reproducción</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="coproparasitoscopicos-tab" data-bs-toggle="tab" data-bs-target="#coproparasitoscopicos-tab-pane" type="button" role="tab" aria-controls="coproparasitoscopicos-tab-pane" aria-selected="false">Coproparasitoscópicos</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="analisisSanguineo-tab" data-bs-toggle="tab" data-bs-target="#analisisSanguineo-tab-pane" type="button" role="tab" aria-controls="analisisSanguineo-tab-pane" aria-selected="false">Análisis sanguineo</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="servicios-tab" data-bs-toggle="tab" data-bs-target="#servicios-tab-pane" type="button" role="tab" aria-controls="servicios-tab-pane" aria-selected="false">Servicios</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tratamiento-tab" data-bs-toggle="tab" data-bs-target="#tratamiento-tab-pane" type="button" role="tab" aria-controls="tratamiento-tab-pane" aria-selected="false">Tratamiento</button>
+                    </li>
+                </ul>
+                <!--Secciones para la información de cada tab-->
+                <div class="tab-content p-3" id="myTabContent">
+                    <div class="tab-pane fade show active" id="desparasitacion-tab-pane" role="tabpanel" aria-labelledby="desparasitacion-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="BitacoraDesparacitacionFecha"><strong>Última fecha de desparasitación:</strong></label>
+                                <input type="date" id="BitacoraDesparacitacionFecha" name="BitacoraDesparacitacionFecha" readonly value="@Model.BitacoraDesparacitacionFecha?.ToString("yyyy-MM-dd")" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="BitacoraDesparacitacionDesparasitante"><strong>Desparasitante administrado ANTES de la visita:</strong></label>
+                                <input type="text" id="BitacoraDesparacitacionDesparasitante" name="BitacoraDesparacitacionDesparasitante" readonly value="@Model.BitacoraDesparacitacionDesparasitante" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="vacunacion-tab-pane" role="tabpanel" aria-labelledby="vacunacion-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="BitacoraVacunacionFecha"><strong>Fecha:</strong></label>
+                                <input type="date" id="BitacoraVacunacionFecha" name="BitacoraVacunacionFecha" readonly value="@Model.BitacoraVacunacionFecha?.ToString("yyyy-MM-dd")" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="BitacoraVacunacionVacuna"><strong>Vacuna  administrada ANTES de la visita:</strong></label>
+                                <input type="text" id="BitacoraVacunacionVacuna" name="BitacoraVacunacionVacuna" readonly value="@Model.BitacoraVacunacionVacuna" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="reproduccion-tab-pane" role="tabpanel" aria-labelledby="reproduccion-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ReproduccionHembras"><strong>Total de hembras:</strong></label>
+                                <input type="number" id="ReproduccionHembras" name="ReproduccionHembras" readonly value="@Model.ReproduccionHembras" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ReproduccionHembrasPalpadas"><strong>Total palpadas:</strong></label>
+                                <input type="number" id="ReproduccionHembrasPalpadas" name="ReproduccionHembrasPalpadas" readonly value="@Model.ReproduccionHembrasPalpadas" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ReproduccionHembrasVacias"><strong>Diagnóstico de gestación (Vacías):</strong></label>
+                                <input type="number" id="ReproduccionHembrasVacias" name="ReproduccionHembrasVacias" readonly value="@Model.ReproduccionHembrasVacias" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ReproduccionHembrasGestantes"><strong>Diagnóstico de gestación (Gestantes):</strong></label>
+                                <input type="number" id="ReproduccionHembrasGestantes" name="ReproduccionHembrasGestantes" readonly value="@Model.ReproduccionHembrasGestantes" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="ReproduccionHembrasEa"><strong>EA:</strong></label>
+                                <input type="number" id="ReproduccionHembrasEa" name="ReproduccionHembrasEa" readonly value="@Model.ReproduccionHembrasEa" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="ReproduccionHembrasIa"><strong>IA:</strong></label>
+                                <input type="number" id="ReproduccionHembrasIa" name="ReproduccionHembrasIa" readonly value="@Model.ReproduccionHembrasIa" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="coproparasitoscopicos-tab-pane" role="tabpanel" aria-labelledby="coproparasitoscopicos-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="CoproMuestras"><strong>No. de muestras colectadas para AC:</strong></label>
+                                <input type="number" id="CoproMuestras" name="CoproMuestras" readonly value="@Model.CoproMuestras" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="CoproGastroPositivos"><strong>Parásitos Gastrointestinales (Animales positivos):</strong></label>
+                                <input type="number" id="CoproGastroPositivos" name="CoproGastroPositivos" readonly value="@Model.CoproGastroPositivos" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="CoproGastroParasitos"><strong>Parásitos Gastrointestinales (Parásitos  identificados):</strong></label>
+                                <input type="number" id="CoproGastroParasitos" name="CoproGastroParasitos" readonly value="@Model.CoproGastroParasitos" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="CoproGastroPositivosCoccidias"><strong>Parásitos Gastrointestinale (Positivos a Coccidias):</strong></label>
+                                <input type="number" id="CoproGastroPositivosCoccidias" name="CoproGastroPositivosCoccidias" readonly value="@Model.CoproGastroPositivosCoccidias" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="CoproPositivosFasciola"><strong>Positivos a Fasciola hepatica:</strong></label>
+                                <input type="number" id="CoproPositivosFasciola" name="CoproPositivosFasciola" readonly value="@Model.CoproPositivosFasciola" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="CoproPositivosVerminosis"><strong>Positivos a Verminosis Pulmonar:</strong></label>
+                                <input type="number" id="CoproPositivosVerminosis" name="CoproPositivosVerminosis" readonly value="@Model.CoproPositivosVerminosis" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="analisisSanguineo-tab-pane" role="tabpanel" aria-labelledby="analisisSanguineo-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-12 col-md-4 form-group">
+                                <label for="SanguineoMuestrasBh"><strong>No. de muestras para BH:</strong></label>
+                                <input type="number" id="SanguineoMuestrasBh" name="SanguineoMuestrasBh" readonly value="@Model.SanguineoMuestrasBh" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-4 form-group">
+                                <label for="SanguineoMuestrasHp"><strong>No. de muestras para HP:</strong></label>
+                                <input type="number" id="SanguineoMuestrasHp" name="SanguineoMuestrasHp" readonly value="@Model.SanguineoMuestrasHp" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-4 form-group">
+                                <label for="SanguineoAnaplasma"><strong>Positivas Anaplasma:</strong></label>
+                                <input type="number" id="SanguineoAnaplasma" name="SanguineoAnaplasma" readonly value="@Model.SanguineoAnaplasma" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="SanguineoBebesia"><strong>Positivas Babesia:</strong></label>
+                                <input type="number" id="SanguineoBebesia" name="SanguineoBebesia" readonly value="@Model.SanguineoBebesia" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-6 form-group">
+                                <label for="SanguineoObservaciones"><strong>Observaciones:</strong></label>
+                                <input type="text" id="SanguineoObservaciones" name="SanguineoObservaciones" readonly value="@Model.SanguineoObservaciones" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="servicios-tab-pane" role="tabpanel" aria-labelledby="servicios-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ServiciosCmt"><strong> No. de CMT:</strong></label>
+                                <input type="number" id="ServiciosCmt" name="ServiciosCmt" readonly value="@Model.ServiciosCmt" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ServicioPdedental"><strong>PDE (Evaluación Dental):</strong></label>
+                                <input type="number" id="ServicioPdedental" name="ServicioPdedental" readonly value="@Model.ServicioPdedental" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ServicioPdelobo"><strong>PDE (Extracción de lobo):</strong></label>
+                                <input type="number" id="ServicioPdelobo" name="ServicioPdelobo" readonly value="@Model.ServicioPdelobo" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ServicioPdelimado"><strong>PDE (Limado):</strong></label>
+                                <input type="number" id="ServicioPdelimado" name="ServicioPdelimado" readonly value="@Model.ServicioPdelimado" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ServicioZooasesoramiento"><strong>Asesoramiento  Zoosanitario (Asesoramiento):</strong></label>
+                                <input type="number" id="ServicioZooasesoramiento" name="ServicioZooasesoramiento" readonly value="@Model.ServicioZooasesoramiento" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ServicioZooconsulta"><strong>Asesoramiento  Zoosanitario (Consulta general):</strong></label>
+                                <input type="number" id="ServicioZooconsulta" name="ServicioZooconsulta" readonly value="@Model.ServicioZooconsulta" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ServicioZoodesparasitación"><strong>Asesoramiento  Zoosanitario (Desparasitación):</strong></label>
+                                <input type="number" id="ServicioZoodesparasitación" name="ServicioZoodesparasitación" readonly value="@Model.ServicioZoodesparasitación" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ServicioZoovacunación"><strong>Asesoramiento  Zoosanitario (Vacunación):</strong></label>
+                                <input type="number" id="ServicioZoovacunación" name="ServicioZoovacunación" readonly value="@Model.ServicioZoovacunación" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="ServicioZoootro"><strong>Asesoramiento  Zoosanitario (Otro):</strong></label>
+                                <input type="text" id="ServicioZoootro" name="ServicioZoootro" readonly value="@Model.ServicioZoootro" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tratamiento-tab-pane" role="tabpanel" aria-labelledby="tratamiento-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-12 col-md-3 form-group">
+                                <label for="TrataminetoRocomndado"><strong>Tratamiento recomendado:</strong></label>
+                                <input type="text" id="TrataminetoRocomndado" name="TrataminetoRocomndado" readonly value="@Model.TrataminetoRocomndado" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                    <div class="me-md-2">
+                        <a id="btnRegresarListaReportes" href="@Url.Action("bitacoraElectronicaInicio", "Seguimiento", new { id = @ViewBag.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-tasks me-3" aria-hidden="true"></i>Regresar a la lista de visitas
+                        </a>
+                    </div>
+                    <div class="mt-2 mt-md-0">
+                        <button type="submit" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-trash me-3" aria-hidden="true"></i>Eliminar visita
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+
+</script>
