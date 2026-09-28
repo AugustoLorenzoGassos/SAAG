@@ -22,58 +22,58 @@
         <div class="carousel-inner rounded" style="overflow: hidden;">
             <!-- 0. Configuración del sistema -->
             <div class="carousel-item active position-relative">
-                <img src="~/catalogos.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
-                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" style="background: rgba(0, 0, 0, 0.2);">
-                    <h3 class="fw-bold text-white">Configuración del sistema</h3>
-                    <p class="text-white">Administración de usuarios, permisos y actualización de catálogos de uso general</p>
+                <img src="~/catalogos.png" class="d-block w-100" @*style="filter: blur(4px) brightness(0.7); transform: scale(1.05);"*@>
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" @*style="background: rgba(0, 0, 0, 0.2);"*@>
+                    @*<h3 class="fw-bold text-white">Configuración del sistema</h3>
+                    <p class="text-white">Administración de usuarios, permisos y actualización de catálogos de uso general</p>*@
                     @if (rolUsuario == "A")
                     {
-                        <a href="#" class="btn btn-dark border-dark">Ingresar</a>
+                        <a href="#" class="btn btn-dark border-dark mt-2">Ingresar</a>
                     }
                 </div>
             </div>
             <!-- 1. Padrones de beneficiarios -->
             <div class="carousel-item position-relative">
-                <img src="~/padrones.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
-                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" style="background: rgba(0, 0, 0, 0.2);">
-                    <h3 class="fw-bold text-white">Padrones de beneficiarios</h3>
+                <img src="~/padrones.png" class="d-block w-100" @*style="filter: blur(4px) brightness(0.7); transform: scale(1.05);"*@>
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" @*style="background: rgba(0, 0, 0, 0.2);"*@>
+                    @*<h3 class="fw-bold text-white">Padrones de beneficiarios</h3>
                     <p class="text-white">Consulta de la información de los padrones de beneficiarios y su ubicación geográfica</p>
                     <ul class="w-75 text-start text-white mx-auto">
                         <li>Apicultura</li>
                         <li>Proyecto Desarrollo de la Acuacultura Sustentable Veracruzana</li>
                         <li>Impulso y Fomento a la Producción de Aves de Postura de Traspatio</li>
                         <li>Fortalecimiento a la Producción Lechera y Mejoramiento Genético en Bovinos con Tecnología Reporductiva</li>
-                    </ul>
-                    <a href="@Url.Action("padronesBeneficiariosInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
+                    </ul>*@
+                    <a href="@Url.Action("padronesBeneficiariosInicio", "Seguimiento")" class="btn btn-dark border-dark mt-3">Ingresar</a>
                 </div>
             </div>
             <!-- 2. Regisro de UPP -->
             <div class="carousel-item position-relative">
-                <img src="~/UPP.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
-                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" style="background: rgba(0, 0, 0, 0.2);">
-                    <h3 class="fw-bold text-white">Unidades de Producción Pecuaria</h3>
-                    <p class="text-white">Registro de información de las Unidades de Producción Pecuaria (UPP)</p>
+                <img src="~/UPP.png" class="d-block w-100" @*style="filter: blur(4px) brightness(0.7); transform: scale(1.05);"*@>
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" @*style="background: rgba(0, 0, 0, 0.2);"*@>
+                    @*<h3 class="fw-bold text-white">Unidades de Producción Pecuaria</h3>
+                    <p class="text-white">Registro de información de las Unidades de Producción Pecuaria (UPP)</p>*@
                     <a href="@Url.Action("UPPInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
                 </div>
             </div>
             <!-- 3. Laboratorio Móvil -->
             <div class="carousel-item position-relative">
-                <img src="~/laboratorioMovil.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
-                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" style="background: rgba(0, 0, 0, 0.2);">
-                    <h3 class="fw-bold text-white">Laboratorio móvil</h3>
-                    <p class="text-white">Registro de las acciones realizadas por los laboratorios móviles.</p>
+                <img src="~/laboratorioMovil.png" class="d-block w-100" @*style="filter: blur(4px) brightness(0.7); transform: scale(1.05);"*@>
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" @*style="background: rgba(0, 0, 0, 0.2);"*@>
+                    @*<h3 class="fw-bold text-white">Laboratorio móvil</h3>
+                    <p class="text-white">Registro de las acciones realizadas por los laboratorios móviles.</p>*@
                     <a href="@Url.Action("RegistrosMensualInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
                 </div>
             </div>
             <!-- 4. Movilización de ganado -->
             <div class="carousel-item position-relative">
-                <img src="~/ganado.png" class="d-block w-100" style="filter: blur(4px) brightness(0.7); transform: scale(1.05);">
-                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100 px-5" style="background: rgba(0, 0, 0, 0.2);">
-                    <h3 class="fw-bold text-white">Movilización de ganado</h3>
+                <img src="~/movilizacion.png" class="d-block w-100" @*style="filter: blur(4px) brightness(0.7); transform: scale(1.05);"*@>
+                <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100 px-5" @*style="background: rgba(0, 0, 0, 0.2);"*@>
+                    @*<h3 class="fw-bold text-white">Movilización de ganado</h3>
                     <p class="text-white">Registro de las acciones realizadas para la movilizacíón de ganado.</p>
                     <ul class="w-75 text-start text-white mx-auto">
                         <li>Permisos de internación</li>
-                    </ul>
+                    </ul>*@
                     <a href="@Url.Action("movilizacionGanadoInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
                 </div>
             </div>

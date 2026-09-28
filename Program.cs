@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Seguimiento.Models;
+using System.Diagnostics;
+using System.Net.Sockets;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -17,6 +19,11 @@ builder.Services.AddSession(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<SedarpaContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddHttpContextAccessor(); // Agregar el servicio IHttpContextAccessor
+
+builder.Services.AddHttpClient("PythonApi", client =>
+{
+    client.BaseAddress = new Uri("http://127.0.0.1:8000/");
+});
 
 var app = builder.Build();
 
@@ -41,3 +48,17 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.Run();
+
+// Método para verificar si el servidor de Python está activo
+static bool IsPortInUse(int port)
+{
+    try
+    {
+        using var client = new TcpClient("127.0.0.1", port);
+        return true;
+    }
+    catch
+    {
+        return false;
+    }
+}

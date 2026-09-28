@@ -2,25 +2,29 @@
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Validation;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.SqlServer.Server;
 using Microsoft.Win32;
 using Seguimiento.Models;
 using Seguimiento.Models.DTOs;
 using System.ClientModel.Primitives;
 using System.IO;
+using System.Linq;
+using System.Net.Http.Json;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace Seguimiento.Controllers
 {
@@ -30,12 +34,15 @@ namespace Seguimiento.Controllers
     {
         //Variable privada para el contexto de la base de datos
         private readonly SedarpaContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
+        
         //Variable global para obtener el nombre de los meses
         private static readonly List<string> Meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio","Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         // Inyección de dependencias del DbContext
-        public SeguimientoController(SedarpaContext context)
+        public SeguimientoController(SedarpaContext context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
         //Valida que el registro con el Id enviado exista
         private bool TblRegistroMensualExists(int id)
@@ -260,8 +267,9 @@ namespace Seguimiento.Controllers
 
         //**********Regresa la información de los padrones de beneficiarios en formato JSON para el mapa
         [HttpGet]
-        public async Task<IActionResult> padronesBeneficiariosPuntos(short? anioReporte, string? nombre, short? region, string? municipio, string? localidad, string? padron)
+        public async Task<IActionResult> padronesBeneficiariosPuntos(short? anioReporte, string? nombre, short? region, string? municipio, string? localidad, [FromQuery] List<string>? padron)
         {
+            
             var query = _context.VistaPadronBeneficiariosUbicacions
                 .AsQueryable();
             if (anioReporte.HasValue && anioReporte > 0)
@@ -284,10 +292,11 @@ namespace Seguimiento.Controllers
             {
                 query = query.Where(r => r.CveLocalidad == localidad);
             }
-            if (!string.IsNullOrEmpty(padron))
+            if (padron != null && padron.Any())
             {
-                query = query.Where(r => r.IdProyecto == padron);
+                query = query.Where(r => padron.Contains(r.IdProyecto));
             }
+            
             //Aplica los criterios y regresa la información en JSon
             var resultado = await query.Select(p => new
             {
@@ -299,16 +308,6 @@ namespace Seguimiento.Controllers
             })
             .ToListAsync();
             return Json(resultado);
-            /*var listaPuntos = _context.VistaPadronBeneficiariosUbicacions
-                .Select(p => new
-                {
-                    p.Latitud,
-                    p.Longitud,
-                    p.IdProyecto,
-                    p.NombreProyecto,
-                    p.NombreBeneficiarios
-                })
-                .ToList();*/
         }
 
         //**********Padrón de beneficirios para Apicultura
@@ -1600,5 +1599,107 @@ namespace Seguimiento.Controllers
         }
 
         //**********Fin de api's para el´módulo de movilización de ganbado
+
+        //**********API's para el módulo de estadisticas
+        //Regresa los datos de la gráfica en formato JSON para que puedan ser consumidos por el frontend
+        [HttpGet]
+        public async Task<IActionResult> PadronesBeneficiariosEstadisticas([FromQuery] string[] proyectos)
+        {
+            try
+            {
+
+                // Construir la URL con parámetros de consulta (?proyectos=A&proyectos=B&municipios=X)
+                var queryParams = new List<string>();
+                var client = _httpClientFactory.CreateClient("PythonApi");
+
+                if (proyectos != null)
+                    queryParams.AddRange(proyectos.Select(p => $"proyectos={Uri.EscapeDataString(p)}"));
+
+                string queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
+                string endpoint = $"api/estadisticas/beneficiarios-por-programa-filtro{queryString}";
+
+                var response = await client.GetFromJsonAsync<EstadisticasProgramaDto>(endpoint);
+                return Json(response);
+
+                //var client = _httpClientFactory.CreateClient("PythonApi");
+                //var response = await client.GetFromJsonAsync<EstadisticasProgramaDto>("api/estadisticas/beneficiarios-por-programa");
+
+                //return Json(response); // Devuelve los datos en formato JSON directo
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    mensaje = "Error al conectar con la API de Python",
+                    detalle = ex.Message,
+                    inner = ex.InnerException?.Message
+                });
+            }
+        }
+
+        public async Task<IActionResult> PadronesBeneficiariosApicultura5mas()
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("PythonApi");
+                var response = await client.GetFromJsonAsync<EstadisticasProgramaDto>("api/estadisticas/beneficiarios-apicultura-5mas");
+
+                return Json(response); // Devuelve los datos en formato JSON directo
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
+        public async Task<IActionResult> PadronesBeneficiariosAves5mas()
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("PythonApi");
+                var response = await client.GetFromJsonAsync<EstadisticasProgramaDto>("api/estadisticas/beneficiarios-aves-5mas");
+
+                return Json(response); // Devuelve los datos en formato JSON directo
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
+        public async Task<IActionResult> PadronesBeneficiariosAcuacultura5mas()
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("PythonApi");
+                var response = await client.GetFromJsonAsync<EstadisticasProgramaDto>("api/estadisticas/beneficiarios-acuacultura-5mas");
+
+                return Json(response); // Devuelve los datos en formato JSON directo
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+        
+        public async Task<IActionResult> PadronesBeneficiariosInseminacion5mas()
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("PythonApi");
+                var response = await client.GetFromJsonAsync<EstadisticasProgramaDto>("api/estadisticas/beneficiarios-inseminacion-5mas");
+
+                return Json(response); // Devuelve los datos en formato JSON directo
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+
+        }
+
     }
 }

@@ -2,6 +2,7 @@
     ViewData["Title"] = "Padrones de beneficiarios";
 }
 
+<!-- Modal para mostrar detalles de un beneficiario -->
 <div class="modal" id="modalRegistro" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -40,6 +41,23 @@
     </div>
 </div>
 
+<!-- Modal para grafica y estadísticas -->
+<div class="modal fade" id="modalGrafica" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Estadísticas de Beneficiarios</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div style="position: relative; height:350px;">
+                    <canvas id="chartModal"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container-fluid">
     <div class="row">
         <!-- Columna de la Izquierda: Menú Navegación -->
@@ -65,7 +83,10 @@
                         <a id="btnInseminacion" class="nav-link border-bottom p-2" data-seccion="sec-inseminacion" href="#" onclick="mostrarSeccion(event,'sec-inseminacion')">Fortalecimiento a la Producción Lechera y Mejoramiento Genético en Bovinos con Tecnología Reporductiva</a>
                     </li>
                     <li class="nav-item">
-                        <a id="btnMapas" class="nav-link p-2" data-seccion="sec-mapas" href="#" onclick="mostrarSeccion(event,'sec-mapas')">Ver mapas de ubicación geográfica</a>
+                        <a id="btnMapas" class="nav-link border-bottom  p-2" data-seccion="sec-mapas" href="#" onclick="mostrarSeccion(event,'sec-mapas')">Ver mapas de ubicación geográfica</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="btnEstadisticas" class="nav-link p-2" data-seccion="sec-estadisticas" href="#" onclick="mostrarSeccion(event,'sec-estadisticas')">Ver Estadísticas</a>
                     </li>
                 </ul>
             </div>
@@ -73,7 +94,22 @@
 
         <!-- Columna de la Derecha: Contenido Principal -->
         <main class="col-12 col-md-9 col-lg-10 p-4">
+
             <!--Filtros de información-->
+
+            <div id="divFiltrosMapa" class="row mb-3">
+                <div class="col-12">
+                    <label for="cmbPadron" class="form-label">Padrón:</label>
+                    <select id="cmbPadron" class="form-select" multiple>
+                        <option value="0000">Selecciona un padrón...</option>
+                        <option value="AC">Apicultura</option>
+                        <option value="DASV">Proyecto Desarrollo de la Acuacultura Sustentable Veracruzana</option>
+                        <option value="IATF">Fortalecimiento a la Producción Lechera y Mejoramiento Genético en Bovinos con Tecnología Reporductiva</option>
+                        <option value="IFPAPTEV">Impulso y Fomento a la Producción de Aves de Postura de Traspatio en la Entidad Veracruzana</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-12 col-md-3">
                     <label for="cmbRegion" class="form-label">Región:</label>
@@ -104,6 +140,7 @@
                     <input type="text" class="form-control" id="txtNombre" />
                 </div>
             </div>
+
             <!-- Sección de padrones -->
             <div id="divPadrones" class="d-none">
                 <!--Secciones pará presentar-->
@@ -164,38 +201,9 @@
                     </div>
                 </div>
             </div>
+
             <!-- Sección de mapas -->
             <div id="divPadronesMapa" class="d-none">
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <label for="cmbPadron" class="form-label">Padrón:</label>
-                        <select id="cmbPadron" class="form-select">
-                            <option value="0000">Selecciona un padrón...</option>
-                            <option value="AC">Apicultura</option>
-                            <option value="DASV">Proyecto Desarrollo de la Acuacultura Sustentable Veracruzana</option>
-                            <option value="IATF">Fortalecimiento a la Producción Lechera y Mejoramiento Genético en Bovinos con Tecnología Reporductiva</option>
-                            <option value="IFPAPTEV">Impulso y Fomento a la Producción de Aves de Postura de Traspatio en la Entidad Veracruzana</option>
-                        </select>
-                    </div>
-                    <!--<div class="col-12 col-md-3">
-                        <label for="cmbRegionMapa" class="form-label">Región:</label>
-                        <select id="cmbRegionMapa" class="form-select">
-                            <option value="00">Selecciona una región...</option>
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <label for="cmbMunicipioMapa" class="form-label">Municipio:</label>
-                        <select id="cmbMunicipioMapa" class="form-select">
-                            <option value="000">Selecciona un municipio...</option>
-                        </select>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <label for="cmbLocalidadMapa" class="form-label">Localidad:</label>
-                        <select id="cmbLocalidadMapa" class="form-select">
-                            <option value="0000">Selecciona una localidad...</option>
-                        </select>
-                    </div>-->
-                </div>
                 <div class="card">
                     <div class="card-header bg-secondary bg-gradient text-white">
                         <h4 class="m-0">Mapas de distribución geográfica de beneficiarios</h4>
@@ -208,11 +216,72 @@
                         </div>
                         <div id="mapa" style="height: 800px; width: 100%;"></div>
                     </div>
-                    @*<div class="card-footer">
-                    </div>*@
+                    <div class="card-footer">
+                        <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                            <div class="me-md-2">
+                                <button type="button" id="btnFiltrarMapa" class="btn btn-light w-100 w-md-auto">
+                                    <!-- Botón para filtrar registros -->
+                                    <i class="fa fa-search me-1" aria-hidden="true"></i> Filtrar mapa
+                                </button>
+                            </div>
+                        </div>
+                        @*<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGrafica" onclick="cargarGrafica();">
+                            <i class="fa fa-bar-chart me-2" aria-hidden="true"></i>Ver gráficas
+                        </button>*@
+                    </div>
                 </div>
-
             </div>
+
+            <!-- Sección de estadísticas -->
+            <div id="divEstadisticas" class="d-none">
+                <div class="card mt-2">
+                    <div class="card-header bg-secondary bg-gradient text-white">
+                        <h4 class="m-0">Generación de Estadísticas</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label for="cmbEstadisticas">Estadísticas precargadas:</label>
+                                <select id="cmbEstadisticas" class="form-select w-100">
+                                    <option value=0>...</option>
+                                    <option value=1>Concentrado estatal de beneficarios por programa</option>
+                                    <option value=2>Apicultura: 5 municipios con más beneficiarios</option>
+                                    <option value=3>Aves de postura: 5 municipios con más beneficiarios</option>
+                                    <option value=4>Acuacultura: 5 municipios con más beneficiarios</option>
+                                    <option value=5>Inseminación: 5 municipios con más beneficiarios</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <p>Tipo de gráfica</p>
+                                <input type="radio" id="graficaBarra" name="tipoGrafica" class="p-1 me-2" value="bar" checked="checked"/>Barras
+                                <input type="radio" id="graficaPastel" name="tipoGrafica" class="p-1 me-2" value="pie"/>Pastel
+                                <input type="radio" id="graficaDona" name="tipoGrafica" class="p-1 me-2" value="doughnut"/>Dona
+                            </div>
+                        </div>
+                        <div id="canvasGraficas" class="mt-2" style="position: relative; height:380px;">
+                            <canvas id="dashboardChart"></canvas>
+                        </div>
+                        <div id="divTablaEstadisticas" class="mt-2">
+                            <table id="tblEstadisticas" class="table-responsive w-100">
+                                <thead id="tblEstadisticasHead" class="bg-dark text-white text-center"></thead>
+                                <tbody id="tblEstadisticasBody" class="text-center"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <!-- Botones de acción en flex responsivo -->
+                        <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                            <div class="me-md-2">
+                                <button type="button" id="btnFiltrarEstadistica" class="btn btn-light w-100 w-md-auto">
+                                    <!-- Botón para filtrar registros -->
+                                    <i class="fa fa-search me-1" aria-hidden="true"></i> Filtrar estadística
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 </div>
@@ -224,7 +293,8 @@
     var marcadoresGroup = null;
 
     let urlDescargaActual = '/Seguimiento/padronesBeneficiariosApiculturaDescarga';
-
+    let chartInstance = null;
+    
     document.addEventListener("DOMContentLoaded", function () 
     {
         const txtAño = document.getElementById("txtAño");
@@ -254,36 +324,53 @@
         if (event && event.currentTarget) {
             event.currentTarget.classList.add('active');
         }
-        // Ejecutar la carga de la tabla principal sin alterar el modal
+        // Ejecutar la carga 'de' la tabla principal sin alterar el modal
         switch (idSeccion) {
             case 'sec-apicultura':
+                document.getElementById("divFiltrosMapa").classList.add('d-none');
                 document.getElementById("divPadrones").classList.remove('d-none');
                 document.getElementById("divPadronesMapa").classList.add('d-none');
+                document.getElementById("divEstadisticas").classList.add('d-none');
                 cargarTablaApiCultura();
                 urlDescargaActual = '/Seguimiento/padronesBeneficiariosApiculturaDescarga';
                 break;
             case 'sec-Acuacultura':
+                document.getElementById("divFiltrosMapa").classList.add('d-none');
                 document.getElementById("divPadrones").classList.remove('d-none');
                 document.getElementById("divPadronesMapa").classList.add('d-none');
+                document.getElementById("divEstadisticas").classList.add('d-none');
                 cargarTablaAcuacultura();
                 urlDescargaActual = '/Seguimiento/padronesBeneficiariosAcuaculturaDescarga';
                 break;
             case 'sec-aves':
+                document.getElementById("divFiltrosMapa").classList.add('d-none');
                 document.getElementById("divPadrones").classList.remove('d-none');
                 document.getElementById("divPadronesMapa").classList.add('d-none');
+                document.getElementById("divEstadisticas").classList.add('d-none');
                 cargarTablaAves();
                 urlDescargaActual = '/Seguimiento/padronesBeneficiariosAvesDescarga';
                 break;
             case 'sec-inseminacion':
+                document.getElementById("divFiltrosMapa").classList.add('d-none');
                 document.getElementById("divPadrones").classList.remove('d-none');
                 document.getElementById("divPadronesMapa").classList.add('d-none');
+                document.getElementById("divEstadisticas").classList.add('d-none');
                 cargarTablaInseminacion();
                 urlDescargaActual = '/Seguimiento/padronesBeneficiariosIATFDescargar';
                 break;
             case 'sec-mapas':
-                document.getElementById("divPadronesMapa").classList.remove('d-none');
+                document.getElementById("divFiltrosMapa").classList.remove('d-none');
                 document.getElementById("divPadrones").classList.add('d-none');
+                document.getElementById("divPadronesMapa").classList.remove('d-none');
+                document.getElementById("divEstadisticas").classList.add('d-none');
                 cargarPadronesMapa();
+                break;
+            case 'sec-estadisticas':
+                document.getElementById("divFiltrosMapa").classList.remove('d-none');
+                document.getElementById("divPadronesMapa").classList.add('d-none');
+                document.getElementById("divPadrones").classList.add('d-none');
+                document.getElementById("divEstadisticas").classList.remove('d-none');
+                cargarGrafica(1,'bar');
                 break;
         }
     }
@@ -335,6 +422,16 @@
                 console.warn('No se detectó ninguna sección activa válida.');
                 break;
         }
+    });
+
+    document.getElementById('btnFiltrarMapa')?.addEventListener('click', function (e) {
+        e.preventDefault();
+        cargarPadronesMapa();
+    });
+
+    document.getElementById('btnFiltrarEstadistica')?.addEventListener('click', function (e) {
+        e.preventDefault();
+        cargarGrafica(document.getElementById('cmbEstadisticas').value);
     });
 
     document.addEventListener('click', function (e) {
@@ -494,13 +591,16 @@
 
     async function obtenerPuntosPadrones() 
     {
+        
         //Generar parámetros de búsqueda según los filtros seleccionados
         const anioReporte = document.getElementById('txtAño').value;
         const nombre = document.getElementById('txtNombre').value;
         const region = document.getElementById('cmbRegion').value;
         const municipio = document.getElementById('cmbMunicipio').value;
         const localidad = document.getElementById('cmbLocalidad').value;
-        const padron = document.getElementById('cmbPadron').value;
+        //const padron = document.getElementById('cmbPadron').value;
+        const proyectosSel = Array.from(document.getElementById('cmbPadron').selectedOptions).map(o => o.value);
+
         //Agregar los valores a la URL de la petición
         const params = new URLSearchParams();
         if (anioReporte) params.append('anioReporte', anioReporte);
@@ -508,8 +608,11 @@
         if (region && region !== "00") params.append('region', region);
         if (municipio && municipio !== "000") params.append('municipio', municipio);
         if (localidad && localidad !== "0000") params.append('localidad', localidad);
-        if (padron && padron !== "0000") params.append('padron', padron);
-        alert(params.toString());
+        //if (padron && padron !== "0000") params.append('padron', padron);
+        if (proyectosSel.length > 0) {
+            proyectosSel.forEach(proyecto => params.append('padron', proyecto));
+        }
+
         await fetch('/Seguimiento/padronesBeneficiariosPuntos?' + params.toString())
         //fetch('/Seguimiento/padronesBeneficiariosPuntos')
             .then(response => {
@@ -577,6 +680,103 @@
             iconAnchor: [12, 41],
             popupAnchor: [1, -34]
         });
+    }
+
+    function cargarGrafica(PGrafica){
+        //Variables que se usan para definir la gráfica a presentar y obtener los datos
+        let opcion = parseInt(PGrafica, 10);
+        let urlEstadistica = '';
+        let labelGrafica = '';
+
+        //Genera la variable de los parfámetros
+        const params = new URLSearchParams();
+        const proyectosSel = Array.from(document.getElementById('cmbPadron').selectedOptions).map(o => o.value);
+        const proyectosFiltrados = proyectosSel.filter(p => p !== '0000' && p !== '' && p !== '0');
+        if (proyectosFiltrados.length > 0) {
+            proyectosFiltrados.forEach(p => params.append('proyectos', p));
+        }
+        //Genera la url dependienndo de la olpción que se seleccionó en el combo
+        switch (opcion) {
+            case 1:
+                urlEstadistica = '/Seguimiento/PadronesBeneficiariosEstadisticas?' + params.toString();
+                labelGrafica = 'Beneficiarios por Programa';
+                break;
+            case 2:
+                urlEstadistica = '/Seguimiento/PadronesBeneficiariosApicultura5mas';
+                labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
+                break;
+            case 3:
+                urlEstadistica = '/Seguimiento/PadronesBeneficiariosAves5mas';
+                labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
+                break;
+            case 4:
+                urlEstadistica = '/Seguimiento/PadronesBeneficiariosAcuacultura5mas';
+                labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
+                break;
+            case 5:
+                urlEstadistica = '/Seguimiento/PadronesBeneficiariosInseminacion5mas';
+                labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
+                break;
+        }
+        //Presenta las gráficas
+        const valorSeleccionado = document.querySelector('input[name="tipoGrafica"]:checked')?.value || 'bar';
+        mostrarGrafica(urlEstadistica,valorSeleccionado, labelGrafica);
+    }
+
+    async function mostrarGrafica(PUrl, PGrafica, PLabel) { 
+        try {
+            const response = await fetch(PUrl);
+            const data = await response.json();
+            const ctx = document.getElementById('dashboardChart').getContext('2d');
+            // Destruir la instancia previa si ya existía para evitar encimados
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            //Palate de colores en  caso de pastel o donas
+            const paletaColores = [
+                '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+                '#858796', '#5a5c69', '#f8f9fc', '#4e73df', '#1cc88a'
+            ];
+            //Asigna paleta de colores en caso de que sea una barra de pastel o de donas
+            const bgColors = (PGrafica === 'pie' || PGrafica === 'doughnut')
+                ? paletaColores.slice(0, data.values.length)
+                : '#6c757d';
+            //Dibuja la gráfica
+            chartInstance = new Chart(ctx, {
+                type: PGrafica,
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: PLabel,
+                        data: data.values,
+                        backgroundColor: bgColors,
+                        borderColor: '#ffffff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            //Mostrar la tabla con los valores
+            const thead = document.getElementById('tblEstadisticasHead');
+            const tbody = document.getElementById('tblEstadisticasBody');
+            //Encabezado
+            var cadenaHead = "";
+            data.labels.forEach((label, index) => {
+                cadenaHead = cadenaHead + `<th class="p-2">${label}</th>`
+            });
+            thead.innerHTML = `<tr>${cadenaHead}</tr>`;
+            //Datos
+            var cadenaBody = "";
+            data.values.forEach((valor, index) => {
+                cadenaBody = cadenaBody + `<td class="p-2">${valor}</td>`
+            });
+            tbody.innerHTML = `<tr>${cadenaBody}</tr>`;
+        } catch (error) {
+            console.error("Error al cargar gráfica:", error);
+        }
     }
 
 </script>
