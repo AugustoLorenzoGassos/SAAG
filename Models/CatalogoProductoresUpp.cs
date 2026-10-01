@@ -51,6 +51,8 @@ public partial class CatalogoProductoresUpp
 
     public virtual CatalogoProductore? IdProductorNavigation { get; set; }
 
+    public virtual ICollection<ProduccionUpp> ProduccionUpps { get; set; } = new List<ProduccionUpp>();
+
     public virtual ICollection<SolicitudInternacion> SolicitudInternacions { get; set; } = new List<SolicitudInternacion>();
 
     public virtual ICollection<TblBitacoraElectronica> TblBitacoraElectronicas { get; set; } = new List<TblBitacoraElectronica>();

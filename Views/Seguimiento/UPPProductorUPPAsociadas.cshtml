@@ -34,10 +34,13 @@
                                     <td>@detalle.CatalogoLocalidade.NombreLocalidad</td>
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
-                                            <button type="button" class="btn" onclick="editarUPP(@detalle.IdProductorUpp);" title="Editar acción de seguimiento">
+                                            <button type="button" class="btn" title="Ver visitas" onclick="mostrarVisitasUPP(@detalle.IdProductorUpp);" title="Editar acción de seguimiento">
+                                                <i class="fa fa-tasks"></i>
+                                            </button>
+                                            <button type="button" class="btn" title="Editar UPP" onclick="editarUPP(@detalle.IdProductorUpp);" title="Editar acción de seguimiento">
                                                 <i class="fa fa-pencil"></i>
                                             </button>
-                                            <button type="button" class="btn" onclick="eliminarUPP(@detalle.IdProductorUpp);" title="Eliminar acción">
+                                            <button type="button" class="btn" title="Eliminar UPP" onclick="eliminarUPP(@detalle.IdProductorUpp);" title="Eliminar acción">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </div>
@@ -76,6 +79,11 @@
 </div>
 
 <script>
+
+    function mostrarVisitasUPP(id){
+        const url = `@Url.Action("UPPProductorUPPAsociadaVisitas", "Seguimiento")?id=${id}`;
+        window.location.href = url;
+    }
 
     function editarUPP(id)
     {

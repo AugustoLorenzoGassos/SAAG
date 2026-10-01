@@ -1036,7 +1036,61 @@ namespace Seguimiento.Controllers
                 return View(modelo);
             }
         }
+        //Regresa el registro de visitas a una UPP
+        public async Task<IActionResult> UPPProductorUPPAsociadaVisitas(int id) {
+
+            var registro = await _context.ProduccionUpps
+                .Include(p => p.IdProductorUppNavigation)
+                    .ThenInclude(up => up.IdProductorNavigation)
+                .Include(p => p.IdProductorUppNavigation)
+                    .ThenInclude(l => l.CatalogoLocalidade)
+                        .ThenInclude(loc => loc.ClaveMunicipioNavigation)
+                .Include(u => u.IdUsuarioNavigation)
+                .Where(p => p.IdProductorUpp == id)
+                .ToListAsync();
+            var idUsuarioSesion = HttpContext.Session.GetString("IdUsuario");
+            ViewBag.IdProductorUpp = id;
+            return View(registro);
+
+        }
+        //Regresa la información de una visita en paericular a través del id
+        public async Task<IActionResult> UPPProductorUPPAsociadaVisitasDetalle(int id) {
+            var registro =  _context.ProduccionUpps
+                .Include(p => p.IdProductorUppNavigation)
+                    .ThenInclude(up => up.IdProductorNavigation)
+                .Include(p => p.IdProductorUppNavigation)
+                    .ThenInclude(l => l.CatalogoLocalidade)
+                        .ThenInclude(loc => loc.ClaveMunicipioNavigation)
+                .Include(u => u.IdUsuarioNavigation)
+                .FirstOrDefault(x => x.IdRegistroProduccion == id);
+            return View(registro);
+        }
+        //Genera la vista para agregar juna visita a la UPP
+        public ActionResult UPPProductorUPPAsociadaVisitasAgregar(int id) {
+
+            ProduccionUpp datosVisita = new ProduccionUpp();
+            datosVisita.FechaCaptura = DateTime.Now;
+            datosVisita.IdUsuario = HttpContext.Session.GetString("IdUsuario");
+            datosVisita.IdProductorUpp = id;
+            datosVisita.IdEtapaRegistro = 1;
+
+            ViewBag.claveUPP = _context.CatalogoProductoresUpps.Find(id).ClaveUpp;
+            ViewBag.Productor = _context.CatalogoProductoresUpps.Find(id).IdProductorNavigation.NombreProductor + " " + _context.CatalogoProductoresUpps.Find(id).IdProductorNavigation.ApellidoPaternoProductor + " " + _context.CatalogoProductoresUpps.Find(id).IdProductorNavigation.ApellidoMaternoProductor;
+            ViewBag.Municipio = _context.CatalogoProductoresUpps.Find(id).CatalogoLocalidade.ClaveMunicipioNavigation.NombreMunicipio;
+            ViewBag.Localidad = _context.CatalogoProductoresUpps.Find(id).CatalogoLocalidade.NombreLocalidad;
+
+            return View(datosVisita);
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UPPProductorUPPAsociadaVisitasAgregar([FromForm] ProduccionUpp modelo) 
+        {
+
+            return RedirectToAction("UPPProductorUPPAsociadaVisitas", "Seguimiento", new { id = modelo.IdProductorUpp });
+        }
         //**********Fin de API's para el registro de UPP
+
         //**********API's para mostra la lista de los registros mensuales y el filtro de información
         public async Task<IActionResult> RegistrosMensualInicio() 
         { 
@@ -1603,7 +1657,7 @@ namespace Seguimiento.Controllers
         //**********API's para el módulo de estadisticas
         //Regresa los datos de la gráfica en formato JSON para que puedan ser consumidos por el frontend
         [HttpGet]
-        public async Task<IActionResult> PadronesBeneficiariosEstadisticas([FromQuery] string[] proyectos)
+        public async Task<IActionResult> PadronesBeneficiariosEstadisticas([FromQuery] string[] proyectos, int municipio)
         {
             try
             {
@@ -1614,6 +1668,8 @@ namespace Seguimiento.Controllers
 
                 if (proyectos != null)
                     queryParams.AddRange(proyectos.Select(p => $"proyectos={Uri.EscapeDataString(p)}"));
+                if (municipio > 0)
+                    queryParams.Add($"municipio={municipio}");
 
                 string queryString = queryParams.Count > 0 ? "?" + string.Join("&", queryParams) : "";
                 string endpoint = $"api/estadisticas/beneficiarios-por-programa-filtro{queryString}";

@@ -1,0 +1,98 @@
+﻿@model Seguimiento.Models.ProduccionUpp
+
+@{
+    ViewData["Title"] = "Registro de productores - Visitas UPP - Detalle";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-secondary bg-gradient text-white">
+            <h4 class="m-0">Registro de productores - Visitas UPP- Detalles</h4>
+        </div>
+        <div class="card-body">
+            <h6 class="alert alert-secondary my-2 text-center p-2 w-100">Datos de la visita</h6>
+            <div class="row">
+                <div class="col col-md-3">
+                    Fecha de la visita:<br />@Model.FechaRegistro
+                </div>
+                <div class="col col-md-3">
+                    Registrado por:<br />@Model.IdUsuarioNavigation?.NombreUsuario
+                </div>
+                <div class="col col-md-3">
+                    Productor:<br />@Model.IdProductorUppNavigation?.IdProductorNavigation?.NombreProductor @Model.IdProductorUppNavigation?.IdProductorNavigation?.ApellidoPaternoProductor @Model.IdProductorUppNavigation?.IdProductorNavigation?.ApellidoMaternoProductor
+                </div>
+                <div class="col col-md-3">
+                    Municipio - Localidad:<br />@Model.IdProductorUppNavigation?.CatalogoLocalidade?.ClaveMunicipioNavigation.NombreMunicipio - @Model.IdProductorUppNavigation?.CatalogoLocalidade?.NombreLocalidad
+                </div>
+            </div>
+            <h6 class="alert alert-secondary my-2 text-center p-2 w-100">Datos recopoilados durante la visita</h6>
+            <div class="row">
+                <div class="col col-md-3">
+                    Vientres:<br />@Model.Vientres
+                </div>
+                <div class="col col-md-3">
+                    Semental:<br />@Model.Semental
+                </div>
+                <div class="col col-md-3">
+                    Vaquillas 12 a 24 meses:<br />@Model.Vaquillas1214
+                </div>
+                <div class="col col-md-3">
+                    Novillos-Toreres >12 meses:<br />@Model.NovillosToretes12
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-3">
+                    Crias hembras (8 a 12 meses):<br />@Model.CriasHembras812
+                </div>
+                <div class="col col-md-3">
+                    Crias machos (8 a 12 meses):<br />@Model.CriasMachos812
+                </div>
+                <div class="col col-md-3">
+                    Becerras lactantes (0-8 meses):<br />@Model.BecerrasLactantes08
+                </div>
+                <div class="col col-md-3">
+                    Becerros lactantes (0-8 meses):<br />@Model.BecerrosLactantes08
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-3">
+                    Número de cabezas:<br />@Model.CantidadCabezas
+                </div>
+                <div class="col col-md-3">
+                    Con arete:<br />@Model.CantidadCabezasConArete
+                </div>
+                <div class="col col-md-3">
+                    Sin arete:<br />@Model.CantidadCabezasSinArete
+                </div>
+                <div class="col col-md-3">
+                    Aretes gratuitos:<br />@Model.CantidadCabezasAretesGratuitos
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-md-3">
+                    Aretes pagados por el productor:<br />@Model.CantidadCabezasAretesProductor
+                </div>
+                <div class="col col-md-3">
+                    Raza dominante:<br />@Model.IdRazaNavigation?.DescRaza
+                </div>
+                <div class="col col-md-3">
+                    Producción:<br />@Model.IdUsoRazaNavigation?.DescUsoRaza
+                </div>
+                <div class="col col-md-3">
+                    Observaciones:<br />@Model.Observaciones
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <!-- Botones de acción en flex responsivo -->
+            <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                <div class="me-md-2">
+                    <!-- Acción para regresar a la lista de registros mensuales -->
+                    <a href="@Url.Action("UPPProductorUPPAsociadaVisitas", "Seguimiento", new { id = @Model.IdProductorUpp })" class="btn btn-light w-100 w-md-auto">
+                        <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de visitas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

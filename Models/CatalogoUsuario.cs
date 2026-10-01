@@ -15,6 +15,8 @@ public partial class CatalogoUsuario
 
     public string? StatusUsuario { get; set; }
 
+    public virtual ICollection<ProduccionUpp> ProduccionUpps { get; set; } = new List<ProduccionUpp>();
+
     public virtual ICollection<TblBitacoraElectronica> TblBitacoraElectronicas { get; set; } = new List<TblBitacoraElectronica>();
 
     public virtual ICollection<TblRegistroMensual> TblRegistroMensuals { get; set; } = new List<TblRegistroMensual>();

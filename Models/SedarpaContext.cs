@@ -35,6 +35,8 @@ public partial class SedarpaContext : DbContext
 
     public virtual DbSet<CatalogoProyecto> CatalogoProyectos { get; set; }
 
+    public virtual DbSet<CatalogoRaza> CatalogoRazas { get; set; }
+
     public virtual DbSet<CatalogoRegione> CatalogoRegiones { get; set; }
 
     public virtual DbSet<CatalogoRegionesEstatal> CatalogoRegionesEstatals { get; set; }
@@ -45,6 +47,8 @@ public partial class SedarpaContext : DbContext
 
     public virtual DbSet<CatalogoUnidadMedidum> CatalogoUnidadMedida { get; set; }
 
+    public virtual DbSet<CatalogoUso> CatalogoUsos { get; set; }
+
     public virtual DbSet<CatalogoUsuario> CatalogoUsuarios { get; set; }
 
     public virtual DbSet<PadronBeneficiario> PadronBeneficiarios { get; set; }
@@ -54,6 +58,8 @@ public partial class SedarpaContext : DbContext
     public virtual DbSet<PadronBeneficiariosIatf> PadronBeneficiariosIatfs { get; set; }
 
     public virtual DbSet<PadronBeneficiariosItafapoyo> PadronBeneficiariosItafapoyos { get; set; }
+
+    public virtual DbSet<ProduccionUpp> ProduccionUpps { get; set; }
 
     public virtual DbSet<SolicitudInternacion> SolicitudInternacions { get; set; }
 
@@ -375,6 +381,18 @@ public partial class SedarpaContext : DbContext
                 .HasColumnName("nombreProyectoCorto");
         });
 
+        modelBuilder.Entity<CatalogoRaza>(entity =>
+        {
+            entity.HasKey(e => e.IdRaza);
+
+            entity.ToTable("catalogoRazas");
+
+            entity.Property(e => e.DescRaza)
+                .HasMaxLength(30)
+                .IsUnicode(false)
+                .HasColumnName("descRaza");
+        });
+
         modelBuilder.Entity<CatalogoRegione>(entity =>
         {
             entity.HasKey(e => e.IdRegion);
@@ -435,6 +453,18 @@ public partial class SedarpaContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("descripcionUnidadMedida");
+        });
+
+        modelBuilder.Entity<CatalogoUso>(entity =>
+        {
+            entity.HasKey(e => e.IdUsoRaza);
+
+            entity.ToTable("catalogoUsos");
+
+            entity.Property(e => e.DescUsoRaza)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("descUsoRaza");
         });
 
         modelBuilder.Entity<CatalogoUsuario>(entity =>
@@ -669,6 +699,61 @@ public partial class SedarpaContext : DbContext
             entity.Property(e => e.ServicioDeInseminacion2)
                 .HasColumnType("money")
                 .HasColumnName("SERVICIO_DE_INSEMINACION2");
+        });
+
+        modelBuilder.Entity<ProduccionUpp>(entity =>
+        {
+            entity.HasKey(e => e.IdRegistroProduccion);
+
+            entity.ToTable("produccionUPP");
+
+            entity.Property(e => e.BecerrasLactantes08).HasColumnName("becerrasLactantes_08");
+            entity.Property(e => e.BecerrosLactantes08).HasColumnName("becerrosLactantes_08");
+            entity.Property(e => e.CantidadCabezas).HasColumnName("cantidadCabezas");
+            entity.Property(e => e.CantidadCabezasAretesGratuitos).HasColumnName("cantidadCabezasAretesGratuitos");
+            entity.Property(e => e.CantidadCabezasAretesProductor).HasColumnName("cantidadCabezasAretesProductor");
+            entity.Property(e => e.CantidadCabezasConArete).HasColumnName("cantidadCabezasConArete");
+            entity.Property(e => e.CantidadCabezasSinArete).HasColumnName("cantidadCabezasSinArete");
+            entity.Property(e => e.CriasHembras812).HasColumnName("criasHembras_812");
+            entity.Property(e => e.CriasMachos812).HasColumnName("criasMachos_812");
+            entity.Property(e => e.FechaCaptura)
+                .HasColumnType("datetime")
+                .HasColumnName("fechaCaptura");
+            entity.Property(e => e.FechaRegistro)
+                .HasColumnType("datetime")
+                .HasColumnName("fechaRegistro");
+            entity.Property(e => e.IdProductorUpp).HasColumnName("IdProductorUPP");
+            entity.Property(e => e.IdUsuario)
+                .HasMaxLength(8)
+                .IsUnicode(false);
+            entity.Property(e => e.NovillosToretes12).HasColumnName("novillosToretes_12");
+            entity.Property(e => e.Observaciones)
+                .HasMaxLength(500)
+                .IsUnicode(false)
+                .HasColumnName("observaciones");
+            entity.Property(e => e.Semental).HasColumnName("semental");
+            entity.Property(e => e.Vaquillas1214).HasColumnName("vaquillas_1214");
+            entity.Property(e => e.Vientres).HasColumnName("vientres");
+
+            entity.HasOne(d => d.IdProductorUppNavigation).WithMany(p => p.ProduccionUpps)
+                .HasForeignKey(d => d.IdProductorUpp)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_produccionUPP_catalogoProductoresUPP");
+
+            entity.HasOne(d => d.IdRazaNavigation).WithMany(p => p.ProduccionUpps)
+                .HasForeignKey(d => d.IdRaza)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_produccionUPP_catalogoRazas");
+
+            entity.HasOne(d => d.IdUsoRazaNavigation).WithMany(p => p.ProduccionUpps)
+                .HasForeignKey(d => d.IdUsoRaza)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_produccionUPP_catalogoUsos");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.ProduccionUpps)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_produccionUPP_catalogoUsuarios");
         });
 
         modelBuilder.Entity<SolicitudInternacion>(entity =>

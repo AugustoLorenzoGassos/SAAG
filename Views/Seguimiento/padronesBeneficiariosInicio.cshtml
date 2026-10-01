@@ -239,11 +239,13 @@
                         <h4 class="m-0">Generación de Estadísticas</h4>
                     </div>
                     <div class="card-body">
+                        <h6 class="alert alert-warning text-center" role="alert">
+                            <i class="fa fa-exclamation-triangle me-2" aria-hidden="true"></i>En las estadísticas, por el momento, sólo aplican los filtros por proyecto y municipio.
+                        </h6>
                         <div class="row">
                             <div class="col-12 col-md-6">
                                 <label for="cmbEstadisticas">Estadísticas precargadas:</label>
                                 <select id="cmbEstadisticas" class="form-select w-100">
-                                    <option value=0>...</option>
                                     <option value=1>Concentrado estatal de beneficarios por programa</option>
                                     <option value=2>Apicultura: 5 municipios con más beneficiarios</option>
                                     <option value=3>Aves de postura: 5 municipios con más beneficiarios</option>
@@ -253,19 +255,40 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <p>Tipo de gráfica</p>
-                                <input type="radio" id="graficaBarra" name="tipoGrafica" class="p-1 me-2" value="bar" checked="checked"/>Barras
-                                <input type="radio" id="graficaPastel" name="tipoGrafica" class="p-1 me-2" value="pie"/>Pastel
-                                <input type="radio" id="graficaDona" name="tipoGrafica" class="p-1 me-2" value="doughnut"/>Dona
+                                <div class="container-fluid d-flex flex-row w-100 justify-content-between align-items-center px-md-5">
+                                    <!-- Opción 1 -->
+                                    <div class="d-flex align-items-center gap-1">
+                                        <input type="radio" id="graficaBarra" name="tipoGrafica" value="bar" checked="checked">
+                                        <label for="graficaBarra" class="mb-0 d-flex align-items-center">
+                                            <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                                        </label>
+                                    </div>
+                                    <!-- Opción 2 -->
+                                    <div class="d-flex align-items-center gap-1">
+                                        <input type="radio" id="graficaPastel" name="tipoGrafica" value="pie">
+                                        <label for="graficaPastel" class="mb-0 d-flex align-items-center">
+                                            <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                                        </label>
+                                    </div>
+                                    <!-- Opción 3 -->
+                                    <div class="d-flex align-items-center gap-1">
+                                        <input type="radio" id="graficaDona" name="tipoGrafica" value="line">
+                                        <label for="graficaDona" class="mb-0 d-flex align-items-center">
+                                            <i class="fa fa-line-chart" aria-hidden="true"></i>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div id="canvasGraficas" class="mt-2" style="position: relative; height:380px;">
-                            <canvas id="dashboardChart"></canvas>
-                        </div>
-                        <div id="divTablaEstadisticas" class="mt-2">
+                        <div id="divTablaEstadisticas" class="mt-3">
                             <table id="tblEstadisticas" class="table-responsive w-100">
                                 <thead id="tblEstadisticasHead" class="bg-dark text-white text-center"></thead>
                                 <tbody id="tblEstadisticasBody" class="text-center"></tbody>
                             </table>
+                        </div>
+                        <div id="canvasGraficas" class="p-4" style="position: relative; height:380px;">
+                            <canvas id="dashboardChart"></canvas>
+                            <h6 id="msgGrafica" class="text-danger d-none"><i class="fa fa-exclamation-triangle me-3" aria-hidden="true"></i>No se aplican filtros</h6>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -691,31 +714,41 @@
         //Genera la variable de los parfámetros
         const params = new URLSearchParams();
         const proyectosSel = Array.from(document.getElementById('cmbPadron').selectedOptions).map(o => o.value);
+        const municipioSel = document.getElementById('cmbMunicipio').value;
         const proyectosFiltrados = proyectosSel.filter(p => p !== '0000' && p !== '' && p !== '0');
         if (proyectosFiltrados.length > 0) {
             proyectosFiltrados.forEach(p => params.append('proyectos', p));
         }
+        if (municipioSel && municipioSel !== '000') {
+            params.append('municipio', municipioSel);
+        }
+
         //Genera la url dependienndo de la olpción que se seleccionó en el combo
         switch (opcion) {
             case 1:
                 urlEstadistica = '/Seguimiento/PadronesBeneficiariosEstadisticas?' + params.toString();
                 labelGrafica = 'Beneficiarios por Programa';
+                document.getElementById('msgGrafica').classList.add('d-none');
                 break;
             case 2:
                 urlEstadistica = '/Seguimiento/PadronesBeneficiariosApicultura5mas';
                 labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
+                document.getElementById('msgGrafica').classList.remove('d-none');
                 break;
             case 3:
                 urlEstadistica = '/Seguimiento/PadronesBeneficiariosAves5mas';
                 labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
+                document.getElementById('msgGrafica').classList.remove('d-none');
                 break;
             case 4:
                 urlEstadistica = '/Seguimiento/PadronesBeneficiariosAcuacultura5mas';
                 labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
+                document.getElementById('msgGrafica').classList.remove('d-none');
                 break;
             case 5:
                 urlEstadistica = '/Seguimiento/PadronesBeneficiariosInseminacion5mas';
                 labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
+                document.getElementById('msgGrafica').classList.remove('d-none');
                 break;
         }
         //Presenta las gráficas
@@ -725,6 +758,9 @@
 
     async function mostrarGrafica(PUrl, PGrafica, PLabel) { 
         try {
+
+            var esLinea = (PGrafica === 'line');
+
             const response = await fetch(PUrl);
             const data = await response.json();
             const ctx = document.getElementById('dashboardChart').getContext('2d');
@@ -749,9 +785,10 @@
                     datasets: [{
                         label: PLabel,
                         data: data.values,
-                        backgroundColor: bgColors,
-                        borderColor: '#ffffff',
-                        borderWidth: 1
+                        backgroundColor: esLinea ? 'rgba(54, 162, 235, 0.2)' : bgColors,
+                        borderColor: esLinea ? 'rgba(54, 162, 235, 1)' : '#ffffff',
+                        borderWidth: esLinea ? 2 : 1,
+                        fill: esLinea ? true : false
                     }]
                 },
                 options: {
