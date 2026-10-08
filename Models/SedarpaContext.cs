@@ -71,6 +71,8 @@ public partial class SedarpaContext : DbContext
 
     public virtual DbSet<TblRegistroMensualDetalle> TblRegistroMensualDetalles { get; set; }
 
+    public virtual DbSet<UsuariosProcesosCarga> UsuariosProcesosCargas { get; set; }
+
     public virtual DbSet<VistaAccionesSeguimiento> VistaAccionesSeguimientos { get; set; }
 
     public virtual DbSet<VistaBitacoraElectronica> VistaBitacoraElectronicas { get; set; }
@@ -716,6 +718,7 @@ public partial class SedarpaContext : DbContext
             entity.Property(e => e.CantidadCabezasSinArete).HasColumnName("cantidadCabezasSinArete");
             entity.Property(e => e.CriasHembras812).HasColumnName("criasHembras_812");
             entity.Property(e => e.CriasMachos812).HasColumnName("criasMachos_812");
+            entity.Property(e => e.CuestionarioHatos).HasColumnName("cuestionarioHatos");
             entity.Property(e => e.FechaCaptura)
                 .HasColumnType("datetime")
                 .HasColumnName("fechaCaptura");
@@ -845,6 +848,11 @@ public partial class SedarpaContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("observaciones");
+            entity.Property(e => e.StatusDocumento).HasColumnName("statusDocumento");
+            entity.Property(e => e.TipoMime)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("tipoMime");
 
             entity.HasOne(d => d.IdDocumentoNavigation).WithMany(p => p.SolicitudInternacionDocumentos)
                 .HasForeignKey(d => d.IdDocumento)
@@ -1023,6 +1031,34 @@ public partial class SedarpaContext : DbContext
             entity.HasOne(d => d.IdReporteMensualNavigation).WithMany(p => p.TblRegistroMensualDetalles)
                 .HasForeignKey(d => d.IdReporteMensual)
                 .HasConstraintName("FK_TblRegistroMensualDetalle_TblRegistroMensual");
+        });
+
+        modelBuilder.Entity<UsuariosProcesosCarga>(entity =>
+        {
+            entity.HasKey(e => e.IdLoteCarga);
+
+            entity.ToTable("UsuariosProcesosCarga");
+
+            entity.Property(e => e.IdLoteCarga).HasColumnName("idLoteCarga");
+            entity.Property(e => e.FechaCarga)
+                .HasColumnType("datetime")
+                .HasColumnName("fechaCarga");
+            entity.Property(e => e.IdUsuario)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .HasColumnName("idUsuario");
+            entity.Property(e => e.NombreArchivo)
+                .HasMaxLength(300)
+                .IsUnicode(false)
+                .HasColumnName("nombreArchivo");
+            entity.Property(e => e.RegistrosCargados).HasColumnName("registrosCargados");
+            entity.Property(e => e.RegistrosError).HasColumnName("registrosError");
+            entity.Property(e => e.RegistrosLeidos).HasColumnName("registrosLeidos");
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.UsuariosProcesosCargas)
+                .HasForeignKey(d => d.IdUsuario)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_UsuariosProcesosCarga_catalogoUsuarios");
         });
 
         modelBuilder.Entity<VistaAccionesSeguimiento>(entity =>
@@ -1909,6 +1945,10 @@ public partial class SedarpaContext : DbContext
                 .HasNoKey()
                 .ToView("VistaPyhonBeneficiariosResumen");
 
+            entity.Property(e => e.CveMunicipio)
+                .HasMaxLength(3)
+                .IsUnicode(false)
+                .HasColumnName("cveMunicipio");
             entity.Property(e => e.IdProyecto)
                 .HasMaxLength(10)
                 .IsUnicode(false);

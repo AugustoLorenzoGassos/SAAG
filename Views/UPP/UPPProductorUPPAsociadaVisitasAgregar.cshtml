@@ -1,0 +1,179 @@
+﻿@model Seguimiento.Models.ProduccionUpp
+
+@{
+    ViewData["Title"] = "Registro de productores - Visitas UPP - Agregar";
+}
+
+<div class="container mt-4">
+    <form id="formAgregarVisita" action="/UPP/UPPProductorUPPAsociadaVisitasAgregar" method="post">
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model=>model.IdRegistroProduccion)
+        @Html.HiddenFor(model => model.FechaCaptura)
+        @Html.HiddenFor(model => model.IdUsuario)
+        @Html.HiddenFor(model => model.IdProductorUpp)
+        @Html.HiddenFor(model => model.IdEtapaRegistro)
+        <div class="card">
+            <div class="card-header bg-secondary bg-gradient text-white">
+                <h4 class="m-0">Registro de productores - Visitas UPP - Agregar visita</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        Clave UPP:<br />@ViewBag.claveUPP
+                    </div>
+                    <div class="col-12 col-md-4">
+                        Productor:<br />@ViewBag.Productor
+                    </div>
+                    <div class="col-12 col-md-4">
+                        Municipio - Localidad:<br />@ViewBag.Municipio - @ViewBag.Localidad
+                    </div>
+                </div>
+                <h6 class="alert alert-secondary my-2 text-center p-2 w-100">Datos recopoilados durante la visita</h6>
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <label for="txtFechaRegistro">Fecha de visita:</label>
+                        <input id="txtFechaRegistro" name="fechaRegistro" type="date" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col col-md-3">
+                        <label for="txtVientres">Vientres:</label>
+                        <input id="txtVientres" name="Vientres" type="number" value="0" class="form-control" />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="txtSemental">Semental:</label>
+                        <input id="txtSemental" name="Semental" type="number" value="0" class="form-control" />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="txtVaquillas">Vaquillas 12 a 24 meses:</label>
+                        <input id="txtVaquillas" name="Vaquillas1214" type="number" value="0" class="form-control" />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="txtNovillos">Novillos-Toreres >12 meses:</label>
+                        <input id="txtNovillos" name="NovillosToretes12" type="number" value="0" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <label for="txtCriasHembras">Crias hembras (8 a 12 meses):</label>
+                        <input id="txtCriasHembras" name="CriasHembras812" type="number" value="0" class="form-control" />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="txtCriasMachos">Crias machos (8 a 12 meses):</label>
+                        <input id="txtCriasMachos" name="CriasMachos812" type="number" value="0" class="form-control" />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="txtBecerras">Becerras lactantes (0-8 meses):</label>
+                        <input id="txtBecerras" name="BecerrasLactantes08" type="number" value="0" class="form-control" />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="txtBecerros">Becerros lactantes (0-8 meses):</label>
+                        <input id="txtBecerros" name="BecerrosLactantes08" type="number" value="0" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <label for="txtCabezas">Número de cabezas:</label>
+                        <input id="txtCabezas" name="CantidadCabezas" type="number" value="0" class="form-control" onblur="validarAretes();" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-3">
+                        <label for="txtConArete">Con arete:</label>
+                        <input id="txtConArete" name="CantidadCabezasConArete" type="number" value="0" class="form-control" onblur="validarAretes();" />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="txtSinArete">Sin arete:</label>
+                        <input id="txtSinArete" name="CantidadCabezasSinArete" type="number" value="0" class="form-control" onblur="validarAretes();" />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="txtAreteGratuito">Aretes gratuitos:</label>
+                        <input id="txtAreteGratuito" name="CantidadCabezasAretesGratuitos" type="number" value="0" class="form-control" />
+                    </div>
+                    <div class="col col-md-3">
+                        <label for="txtAreteProductor">Aretes pagados por el productor:</label>
+                        <input id="txtAreteProductor" name="CantidadCabezasAretesProductor" type="number" value="0" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <label for="cmbRazaDominante" class="form-label">Raza dominante:</label>
+                        <select id="cmbRazaDominante" name="IdRaza" class="form-select">
+                            <option value="">Seleccione una raza ...</option>
+                            @foreach (var raza in ViewBag.Razas as List<Seguimiento.Models.CatalogoRaza>)
+                            {
+                                <option value="@raza.IdRaza">@raza.DescRaza</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col col-md-4">
+                        <label for="cmbProduccion" class="form-label">Producción:</label>
+                        <select id="cmbProduccion" name="IdUsoRaza" class="form-select">
+                            <option value="">Seleccione un tipo de producción ...</option>
+                            @foreach (var uso in ViewBag.TiposProduccion as List<Seguimiento.Models.CatalogoUso>)
+                            {
+                                <option value="@uso.IdUsoRaza">@uso.DescUsoRaza</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col col-md-4">
+                        <label for="txtObservaciones" class="form-label">Observaciones:</label>
+                        <textarea id="txtObservaciones" name="Observaciones" class="form-control" rows="3"></textarea>  
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-footer">
+                <!-- Botones de acción en flex responsivo -->
+                <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
+                    <div class="me-md-2">
+                        <!-- Acción para regresar a la lista de registros mensuales -->
+                        <a href="@Url.Action("UPPProductorUPPAsociadaVisitas", "UPP", new { id = @Model.IdProductorUpp })" class="btn btn-light w-100 w-md-auto">
+                            <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de visitas
+                        </a>
+                    </div>
+                    <div class="mt-2 mt-md-0">
+                        <!-- Botón para guardar un registro nuevo -->
+                        <button type="submit" id="btnGuardar" class="btn btn-light mt-2 mt-md-0 w-100 w-md-auto">
+                            <i class="fa fa-save me-1" aria-hidden="true"></i>Guardar registro
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    document.getElementById('formAgregarVisita').addEventListener('submit', function(event) {
+
+        // 1. Obtenemos los valores para validar
+        const conArete = parseInt(document.getElementById('txtConArete').value) || 0;
+        const sinArete = parseInt(document.getElementById('txtSinArete').value) || 0;
+        const totalCabezas = parseInt(document.getElementById('txtCabezas').value) || 0;
+
+        const aretesGratuitos = parseInt(document.getElementById('txtAreteGratuito').value) || 0;
+        const aretesProductor = parseInt(document.getElementById('txtAreteProductor').value) || 0;
+
+        const totalSuma = conArete + sinArete;
+
+        // 2. Si la validación falla...
+        if (totalSuma !== totalCabezas) {
+            // DETENEMOS el envío del formulario
+            event.preventDefault();
+            alert('Error: La suma de cabezas con arete y sin arete no coincide con el total.');
+            return false;
+        }
+
+        if (aretesGratuitos + aretesProductor !== sinArete) {
+            // DETENEMOS el envío del formulario
+            event.preventDefault();
+            alert('Error: La suma de aretes gratuitos y pagados por el productor no coincide con la cantidad de cabezas sin arete.');
+            return false;
+        }
+
+        // Si todo está bien, el formulario se enviará de manera natural al controlador
+    });
+</script>

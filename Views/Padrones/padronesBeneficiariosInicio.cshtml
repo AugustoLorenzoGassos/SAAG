@@ -315,14 +315,12 @@
     var map = null;
     var marcadoresGroup = null;
 
-    let urlDescargaActual = '/Seguimiento/padronesBeneficiariosApiculturaDescarga';
+    let urlDescargaActual = '/Padrones/padronesBeneficiariosApiculturaDescarga';
     let chartInstance = null;
-    
-    document.addEventListener("DOMContentLoaded", function () 
-    {
+
+    document.addEventListener("DOMContentLoaded", function() {
         const txtAño = document.getElementById("txtAño");
-        if (txtAño) 
-        {
+        if (txtAño) {
             txtAño.value = new Date().getFullYear();
         }
         cargarRegiones();
@@ -339,7 +337,7 @@
         // Quitar clase active a los links
         const links = document.querySelectorAll('#menu_padrones .nav-link');
         links.forEach(link => link.classList.remove('active'));
-       // Activar la sección actual
+        // Activar la sección actual
         const seccionObjetivo = document.getElementById(idSeccion);
         if (seccionObjetivo) {
             seccionObjetivo.classList.remove('d-none');
@@ -355,7 +353,7 @@
                 document.getElementById("divPadronesMapa").classList.add('d-none');
                 document.getElementById("divEstadisticas").classList.add('d-none');
                 cargarTablaApiCultura();
-                urlDescargaActual = '/Seguimiento/padronesBeneficiariosApiculturaDescarga';
+                urlDescargaActual = '/Padrones/padronesBeneficiariosApiculturaDescarga';
                 break;
             case 'sec-Acuacultura':
                 document.getElementById("divFiltrosMapa").classList.add('d-none');
@@ -363,7 +361,7 @@
                 document.getElementById("divPadronesMapa").classList.add('d-none');
                 document.getElementById("divEstadisticas").classList.add('d-none');
                 cargarTablaAcuacultura();
-                urlDescargaActual = '/Seguimiento/padronesBeneficiariosAcuaculturaDescarga';
+                urlDescargaActual = '/Padrones/padronesBeneficiariosAcuaculturaDescarga';
                 break;
             case 'sec-aves':
                 document.getElementById("divFiltrosMapa").classList.add('d-none');
@@ -371,7 +369,7 @@
                 document.getElementById("divPadronesMapa").classList.add('d-none');
                 document.getElementById("divEstadisticas").classList.add('d-none');
                 cargarTablaAves();
-                urlDescargaActual = '/Seguimiento/padronesBeneficiariosAvesDescarga';
+                urlDescargaActual = '/Padrones/padronesBeneficiariosAvesDescarga';
                 break;
             case 'sec-inseminacion':
                 document.getElementById("divFiltrosMapa").classList.add('d-none');
@@ -379,7 +377,7 @@
                 document.getElementById("divPadronesMapa").classList.add('d-none');
                 document.getElementById("divEstadisticas").classList.add('d-none');
                 cargarTablaInseminacion();
-                urlDescargaActual = '/Seguimiento/padronesBeneficiariosIATFDescargar';
+                urlDescargaActual = '/Padrones/padronesBeneficiariosIATFDescargar';
                 break;
             case 'sec-mapas':
                 document.getElementById("divFiltrosMapa").classList.remove('d-none');
@@ -393,12 +391,12 @@
                 document.getElementById("divPadronesMapa").classList.add('d-none');
                 document.getElementById("divPadrones").classList.add('d-none');
                 document.getElementById("divEstadisticas").classList.remove('d-none');
-                cargarGrafica(1,'bar');
+                cargarGrafica(1, 'bar');
                 break;
         }
     }
 
-    document.getElementById('btnDescargar')?.addEventListener('click', function (e) {
+    document.getElementById('btnDescargar')?.addEventListener('click', function(e) {
         e.preventDefault();
         //window.location.href = urlDescargaActual;
 
@@ -423,8 +421,8 @@
 
     });
 
-    document.getElementById('btnFiltrar')?.addEventListener('click', function (e) {
-        
+    document.getElementById('btnFiltrar')?.addEventListener('click', function(e) {
+
         e.preventDefault();
 
         const seccionActiva = document.querySelector('#menu_padrones .nav-link.active')?.dataset.seccion;
@@ -447,17 +445,17 @@
         }
     });
 
-    document.getElementById('btnFiltrarMapa')?.addEventListener('click', function (e) {
+    document.getElementById('btnFiltrarMapa')?.addEventListener('click', function(e) {
         e.preventDefault();
         cargarPadronesMapa();
     });
 
-    document.getElementById('btnFiltrarEstadistica')?.addEventListener('click', function (e) {
+    document.getElementById('btnFiltrarEstadistica')?.addEventListener('click', function(e) {
         e.preventDefault();
         cargarGrafica(document.getElementById('cmbEstadisticas').value);
     });
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
         const btn = e.target.closest('.btn-detalles');
         if (btn) {
             // Detiene cualquier submit o evento de la tabla principal
@@ -487,20 +485,20 @@
                 case 'sec-apicultura':
                     document.getElementById('modalTitulo').innerText = "Detalle de beneficiario - Apicultura";
                     document.getElementById("tblApicultura").classList.remove("d-none");
-                    urlEndpoint = `/Seguimiento/padronesBeneficiariosApiculturaBeneficiario?id=${idRegistro}`;
+                    urlEndpoint = `/Padrones/padronesBeneficiariosApiculturaBeneficiario?id=${idRegistro}`;
                     break;
                 case 'sec-Acuacultura':
                     document.getElementById('modalTitulo').innerText = "Detalle de beneficiario - Acuacultura sustentable";
                     document.getElementById("tblApicultura").classList.remove("d-none");
-                    urlEndpoint = `/Seguimiento/padronesBeneficiariosAcuaculturaBeneficiario?id=${idRegistro}`;
+                    urlEndpoint = `/Padrones/padronesBeneficiariosAcuaculturaBeneficiario?id=${idRegistro}`;
                     break;
                 case 'sec-aves':
                     document.getElementById('modalTitulo').innerText = "Detalle de beneficiario - Aves de traspatio";
-                    urlEndpoint = `/Seguimiento/padronesBeneficiariosAvesBeneficiario?id=${idRegistro}`;
+                    urlEndpoint = `/Padrones/padronesBeneficiariosAvesBeneficiario?id=${idRegistro}`;
                     break;
                 case 'sec-inseminacion':
                     document.getElementById('modalTitulo').innerText = "Detalle de beneficiario - Inseminación Artificial";
-                    urlEndpoint = `/Seguimiento/padronesBeneficiariosIATFBeneficiario?id=${idRegistro}`;
+                    urlEndpoint = `/Padrones/padronesBeneficiariosIATFBeneficiario?id=${idRegistro}`;
                     break;
                 default:
                     urlEndpoint = ``;
@@ -524,29 +522,29 @@
                         if (seccion == 'sec-inseminacion') {
                             const contenedorIATF = document.getElementById("contenedorIATF");
                             const filaIATF = `
-                                <div class="row">
-                                    <div class="col-12 col-md-4">Folio vientres:<br>${data.registros[0].folioVientres}</div>
-                                    <div class="col-12 col-md-4">Folio semental:<br>${data.registros[0].folioSemental}</div>
-                                    <div class="col-12 col-md-4">Número de entrega:<br>${data.registros[0].numeroEntrega1}</div>
-                                </div>
-                                    <div class="row mt-3">
-                                        <div class="col-12 col-md-4">Número de entrega:<br>${data.registros[0].numeroEntrega2}</div>
-                                        <div class="col-12 col-md-4">Sementales:<br>${data.registros[0].sementales}</div>
-                                        <div class="col-12 col-md-4">Vientres:<br>${data.registros[0].vientres || 0}</div>
+                                    <div class="row">
+                                        <div class="col-12 col-md-4">Folio vientres:<br>${data.registros[0].folioVientres}</div>
+                                        <div class="col-12 col-md-4">Folio semental:<br>${data.registros[0].folioSemental}</div>
+                                        <div class="col-12 col-md-4">Número de entrega:<br>${data.registros[0].numeroEntrega1}</div>
                                     </div>
-                                `;
+                                        <div class="row mt-3">
+                                            <div class="col-12 col-md-4">Número de entrega:<br>${data.registros[0].numeroEntrega2}</div>
+                                            <div class="col-12 col-md-4">Sementales:<br>${data.registros[0].sementales}</div>
+                                            <div class="col-12 col-md-4">Vientres:<br>${data.registros[0].vientres || 0}</div>
+                                        </div>
+                                    `;
                             contenedorIATF.innerHTML = filaIATF;
                         }
                         tbodyModal.innerHTML = '';
                         data.registros.forEach(item => {
                             const fila = `
-                                <tr>
-                                    <td>${item.descripcionApoyo}</td>
-                                    <td class="text-center">${item.cantidad}</td>
-                                    <td class="text-end">${formatoMoneda.format(item.precioUnitario || 0)}</td>
-                                    <td class="text-end">${formatoMoneda.format(item.importe || 0)}</td>
-                                </tr>
-                            `;
+                                    <tr>
+                                        <td>${item.descripcionApoyo}</td>
+                                        <td class="text-center">${item.cantidad}</td>
+                                        <td class="text-end">${formatoMoneda.format(item.precioUnitario || 0)}</td>
+                                        <td class="text-end">${formatoMoneda.format(item.importe || 0)}</td>
+                                    </tr>
+                                `;
                             tbodyModal.innerHTML += fila;
                             totalApoyos += item.importe;
                         });
@@ -561,7 +559,7 @@
                 });
         }
     });
-    
+
     document.getElementById('btnExportar').addEventListener('click', function() {
         var mapaElemento = document.getElementById('mapa');
         html2canvas(mapaElemento, {
@@ -574,16 +572,15 @@
             enlace.click();
         });
     });
-    
-    function cargarPadronesMapa() 
-    {
+
+    function cargarPadronesMapa() {
 
         if (!map) {
             var limitesVeracruz = L.latLngBounds(
                 L.latLng(17.10, -98.60), // Esquina Suroeste
                 L.latLng(22.50, -93.50)  // Esquina Noreste
             );
-        
+
             map = L.map('mapa', {
                 maxBounds: limitesVeracruz,
                 maxBoundsViscosity: 1.0,
@@ -599,8 +596,8 @@
             marcadoresGroup = L.layerGroup().addTo(map);
         }
 
-        setTimeout(() => { 
-            if (map) map.invalidateSize(); 
+        setTimeout(() => {
+            if (map) map.invalidateSize();
         }, 200);
         //setTimeout(() => { map.invalidateSize(); }, 200);
 
@@ -612,9 +609,8 @@
 
     }
 
-    async function obtenerPuntosPadrones() 
-    {
-        
+    async function obtenerPuntosPadrones() {
+
         //Generar parámetros de búsqueda según los filtros seleccionados
         const anioReporte = document.getElementById('txtAño').value;
         const nombre = document.getElementById('txtNombre').value;
@@ -636,25 +632,24 @@
             proyectosSel.forEach(proyecto => params.append('padron', proyecto));
         }
 
-        await fetch('/Seguimiento/padronesBeneficiariosPuntos?' + params.toString())
-        //fetch('/Seguimiento/padronesBeneficiariosPuntos')
+        await fetch('/Padrones/padronesBeneficiariosPuntos?' + params.toString())
+            //fetch('/Seguimiento/padronesBeneficiariosPuntos')
             .then(response => {
-                 if (!response.ok) {
-                     throw new Error('Error en la respuesta del servidor');
-                 }
-                 return response.json();
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
             })
             .then(data => {
                 marcadoresGroup.clearLayers();
                 var bounds = [];
                 data.forEach(puntuacion => {
-                    if (puntuacion.latitud && puntuacion.longitud) 
-                    {
+                    if (puntuacion.latitud && puntuacion.longitud) {
                         var iconoProyecto = obtenerIconoPorProyecto(puntuacion.idProyecto);
-                        var marker = L.marker([puntuacion.latitud, puntuacion.longitud], {icon: iconoProyecto})
+                        var marker = L.marker([puntuacion.latitud, puntuacion.longitud], { icon: iconoProyecto })
                             .addTo(marcadoresGroup)
                             .bindPopup(`<b>${puntuacion.nombreBeneficiarios} - ${puntuacion.nombreProyecto}</b>`)
-                            //.openPopup();
+                        //.openPopup();
                         bounds.push([puntuacion.latitud, puntuacion.longitud]);
                     }
                 });
@@ -666,12 +661,13 @@
                 console.error('Error al cargar los puntos en el mapa:', error);
             });
     }
-    
+
     function obtenerColorPorProyecto(idProyecto) {
         const colores = {
-        'AC': '#e74c3c',       // Rojo
-        'DASV': '#2ecc71',     // Verde
-        'IFPAPTEV': '#9b59b6'}  // Morado        ;
+            'AC': '#e74c3c',       // Rojo
+            'DASV': '#2ecc71',     // Verde
+            'IFPAPTEV': '#9b59b6'
+        }  // Morado        ;
         return colores[idProyecto] || 'hue-rotate(0deg) brightness(1)';
     }
 
@@ -695,17 +691,17 @@
         return L.divIcon({
             className: 'custom-pin-marker',
             html: `<svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.5 0C5.6 0 0 5.6 0 12.5C0 21.9 12.5 41 12.5 41S25 21.9 25 12.5C25 5.6 19.4 0 12.5 0Z" 
-                          fill="${colorHex}" stroke="#FFFFFF" stroke-width="1.5"/>
-                    <circle cx="12.5" cy="12.5" r="4" fill="#FFFFFF"/>
-                   </svg>`,
+                        <path d="M12.5 0C5.6 0 0 5.6 0 12.5C0 21.9 12.5 41 12.5 41S25 21.9 25 12.5C25 5.6 19.4 0 12.5 0Z"
+                              fill="${colorHex}" stroke="#FFFFFF" stroke-width="1.5"/>
+                        <circle cx="12.5" cy="12.5" r="4" fill="#FFFFFF"/>
+                       </svg>`,
             iconSize: [25, 41],
             iconAnchor: [12, 41],
             popupAnchor: [1, -34]
         });
     }
 
-    function cargarGrafica(PGrafica){
+    function cargarGrafica(PGrafica) {
         //Variables que se usan para definir la gráfica a presentar y obtener los datos
         let opcion = parseInt(PGrafica, 10);
         let urlEstadistica = '';
@@ -726,37 +722,37 @@
         //Genera la url dependienndo de la olpción que se seleccionó en el combo
         switch (opcion) {
             case 1:
-                urlEstadistica = '/Seguimiento/PadronesBeneficiariosEstadisticas?' + params.toString();
+                urlEstadistica = '/Padrones/PadronesBeneficiariosEstadisticas?' + params.toString();
                 labelGrafica = 'Beneficiarios por Programa';
                 document.getElementById('msgGrafica').classList.add('d-none');
                 break;
             case 2:
-                urlEstadistica = '/Seguimiento/PadronesBeneficiariosApicultura5mas';
+                urlEstadistica = '/Padrones/PadronesBeneficiariosApicultura5mas';
                 labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
                 document.getElementById('msgGrafica').classList.remove('d-none');
                 break;
             case 3:
-                urlEstadistica = '/Seguimiento/PadronesBeneficiariosAves5mas';
+                urlEstadistica = '/Padrones/PadronesBeneficiariosAves5mas';
                 labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
                 document.getElementById('msgGrafica').classList.remove('d-none');
                 break;
             case 4:
-                urlEstadistica = '/Seguimiento/PadronesBeneficiariosAcuacultura5mas';
+                urlEstadistica = '/Padrones/PadronesBeneficiariosAcuacultura5mas';
                 labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
                 document.getElementById('msgGrafica').classList.remove('d-none');
                 break;
             case 5:
-                urlEstadistica = '/Seguimiento/PadronesBeneficiariosInseminacion5mas';
+                urlEstadistica = '/Padrones/PadronesBeneficiariosInseminacion5mas';
                 labelGrafica = 'Municpios con mayor cantidad de beneficiarios'
                 document.getElementById('msgGrafica').classList.remove('d-none');
                 break;
         }
         //Presenta las gráficas
         const valorSeleccionado = document.querySelector('input[name="tipoGrafica"]:checked')?.value || 'bar';
-        mostrarGrafica(urlEstadistica,valorSeleccionado, labelGrafica);
+        mostrarGrafica(urlEstadistica, valorSeleccionado, labelGrafica);
     }
 
-    async function mostrarGrafica(PUrl, PGrafica, PLabel) { 
+    async function mostrarGrafica(PUrl, PGrafica, PLabel) {
         try {
 
             var esLinea = (PGrafica === 'line');

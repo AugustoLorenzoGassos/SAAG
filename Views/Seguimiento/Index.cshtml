@@ -44,7 +44,7 @@
                         <li>Impulso y Fomento a la Producción de Aves de Postura de Traspatio</li>
                         <li>Fortalecimiento a la Producción Lechera y Mejoramiento Genético en Bovinos con Tecnología Reporductiva</li>
                     </ul>*@
-                    <a href="@Url.Action("padronesBeneficiariosInicio", "Seguimiento")" class="btn btn-dark border-dark mt-3">Ingresar</a>
+                    <a href="@Url.Action("padronesBeneficiariosInicio", "Padrones")" class="btn btn-dark border-dark mt-3">Ingresar</a>
                 </div>
             </div>
             <!-- 2. Regisro de UPP -->
@@ -53,7 +53,7 @@
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center h-100 top-0 start-0 w-100" @*style="background: rgba(0, 0, 0, 0.2);"*@>
                     @*<h3 class="fw-bold text-white">Unidades de Producción Pecuaria</h3>
                     <p class="text-white">Registro de información de las Unidades de Producción Pecuaria (UPP)</p>*@
-                    <a href="@Url.Action("UPPInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
+                    <a href="@Url.Action("UPPInicio", "UPP")" class="btn btn-dark border-dark">Ingresar</a>
                 </div>
             </div>
             <!-- 3. Laboratorio Móvil -->
@@ -74,18 +74,27 @@
                     <ul class="w-75 text-start text-white mx-auto">
                         <li>Permisos de internación</li>
                     </ul>*@
-                    <a href="@Url.Action("movilizacionGanadoInicio", "Seguimiento")" class="btn btn-dark border-dark">Ingresar</a>
+                    <a href="@Url.Action("movilizacionGanadoInicio", "Movilizacion")" class="btn btn-dark border-dark">Ingresar</a>
                 </div>
             </div>
 
         </div>
 
         <!-- Controles de anterior/siguiente -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#mi_carrusel" data-bs-slide="prev">
+        @*<button class="carousel-control-prev bg-black" type="button" data-bs-target="#mi_carrusel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#mi_carrusel" data-bs-slide="next">
+        <button class="carousel-control-next bg-black" type="button" data-bs-target="#mi_carrusel" data-bs-slide="next">
             <span class="carousel-control-next-icon"></span>
+        </button>*@
+
+        <button class="carousel-control-prev rounded-circle shadow opacity-100" type="button" data-bs-target="#mi_carrusel" data-bs-slide="prev" style="width: 45px; height: 45px; top: 50%; transform: translateY(-50%); position: absolute; left: 15px;">
+            <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(1) grayscale(100%); transform: scale(1.4);"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next rounded-circle shadow opacity-100" type="button" data-bs-target="#mi_carrusel" data-bs-slide="next" style="width: 45px; height: 45px; top: 50%; transform: translateY(-50%); position: absolute; right: 15px;">
+            <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(1) grayscale(100%); transform: scale(1.4);"></span>
+            <span class="visually-hidden">Siguiente</span>
         </button>
 
     </div>

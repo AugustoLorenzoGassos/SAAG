@@ -55,13 +55,13 @@
             <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
                 <div class="me-md-2">
                     <!-- Acción para regresar a la lista de registros mensuales -->
-                    <a href="@Url.Action("UPPProductorUPPAsociadas", "Seguimiento", new { id = @ViewBag.IdProductorUpp })" class="btn btn-light w-100 w-md-auto">
+                    <a href="@Url.Action("UPPProductorUPPAsociadas", "UPP", new { id = @ViewBag.IdProductor })" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de UPP's
                     </a>
                 </div>
                 <div class="mt-2 mt-md-0">
                     <!-- Acción para agregar una nueva visita -->
-                    <a href="@Url.Action("UPPProductorUPPAsociadaVisitasAgregar", "Seguimiento", new { id = @ViewBag.IdProductorUpp })" class="btn btn-light w-100 w-md-auto">
+                    <a href="@Url.Action("UPPProductorUPPAsociadaVisitasAgregar", "UPP", new { id = @ViewBag.IdProductorUpp })" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-plus-square me-1" aria-hidden="true"></i>Agregar visita
                     </a>
                 </div>
@@ -74,7 +74,7 @@
 
     function mostrarDatosVisitasUPP(id)
     {
-        const url = `@Url.Action("UPPProductorUPPAsociadaVisitasDetalle", "Seguimiento")?id=${id}`;
+        const url = `@Url.Action("UPPProductorUPPAsociadaVisitasDetalle", "UPP")?id=${id}`;
         window.location.href = url;
     }
 

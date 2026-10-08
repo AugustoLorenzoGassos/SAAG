@@ -20,4 +20,6 @@ public partial class CatalogoUsuario
     public virtual ICollection<TblBitacoraElectronica> TblBitacoraElectronicas { get; set; } = new List<TblBitacoraElectronica>();
 
     public virtual ICollection<TblRegistroMensual> TblRegistroMensuals { get; set; } = new List<TblRegistroMensual>();
+
+    public virtual ICollection<UsuariosProcesosCarga> UsuariosProcesosCargas { get; set; } = new List<UsuariosProcesosCarga>();
 }

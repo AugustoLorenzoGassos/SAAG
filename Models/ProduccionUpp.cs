@@ -47,6 +47,8 @@ public partial class ProduccionUpp
 
     public string? Observaciones { get; set; }
 
+    public bool? CuestionarioHatos { get; set; }
+
     public DateTime? FechaCaptura { get; set; }
 
     public virtual CatalogoProductoresUpp? IdProductorUppNavigation { get; set; }

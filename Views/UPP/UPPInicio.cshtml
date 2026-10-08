@@ -26,6 +26,12 @@
                 <div class="col-12 col-md-3 mb-3">
                     <label for="txtMaterno" class="form-label">Apellido materno:</label>
                     <input id="txtMaterno" class="form-control" placeholder="Escribe el ap. materno del productor" />
+                </div> 
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-6 mb-3">
+                    <label for="txtUPP" class="form-label">Clave de la UPP:</label>
+                    <input id="txtUPP" class="form-control" placeholder="Escribe la clave de la UPP" />
                 </div>
             </div>
             <!--Descargas a excel-->
@@ -72,16 +78,24 @@
                 </div>
                 <div class="me-md-2 mt-2 mt-md-0">
                     <!-- Acción para mostrar el mapa con la localización de las UPP -->
-                    <a href="@Url.Action("UPPInicioMostarMapa", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                    <a href="@Url.Action("UPPInicioMostarMapa", "UPP")" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-map-marker me-1" aria-hidden="true"></i>Mostrar mapa de UPP's
+                    </a>
+                </div>
+                <div class="me-md-2 mt-2 mt-md-0">
+                    <!-- Acción para agregar un nuevo productor -->
+                    <a href="@Url.Action("UPPProductorUPPAsociadaVisitasAgregarExcel", "UPP")" class="btn btn-light w-100 w-md-auto">
+                        <i class="fa fa-upload me-1" aria-hidden="true"></i>Cargar visitas desde archivo
                     </a>
                 </div>
                 <div class="mt-2 mt-md-0">
                     <!-- Acción para agregar un nuevo productor -->
-                    <a href="@Url.Action("UPPProductorAgregar", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                    <a href="@Url.Action("UPPProductorAgregar", "UPP")" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-plus-square me-1" aria-hidden="true"></i>Agregar productor
                     </a>
                 </div>
+
+                
             </div>
         </div>
     </div>
@@ -96,7 +110,7 @@
     
     document.getElementById('btnDescargar')?.addEventListener('click', function (e) {
         e.preventDefault();
-        urlDescargaActual = '/Seguimiento/UPPDescargaCompleta';
+        urlDescargaActual = '/UPP/UPPDescargaCompleta';
 
         // 1. Instancias el objeto URL basado en tu variable base
         const url = new URL(urlDescargaActual, window.location.origin);
@@ -105,8 +119,9 @@
         const nombre = document.getElementById('txtNombre').value;
         const paterno = document.getElementById('txtPaterno').value;
         const materno = document.getElementById('txtMaterno').value;
+        const upp = document.getElementById('txtUPP').value;
         const params = new URLSearchParams();
-
+        
         if (CURP) url.searchParams.append('CURP', CURP);
         if (nombre) url.searchParams.append('nombre', nombre);
         if (paterno) url.searchParams.append('paterno', paterno);
@@ -125,6 +140,8 @@
         const nombre = document.getElementById('txtNombre').value;
         const paterno = document.getElementById('txtPaterno').value;
         const materno = document.getElementById('txtMaterno').value;
+        const upp = document.getElementById('txtUPP').value;
+
         //Limpia la tabla
         const tbody = document.getElementById('tbodyRegistros');
         tbody.innerHTML = '<tr><td colspan="5" class="text-center">Cargando datos...</td></tr>';
@@ -134,10 +151,12 @@
         if (nombre) params.append('nombre', nombre);
         if (paterno) params.append('paterno', paterno);
         if (materno) params.append('materno', materno);
+        if (upp) params.append('upp', upp);
+
         //Envía la petición patra extraer registros de la base de datos de acuerdo al filtro. Si no hay filtros se cargan todos los registos
         try 
         {
-            const response = await fetch(`/Seguimiento/ObtenerListaProductores?${params.toString()}`);
+            const response = await fetch(`/UPP/ObtenerListaProductores?${params.toString()}`);
             if (!response.ok) 
             {
                 throw new Error(`Error en la petición: ${response.statusText}`);
@@ -193,15 +212,15 @@
     //Función para enviar la edición del registro
     function editarProductor(idProductor)
     {
-        window.location.href = `/Seguimiento/UPPProductorEditar/${idProductor}`;
+        window.location.href = `/UPP/UPPProductorEditar/${idProductor}`;
     }
     //Función para eliminar un registro
     function eliminarProductor(idProductor) {
-        window.location.href = `/Seguimiento/UPPProductorEliminar/${idProductor}`;
+        window.location.href = `/UPP/UPPProductorEliminar/${idProductor}`;
     }
     //Función para ver las UPP asocadas al productor
     function verUPPProductor(idProductor){
-        window.location.href = `/Seguimiento/UPPProductorUPPAsociadas/${idProductor}`;
+        window.location.href = `/UPP/UPPProductorUPPAsociadas/${idProductor}`;
     }
 
 </script>

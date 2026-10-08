@@ -39,7 +39,7 @@ async function cargarTablaApiCultura() {
     //Envía los parámetros a la vista. Valida la repuesta
     if (params.toString().length > 0) {
         try {
-            const response = await fetch(`/Seguimiento/padronesBeneficiariosApicultura?${params.toString()}`);
+            const response = await fetch(`/Padrones/padronesBeneficiariosApicultura?${params.toString()}`);
             if (!response.ok) {
                 throw new Error(`Error en la petición: ${response.statusText}`);
             }
@@ -125,7 +125,7 @@ async function cargarTablaAcuacultura() {
     //Envía los parámetros a la vista. Valida la respuesta
     if (params.toString().length > 0) {
         try {
-            const response = await fetch(`/Seguimiento/padronesBeneficiariosAcuacultura?${params.toString()}`);
+            const response = await fetch(`/Padrones/padronesBeneficiariosAcuacultura?${params.toString()}`);
             if (!response.ok) {
                 throw new Error(`Error en la petición: ${response.statusText}`);
             }
@@ -208,7 +208,7 @@ async function cargarTablaAves() {
     //Envía los parámetros. Valída la respuesta
     if (params.toString().length > 0) {
         try {
-            const response = await fetch(`/Seguimiento/padronesBeneficiariosAves?${params.toString()}`);
+            const response = await fetch(`/Padrones/padronesBeneficiariosAves?${params.toString()}`);
             if (!response.ok) {
                 throw new Error(`Error en la petición: ${response.statusText}`);
             }
@@ -285,7 +285,7 @@ async function cargarTablaInseminacion() {
     {
         try
         {
-            const response = await fetch(`/Seguimiento/padronesBeneficiariosIATF?${params.toString()}`);
+            const response = await fetch(`/Padrones/padronesBeneficiariosIATF?${params.toString()}`);
             if (!response.ok)
             {
                 throw new Error(`Error en la petición: ${response.statusText}`);

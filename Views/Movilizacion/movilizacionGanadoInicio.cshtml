@@ -112,7 +112,7 @@
         //Obtención de los datos desde el servidor
         try 
         {
-            const response = await fetch(`/Seguimiento/SolicitudesInternacion?${params.toString()}`);
+            const response = await fetch(`/Movilizacion/SolicitudesInternacion?${params.toString()}`);
             if (!response.ok) 
             {
                 throw new Error(`Error en la petición: ${response.statusText}`);
@@ -128,6 +128,10 @@
                 //Limpia la tabla y la llena con la información regresada por el controlador
                 tbody.innerHTML = '';
                 data.forEach(item => {
+                    //Genera la badges para mostrar el número de documentos asociados a la solicitud
+                    const badgeHtml = (item.totalDocumentos > 0) 
+                    ? `<span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size:x-small;">${item.totalDocumentos}</span>` 
+                    : '';
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                                 <td>${item.idSolicitudInternacion ?? '-'}</td>
@@ -140,8 +144,9 @@
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
                                         <!-- Acciones de seguimiento -->
-                                                <button type="button" class="btn btn-detalles" onclick="mostrarDetalles(${item.idSolicitudInternacion})">
+                                        <button type="button" position-relative class="btn btn-detalles" onclick="mostrarDetalles(${item.idSolicitudInternacion})">
                                             <i class="fa fa-address-card" aria-hidden="true"></i>
+                                            ${badgeHtml}
                                         </button>
                                     </div>
                                 </td>
@@ -162,7 +167,7 @@
     function mostrarDetalles(idSolicitud) 
     {
         // Redirige a la vista de detalles de la solicitud
-        window.location.href = `/Seguimiento/SolicitudesInternacionDetalle/${idSolicitud}`;
+        window.location.href = `/Movilizacion/SolicitudesInternacionDetalle/${idSolicitud}`;
     }
 
 

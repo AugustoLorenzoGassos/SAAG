@@ -63,13 +63,13 @@
             <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
                 <div class="me-md-2">
                     <!-- Acción para regresar a la lista de registros mensuales -->
-                        <a href="@Url.Action("UPPInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                        <a href="@Url.Action("UPPInicio", "UPP")" class="btn btn-light w-100 w-md-auto">
                             <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de productores
                         </a>
                 </div>
                 <div class="mt-2 mt-md-0">
                     <!-- Botón para guardar un registro nuevo -->
-                    <a href="@Url.Action("UPPProductorUPPAsociadaAgregar", "Seguimiento", new {id = Model.IdProductor})" class="btn btn-light w-100 w-md-auto">
+                    <a href="@Url.Action("UPPProductorUPPAsociadaAgregar", "UPP", new {id = Model.IdProductor})" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-plus-square me-1" aria-hidden="true"></i>Agregar UPP
                     </a>
                 </div>
@@ -81,19 +81,19 @@
 <script>
 
     function mostrarVisitasUPP(id){
-        const url = `@Url.Action("UPPProductorUPPAsociadaVisitas", "Seguimiento")?id=${id}`;
+        const url = `@Url.Action("UPPProductorUPPAsociadaVisitas", "UPP")?id=${id}`;
         window.location.href = url;
     }
 
     function editarUPP(id)
     {
-        const url = `@Url.Action("UPPProductorUPPAsociadaEditar", "Seguimiento")?id=${id}`;
+        const url = `@Url.Action("UPPProductorUPPAsociadaEditar", "UPP")?id=${id}`;
         window.location.href = url;
     }
 
     function eliminarUPP(id)
     {
-        const url = `@Url.Action("UPPProductorUPPAsociadaEliminar", "Seguimiento")?id=${id}`;
+        const url = `@Url.Action("UPPProductorUPPAsociadaEliminar", "UPP")?id=${id}`;
         window.location.href = url;
     }
 
