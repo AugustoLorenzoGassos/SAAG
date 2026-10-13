@@ -52,7 +52,7 @@
                             {
                                 <tr>
                                     <td>@detalle.FechaReporte?.ToString("dd/MM/yyyy")</td>
-                                    <td>@detalle.IdProductorNavigation.NombreProductor</td>
+                                    <td>@detalle.IdProductorNavigation.NombreProductor @detalle.IdProductorNavigation.ApellidoPaternoProductor @detalle.IdProductorNavigation.ApellidoMaternoProductor</td>
                                     <td>@detalle.CpsMcm</td>
                                     <td>@detalle.CpcFlotac</td>
                                     <td>@detalle.CpcSedim</td>
@@ -91,12 +91,12 @@
         <div class="card-footer">
             <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
                 <div class="me-md-2">
-                    <a id="btnRegresarListaReportes" href="@Url.Action("RegistrosMensualInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                    <a id="btnRegresarListaReportes" href="@Url.Action("LaboratorioInicio", "Laboratorio")" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-tasks me-3" aria-hidden="true"></i>Regresar a la lista de registros mensuales
                     </a>
                 </div>
                 <div class="mt-2 mt-md-0">
-                    <a id="btnRegistrarAcciones" href="@Url.Action("listaRegistrosMensualAgregarAccion", "Seguimiento", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                    <a id="btnRegistrarAcciones" href="@Url.Action("RegistrosMensualActividadesAgregar", "Laboratorio", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-plus-square m-0 p-1" aria-hidden="true"></i>Agregar acciones de seguimiento
                     </a>
                 </div>
@@ -110,13 +110,13 @@
     //Función que dispara la acción para editar los datos de la acción
     function editarAccion(id)
     {
-        const url = `@Url.Action("listaRegistrosMensualEditarAccion", "Seguimiento")?id=${id}`;
+        const url = `@Url.Action("RegistrosMensualActividadesEditar", "Laboratorio")?id=${id}`;
         window.location.href = url
     }
     //Función que dispara la acción para eliminar una acción
     function eliminarAccion(id)
     {
-        const url = `@Url.Action("listaRegistrosMensualEliminarAccion", "Seguimiento")?id=${id}`;
+        const url = `@Url.Action("RegistrosMensualActividadesEliminar", "Laboratorio")?id=${id}`;
         window.location.href = url
     }
 </script>

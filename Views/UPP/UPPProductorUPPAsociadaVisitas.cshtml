@@ -39,8 +39,14 @@
                                 <td>@visita.IdUsuarioNavigation?.NombreUsuario</td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Acciones">
-                                        <button type="button" class="btn" title="Ver datos de la vicita" onclick="mostrarDatosVisitasUPP(@visita.IdRegistroProduccion);" title="Editar acción de seguimiento">
+                                        <button type="button" class="btn" title="Ver datos de la visita" onclick="mostrarVisitasUPP(@visita.IdRegistroProduccion);" title="Editar acción de seguimiento">
                                             <i class="fa fa-tasks"></i>
+                                        </button>
+                                        <button type="button" class="btn" title="Editar visita" onclick="editarVisitasUPP(@visita.IdRegistroProduccion);" title="Editar acción de seguimiento">
+                                            <i class="fa fa-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn" title="Eliminar visita" onclick="eliminarVisitasUPP(@visita.IdRegistroProduccion);" title="Editar acción de seguimiento">
+                                            <i class="fa fa-trash"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -72,9 +78,19 @@
 
 <script>
 
-    function mostrarDatosVisitasUPP(id)
+    function mostrarVisitasUPP(id)
     {
         const url = `@Url.Action("UPPProductorUPPAsociadaVisitasDetalle", "UPP")?id=${id}`;
+        window.location.href = url;
+    }
+
+    function editarVisitasUPP(id){
+        const url = `@Url.Action("UPPProductorUPPAsociadaVisitasEditar", "UPP")?id=${id}`;
+        window.location.href = url;
+    }
+
+    function eliminarVisitasUPP(id) {
+        const url = `@Url.Action("UPPProductorUPPAsociadaVisitasEliminar", "UPP")?id=${id}`;
         window.location.href = url;
     }
 

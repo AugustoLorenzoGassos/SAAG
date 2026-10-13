@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-4">
-    <form action="/Seguimiento/ElimimarAccionRegistroMensual" method="POST" class="form-registro-detalle">
+    <form action="/Laboratorio/RegistrosMensualActividadesEliminar" method="POST" class="form-registro-detalle">
         @Html.AntiForgeryToken()
         @Html.HiddenFor(Model => Model.IdReporteMensualAccion)
         @Html.HiddenFor(Model => Model.IdReporteMensual)
@@ -17,13 +17,13 @@
             <div class="card-body">
                 <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-between">
                     <div class="me-md-2 mt-2 mt-md-0">
-                        <strong>Laboratorio:</strong><br /> @ViewBag.nombreLabotario
+                        <strong>Laboratorio:</strong><br /> @Model.IdReporteMensualNavigation.IdLaboratorioNavigation.NombreLaboratorio
                     </div>
                     <div class="me-2">
                         <strong>Mes:</strong> <br />@ViewBag.mesReporte
                     </div>
                     <div class="mt-2 mt-md-0">
-                        <strong>Año:</strong> <br />@ViewBag.anioReporte
+                        <strong>Año:</strong> <br />@Model.IdReporteMensualNavigation.AñoReporte
                     </div>
                 </div>
                 <div class="row mt-4">
@@ -35,7 +35,7 @@
                     <!-- Productor -->
                     <div class="col-12 col-md-6 form-group">
                         <label for="IdProductor">Productor:</label>
-                        <input type="text" id="IdProductor" name="IdProductor" value="@ViewBag.nombreProductor" class="form-control" readonly />
+                        <input type="text" id="IdProductor" name="IdProductor" value="@Model.IdProductorNavigation.NombreProductor @Model.IdProductorNavigation.ApellidoPaternoProductor @Model.IdProductorNavigation.ApellidoMaternoProductor" class="form-control" readonly />
                     </div>
                 </div>
                 <h5>Conteo y Diagnósticos (Captura)</h5>
@@ -101,7 +101,7 @@
                 <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
                     <div class="me-md-2">
                         <!-- Acción para regresar a la lista visitas -->
-                        <a href="@Url.Action("RegistrosMensualActividades", "Seguimiento", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                        <a href="@Url.Action("RegistrosMensualActividades", "Laboratorio", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
                             <i class="fa fa-bars me-3" aria-hidden="true"></i>Regresar a la lista de acciones
                         </a>
                     </div>

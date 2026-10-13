@@ -12,7 +12,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     } *@
-    <form action="/Seguimiento/GuardarAccionRegistroMensual" method="POST">
+    <form action="/Laboratorio/RegistrosMensualActividadesAgregar" method="POST">
         <div class="card">
             <!--Encabezado-->
             <div class="card-header bg-secondary bg-gradient text-white">
@@ -110,7 +110,7 @@
                  <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
                     <div class="me-md-2">
                         <!-- Acción para regresar a la lista de registros mensuales -->
-                        <a href="@Url.Action("RegistrosMensualActividades", "Seguimiento", new { id = ViewBag.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                        <a href="@Url.Action("RegistrosMensualActividades", "Laboratorio", new { id = ViewBag.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
                             <i class="fa fa-bars me-3" aria-hidden="true"></i>Regresar a la lista de visitas
                         </a>
                     </div>
@@ -134,42 +134,8 @@
         //Coloca el valor del id del reporte mensual en el input correspondiente
         numeroInput.value = '@ViewBag.IdReporteMensual'; // Asigna el valor del ViewBag al input
         //Llena el combo con el catálogo de productores
-        cargarProductores();
+        productores();
     });
 
-    async function cargarProductores() 
-    {
-        //Obtiene el elemento select del DOM
-        const cmbProductores = document.getElementById("IdProductor");
-        //Sección para realizar la petición al controlador y llenar el combo (Try, catch para manejar errores))
-        try 
-        {
-            // Realizar la petición GET al controlador
-            const response = await fetch('/Seguimiento/ObtenerProductores');
-            //Error en la respuesta HTTP
-            if (!response.ok) 
-            {
-                throw new Error(`Error HTTP: ${response.status}`);
-            }
-            // Convertir la respuesta a JSON del controlador
-            const data = await response.json();
-            // Limpiar opciones anteriores excepto la opción por defecto
-            cmbProductores.innerHTML = '<option value="" disabled selected>Seleccione un productor... </option>';
-            // Recorrer el arreglo devuelto y agregar las opciones al select
-            data.forEach(item => 
-            {
-                const option = document.createElement("option");
-                var nombre = item.nombreProductor + ' ' + item.apellidoPaternoProductor + ' ' + item.apellidoMaternoProductor
-                option.value = item.idProductor;
-                option.textContent = nombre;
-                cmbProductores.appendChild(option);
-            });
-        
-        } 
-        catch (error) 
-        {
-            console.error("Error al cargar la lista de productores:", error);
-        }
-    }
 
 </script>

@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-4">
-    <form id="formRegistroMensual" action="/Seguimiento/RegistrosMensualEditar" method="POST">
+    <form id="formRegistroMensual" action="/Laboratorio/RegistrosMensualEditar" method="POST">
         <div class="card">
             <div class="card-header bg-secondary bg-gradient text-white">
                 <h4 class="m-0">Registro mensual - Editar</h4>
@@ -58,7 +58,7 @@
                 <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
                     <div class="me-md-2">
                         <!-- Acción para regresar a la lista de registros mensuales -->
-                        <a href="@Url.Action("RegistrosMensualInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                        <a href="@Url.Action("LaboratorioInicio", "Laboratorio")" class="btn btn-light w-100 w-md-auto">
                             <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de registros mensuales
                         </a>
                     </div>
@@ -68,12 +68,6 @@
                             <i class="fa fa-save me-1" aria-hidden="true"></i>Guardar Registro
                         </button>
                     </div>
-                    @*<div class="mt-2 mt-md-0">
-                        <!-- Acción para registrar acciones de laboratorio móvil, inicialmente oculto -->
-                        <a id="btnRegistrarAcciones" href="@Url.Action("laboratorioMovilVerRegistroMensual", "Seguimiento", new { id = 0, id1 = 0, id2 = 0 })" class="btn btn-success w-100 w-md-ato" style="display: none;">
-                            <i class="fa fa-tasks me-1" aria-hidden="true"></i>Registrar acciones de laboratorio móvil
-                        </a>
-                    </div>*@
                 </div>
             </div>
         </div>
@@ -82,48 +76,9 @@
 
 <script>
 
-    //Inicio del script, se ejecuta cuando el DOM está completamente cargado
     document.addEventListener("DOMContentLoaded", function ()
     {
-        //Llena el combo de laboratorios al cargar la página
-        cargarLaboratorios();
+        cargarLaboratorios("@Model.IdLaboratorio");
     });
 
-    //Función para cargar los laboratorios en el combo
-    async function cargarLaboratorios()
-    {
-        //Obtiene el elemento select del DOM
-        const cmbLaboratorios = document.getElementById("cmbLaboratorios");
-        //Sección para realizar la petición al controlador y llenar el combo (Try, catch para manejar errores))
-        try
-        {
-            // Realizar la petición GET al controlador
-            const response = await fetch('/Seguimiento/ObtenerLaboratorios');
-            const idLaboratorioGuardado = "@Model.IdLaboratorio";
-            //Error en la respuesta HTTP
-            if (!response.ok)
-            {
-                throw new Error(`Error HTTP: ${response.status}`);
-            }
-            // Convertir la respuesta a JSON del controlador
-            const data = await response.json();
-            // Limpiar opciones anteriores excepto la opción por defecto
-            cmbLaboratorios.innerHTML = '<option value="">Seleccione un laboratorio... </option>';
-            // Recorrer el arreglo devuelto y agregar las opciones al select
-            data.forEach(item =>
-            {
-                const option = document.createElement("option");
-                option.value = item.idLaboratoio;
-                option.textContent = item.nombreLaboratorio;
-                if (item.idLaboratoio == idLaboratorioGuardado) {
-                    option.selected = true;
-                }
-                cmbLaboratorios.appendChild(option);
-            });
-        }
-        catch (error)
-        {
-            console.error("Error al cargar la lista de laboratorios:", error);
-        }
-    }
 </script>

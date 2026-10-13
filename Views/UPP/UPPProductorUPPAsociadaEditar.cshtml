@@ -73,6 +73,11 @@
                         <input type="checkbox" id="especieTrabajadaPorcino" name="especieTrabajadaPorcino" class="pt-2 me-2" value="True" @(Model.EspecieTrabajadaPorcino == true ? "checked" : "") />Porcino
                     </div>
                 </div>
+                <div id="divErrores" class="alert alert-warning mt-2 fs-5 d-none" role="alert">
+                    <span class="d-block text-center"><i class="fa fa-exclamation-triangle me-1" aria-hidden="true"></i>Lista de errores</span>
+                    <ul class="mt-2" id="listaErrores">
+                    </ul>
+                </div>
                 <h4 class="my-2 alert alert-secondary text-center">Ubicación de la UPP</h4>
                 <div id="mapa" style="height: 600px; width: 100%;"></div>
             </div>
@@ -87,7 +92,7 @@
                     </div>
                     <div class="mt-2 mt-md-0">
                         <!-- Botón para guardar un registro nuevo -->
-                        <button type="submit" class="btn btn-light w-100 w-md-auto">
+                        <button type="button" id="btnGuardarUPP" class="btn btn-light w-100 w-md-auto">
                             <i class="fa fa-save me-1" aria-hidden="true"></i>
                             Guardar UPP
                         </button>
@@ -99,9 +104,10 @@
 </div>
 
 <script>
-    //Carga del DOM
+    
     document.addEventListener('DOMContentLoaded', () => 
     {
+
         cargarMunicipios('@Model.CveMunicipio', '@Model.CveLocalidad');
 
         // Conversión segura de coordenadas a string
@@ -139,5 +145,80 @@
 
     });
 
+    document.getElementById('btnGuardarUPP')?.addEventListener('click', async function(event) {
+
+        document.getElementById('divErrores').classList.add('d-none');
+        const contenedorErrores = document.getElementById('listaErrores');
+        contenedorErrores.innerHTML = ''; // Limpiar errores anteriores
+        let erroresEcontrados = false;
+        let errorRegistroDuplicado = false;
+
+        const claveUPP = document.getElementById('claveUPP').value.trim();
+        const nombreUPP = document.getElementById('nombreUPP').value.trim();
+        const municipio = document.getElementById('cmbMunicipio').value;
+        const localidad = document.getElementById('cmbLocalidad').value;
+        const latitud = document.getElementById('latitud').value;
+        const longitud = document.getElementById('longitud').value;
+        const hato = document.getElementById('totalHato').value;
+        const probados = document.getElementById('totalProbados').value;
+        const bovino = document.getElementById('especieTrabajadaBovino').checked;
+        const equino = document.getElementById('especieTrabajadaEquino').checked;
+        const ovino = document.getElementById('especieTrabajadaOvino').checked;
+        const porcino = document.getElementById('especieTrabajadaPorcino').checked;        
+
+        //Valida el registro en la base de datos
+        try {
+            const response = await fetch(`/UPP/ValidarClaveUPP?clave=${claveUPP}`);
+            const data = await response.json();
+            if (data.exists) {
+                errorRegistroDuplicado = true;
+                contenedorErrores.innerHTML += '<li>La clave UPP ya existe en la base de datos.</li>';
+            }
+        } catch (error) {
+            contenedorErrores.innerHTML += '<li>Error al conectar con el servidor para validar la clave UPP.</li>';
+            errorRegistroDuplicado = true; // Lo tratamos como error local para frenar el envío por seguridad
+        }
+        if (errorRegistroDuplicado){
+            document.getElementById('divErrores').classList.remove('d-none'); 
+            return false;
+        }
+        //Vaidaciones locales
+        if (claveUPP.length !== 12) {
+            contenedorErrores.innerHTML = '<li>La clave UPP debe tener exactamente 12 caracteres.</li>';
+            erroresEcontrados = true;
+        }
+        if (nombreUPP.length === 0){
+            contenedorErrores.innerHTML += '<li>El nombre de la UPP no puede estar vacía.</li>';
+            erroresEcontrados = true;
+        }
+        if (municipio == "000"){
+            contenedorErrores.innerHTML += '<li>Se debe de seleccionar un municipio de la lista</li>';
+            erroresEcontrados = true;
+        }
+        if (localidad == "0000"){
+            contenedorErrores.innerHTML += '<li>Se debe de seleccionar una localidad de la lista</li>';
+            erroresEcontrados = true;
+        }
+        if (latitud <= 0){
+            contenedorErrores.innerHTML += '<li>El valor para la latitud debe ser un munero mayor a 0.</li>';
+            erroresEcontrados = true;
+        }
+        if (longitud >= 0){
+            contenedorErrores.innerHTML += '<li>El valor para la latitud debe ser un munero mayor a 0.</li>';
+            erroresEcontrados = true;
+        }
+        if(!bovino && !equino && !ovino && !porcino) {
+            contenedorErrores.innerHTML += '<li>Se debe de seleccionar al menos una especie registrada.</li>';
+            erroresEcontrados = true;
+        }
+        
+        if (erroresEcontrados){
+            document.getElementById('divErrores').classList.remove('d-none'); 
+            return false;
+        }
+
+        document.getElementById('formAgregarUPP').submit();
+
+    });
 
 </script>

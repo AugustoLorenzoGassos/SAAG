@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-4">
-    <form action="/Seguimiento/bitacoraElectronicaEliminar" method="POST" class="form-registro-detalle">
+    <form action="/Laboratorio/bitacoraElectronicaEliminar" method="POST" class="form-registro-detalle">
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.IdBitacoraElectronica)
         @Html.HiddenFor(model => model.IdReporteMensual)
@@ -250,7 +250,7 @@
             <div class="card-footer">
                 <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
                     <div class="me-md-2">
-                        <a id="btnRegresarListaReportes" href="@Url.Action("bitacoraElectronicaInicio", "Seguimiento", new { id = @ViewBag.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                        <a id="btnRegresarListaReportes" href="@Url.Action("bitacoraElectronicaInicio", "Laboratorio", new { id = @ViewBag.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
                             <i class="fa fa-tasks me-3" aria-hidden="true"></i>Regresar a la lista de visitas
                         </a>
                     </div>

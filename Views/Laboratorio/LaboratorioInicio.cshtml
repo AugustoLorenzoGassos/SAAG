@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Registro mensual de actividades";
+    ViewData["Title"] = "Laboratorios Móviles - Registro mensual de actividades";
 }
 
 <div class="container mt-4">
@@ -95,7 +95,7 @@
                 </div>
                 <div class="mt-2 mt-md-0">
                     <!-- Acción para agregar un nuevo registro mensual -->
-                    <a href="@Url.Action("RegistosMensualAgregar", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                    <a href="@Url.Action("RegistosMensualAgregar", "Laboratorio")" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-plus-square me-1" aria-hidden="true"></i> Agregar registro mensual
                     </a>
                 </div>
@@ -119,7 +119,7 @@
 
     document.getElementById('btnDescargar')?.addEventListener('click', function (e) {
         e.preventDefault();
-        urlDescargaActual = '/Seguimiento/RegistroMensualDescarga';
+        urlDescargaActual = '/Laboratorio/RegistroMensualDescarga';
 
         // 1. Instancias el objeto URL basado en tu variable base
         const url = new URL(urlDescargaActual, window.location.origin);
@@ -155,7 +155,7 @@
         {
             try 
             {
-                const response = await fetch(`/Seguimiento/ObtenerListaLaboratorioRegistroMensual?${params.toString()}`);
+                const response = await fetch(`/Laboratorio/ObtenerListaLaboratorioRegistroMensual?${params.toString()}`);
                 if (!response.ok) 
                 {
                     throw new Error(`Error en la petición: ${response.statusText}`);
@@ -225,21 +225,21 @@
     //Función para ver detalles de un registro mensual
     function verAccionesSeguimiento(idReporteMensual) 
     {
-        window.location.href = `/Seguimiento/RegistrosMensualActividades/${idReporteMensual}`;
+        window.location.href = `/Laboratorio/RegistrosMensualActividades/${idReporteMensual}`;
     }
     //Función para vel las acciones registradas en la bitácora
     function verBitacora(idReporteMensual) {
-        window.location.href = `/Seguimiento/bitacoraElectronicaInicio/${idReporteMensual}`;
+        window.location.href = `/Laboratorio/bitacoraElectronicaInicio/${idReporteMensual}`;
     }
     //Función para editar la información de un registro mensual
     function editarRegistro(idReporteMensual)
     {
-        window.location.href = `/Seguimiento/RegistrosMensualEditar/${idReporteMensual}`;
+        window.location.href = `/Laboratorio/RegistrosMensualEditar/${idReporteMensual}`;
     }
     //Función para elimianr un registro mensual
     function eliminarRegistro(idReporteMensual)
     {
-        window.location.href = `/Seguimiento/RegistrosMensualEliminar/${idReporteMensual}`;
+        window.location.href = `/Laboratorio/RegistrosMensualEliminar/${idReporteMensual}`;
     }
 
 </script>

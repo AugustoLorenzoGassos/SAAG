@@ -5,7 +5,7 @@
 }
 
 <div class="container">
-    <form action="/UPP/UPPProductorUPPAsociadaAgregar" method="post">
+    <form id="formAgregarUPP" action="/UPP/UPPProductorUPPAsociadaAgregar" method="post">
         @Html.HiddenFor(model => model.IdProductor)
         @Html.HiddenFor(model=>model.IdProductorUpp)
         @Html.HiddenFor(model => model.IdUsuario)
@@ -17,25 +17,25 @@
                 <h4 class="m-0">Registro de productores - Agregar UPP</h4>
             </div>
             <div class="card-body">
-                <h4>Productor: @ViewBag.nombreProductor</h4>
+                <h6>Productor: @ViewBag.nombreProductor</h6>
                 <div class="row">
                     <div class="col col-md-3">
                         <label for="claveUPP">Clave UPP:</label>
-                        <input type="text" id="claveUPP" name="claveUPP" class="form-control" required />
+                        <input type="text" id="claveUPP" maxlength="12" name="claveUPP" class="form-control" />
                     </div>
                     <div class="col col-md-3">
                         <label for="nombreUPP">Nombre UPP:</label>
-                        <input type="text" id="nombreUPP" name="nombreUPP" class="form-control" required />
+                        <input type="text" id="nombreUPP" name="nombreUPP" class="form-control" />
                     </div>
                     <div class="col col-md-3">
                         <label for="cveMunicipio">Municipio:</label>
-                        <select id="cmbMunicipio" name="cveMunicipio" class="form-control" required>
+                        <select id="cmbMunicipio" name="cveMunicipio" class="form-control" >
                             <option value="000" disabled selected>Seleccione un municipio... </option>
                         </select>
                     </div>
                     <div class="col col-md-3">
                         <label for="cmbLocalidad">Loclaidad:</label>
-                        <select id="cmbLocalidad" name="cveLocalidad" class="form-control" required>
+                        <select id="cmbLocalidad" name="cveLocalidad" class="form-control" >
                             <option value="0000" disabled selected>Seleccione una localidad... </option>
                         </select>
                     </div>
@@ -43,19 +43,19 @@
                 <div class="row">
                     <div class="col col-md-3">
                         <label for="latitud">Latitud:</label>
-                        <input type="number" id="latitud" name="latitud" class="form-control" step="0.000001" required />
+                        <input type="number" id="latitud" value="0" name="latitud" class="form-control" step="0.000001" />
                     </div>
                     <div class="col col-md-3">
                         <label for="longitud">Longitud:</label>
-                        <input type="number" id="longitud" name="longitud" class="form-control" step="0.000001" required />
+                        <input type="number" id="longitud" value="0" name="longitud" class="form-control" step="0.000001" />
                     </div>
                     <div class="col col-md-3">
                         <label for="totalHato">Hato:</label>
-                        <input type="number" id="totalHato" name="totalHato" class="form-control" required />
+                        <input type="number" id="totalHato" value="0" name="totalHato" class="form-control" />
                     </div>
                     <div class="col col-md-3">
                         <label for="totalProbados">Probados:</label>
-                        <input type="number" id="totalProbados" name="totalProbados" class="form-control" required />
+                        <input type="number" id="totalProbados" value="0" name="totalProbados" class="form-control" />
                     </div>
                 </div>
                 <h6 class="text-center w-100 mt-1 mb-1">Especies trabajadas</h6>
@@ -73,7 +73,11 @@
                         <input type="checkbox" id="especieTrabajadaPorcino" name="especieTrabajadaPorcino" class="pt-2 me-2" value="True" />Porcino
                     </div>
                 </div>
-
+                <div id="divErrores" class="alert alert-warning mt-2 fs-5 d-none" role="alert">
+                    <span class="d-block text-center"><i class="fa fa-exclamation-triangle me-1" aria-hidden="true"></i>Lista de errores</span>
+                    <ul class="mt-2" id="listaErrores">
+                    </ul>
+                </div>
             </div>
             <div class="card-footer">
                 <!-- Botones de acción en flex responsivo -->
@@ -86,7 +90,7 @@
                     </div>
                     <div class="mt-2 mt-md-0">
                         <!-- Botón para guardar un registro nuevo -->
-                        <button type="submit" class="btn btn-light w-100 w-md-auto">
+                        <button id="btnGuardarUPP" type="button" class="btn btn-light w-100 w-md-auto">
                             <i class="fa fa-save me-1" aria-hidden="true"></i>
                             Guardar UPP
                         </button>
@@ -99,12 +103,87 @@
 
 <script>
     
-//Carga del DOM
     document.addEventListener('DOMContentLoaded', () => 
     {
         const idMunicipio = null;
         const idLoclidad = null;
         cargarMunicipios(idMunicipio, idLoclidad);
+    });
+
+    document.getElementById('btnGuardarUPP')?.addEventListener('click', async function(event) {
+
+        document.getElementById('divErrores').classList.add('d-none');
+        const contenedorErrores = document.getElementById('listaErrores');
+        contenedorErrores.innerHTML = ''; // Limpiar errores anteriores
+        let erroresEcontrados = false;
+        let errorRegistroDuplicado = false;
+
+        const claveUPP = document.getElementById('claveUPP').value.trim();
+        const nombreUPP = document.getElementById('nombreUPP').value.trim();
+        const municipio = document.getElementById('cmbMunicipio').value;
+        const localidad = document.getElementById('cmbLocalidad').value;
+        const latitud = document.getElementById('latitud').value;
+        const longitud = document.getElementById('longitud').value;
+        const hato = document.getElementById('totalHato').value;
+        const probados = document.getElementById('totalProbados').value;
+        const bovino = document.getElementById('especieTrabajadaBovino').checked;
+        const equino = document.getElementById('especieTrabajadaEquino').checked;
+        const ovino = document.getElementById('especieTrabajadaOvino').checked;
+        const porcino = document.getElementById('especieTrabajadaPorcino').checked;        
+
+        //Valida el registro en la base de datos
+        try {
+            const response = await fetch(`/UPP/ValidarClaveUPP?clave=${claveUPP}`);
+            const data = await response.json();
+            if (data.exists) {
+                errorRegistroDuplicado = true;
+                contenedorErrores.innerHTML += '<li>La clave UPP ya existe en la base de datos.</li>';
+            }
+        } catch (error) {
+            contenedorErrores.innerHTML += '<li>Error al conectar con el servidor para validar la clave UPP.</li>';
+            errorRegistroDuplicado = true; // Lo tratamos como error local para frenar el envío por seguridad
+        }
+        if (errorRegistroDuplicado){
+            document.getElementById('divErrores').classList.remove('d-none'); 
+            return false;
+        }
+        //Vaidaciones locales
+        if (claveUPP.length !== 12) {
+            contenedorErrores.innerHTML = '<li>La clave UPP debe tener exactamente 12 caracteres.</li>';
+            erroresEcontrados = true;
+        }
+        if (nombreUPP.length === 0){
+            contenedorErrores.innerHTML += '<li>El nombre de la UPP no puede estar vacía.</li>';
+            erroresEcontrados = true;
+        }
+        if (municipio == "000"){
+            contenedorErrores.innerHTML += '<li>Se debe de seleccionar un municipio de la lista</li>';
+            erroresEcontrados = true;
+        }
+        if (localidad == "0000"){
+            contenedorErrores.innerHTML += '<li>Se debe de seleccionar una localidad de la lista</li>';
+            erroresEcontrados = true;
+        }
+        if (latitud <= 0){
+            contenedorErrores.innerHTML += '<li>El valor para la latitud debe ser un munero mayor a 0.</li>';
+            erroresEcontrados = true;
+        }
+        if (longitud >= 0){
+            contenedorErrores.innerHTML += '<li>El valor para la latitud debe ser un munero mayor a 0.</li>';
+            erroresEcontrados = true;
+        }
+        if(!bovino && !equino && !ovino && !porcino) {
+            contenedorErrores.innerHTML += '<li>Se debe de seleccionar al menos una especie registrada.</li>';
+            erroresEcontrados = true;
+        }
+        
+        if (erroresEcontrados){
+            document.getElementById('divErrores').classList.remove('d-none'); 
+            return false;
+        }
+
+        document.getElementById('formAgregarUPP').submit();
+
     });
 
 </script>

@@ -2,10 +2,10 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 //Función para cargar los laboratorios en el combo
-async function cargarLaboratorios() {
+async function cargarLaboratorios(idLaboratorioSeleccionado = null) {
     const cmbLaboratorios = document.getElementById("cmbLaboratorios");
     try {
-        const response = await fetch('/Seguimiento/ObtenerLaboratorios');
+        const response = await fetch('/Catalogos/ObtenerLaboratorios');
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
         }
@@ -17,7 +17,9 @@ async function cargarLaboratorios() {
             option.textContent = item.nombreLaboratorio;
             cmbLaboratorios.appendChild(option);
         });
-
+        if (idLaboratorioSeleccionado) {
+            cmbLaboratorios.value = idLaboratorioSeleccionado;
+        }
     }
     catch (error) {
         console.error("Error al cargar la lista de laboratorios:", error);
@@ -118,5 +120,59 @@ async function cargarLocalidades(pMunicipio, pLocalidad = null)
     catch (error)
     {
         console.error("Error al cargar la lista de localidades:", error);
+    }
+}
+
+async function productores(idProductorGuardado = null) {
+
+    const cmbProductores = document.getElementById("IdProductor");
+    try {
+        const response = await fetch('/Catalogos/ObtenerProductores');
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+        const data = await response.json();
+        cmbProductores.innerHTML = '<option value="" disabled selected>Seleccione un productor... </option>';
+        data.forEach(item => {
+            const option = document.createElement("option");
+            var nombre = item.nombreProductor + ' ' + item.apellidoPaternoProductor + ' ' + item.apellidoMaternoProductor
+            option.value = item.idProductor;
+            option.textContent = nombre;
+            if (idProductorGuardado == item.idProductor) {
+                option.selected = true;
+            }
+            cmbProductores.appendChild(option);
+        });
+    }
+    catch (error) {
+        console.error("Error al cargar la lista de productores:", error);
+    }
+}
+
+async function cargarProductores(idProductorGuardado = null) {
+    const cmbProductores = document.getElementById("IdProductorUPP");
+    try {
+        const response = await fetch('/Catalogos/ObtenerProductoresUPP');
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+        const data = await response.json();
+        cmbProductores.innerHTML = '<option value="" disabled selected>Seleccione una UPP... </option>';
+        data.forEach(item => {
+            // Recorrer la lista de UPPs dentro de cada productor
+            item.productoresUPP.forEach(upp => {
+                const nombre = `${upp.claveUpp} - ${item.nombreProductor} ${item.apellidoPaternoProductor} ${item.apellidoMaternoProductor}`;
+                const option = document.createElement("option");
+                option.value = upp.idProductorUpp; // o upp.idProductorUPP según corresponda
+                option.textContent = nombre;
+                if (idProductorGuardado == upp.idProductorUpp) {
+                    option.selected = true;
+                }
+                cmbProductores.appendChild(option);
+            });
+        });
+    }
+    catch (error) {
+        console.error("Error al cargar la lista de productores:", error);
     }
 }

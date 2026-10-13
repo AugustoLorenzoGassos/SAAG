@@ -65,12 +65,12 @@
         <div class="card-footer">
             <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
                 <div class="me-md-2">
-                    <a id="btnRegresarListaReportes" href="@Url.Action("RegistrosMensualInicio", "Seguimiento")" class="btn btn-light w-100 w-md-auto">
+                    <a id="btnRegresarListaReportes" href="@Url.Action("LaboratorioInicio", "Laboratorio")" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-tasks me-3" aria-hidden="true"></i>Regresar a la lista de registros mensuales
                     </a>
                 </div>
                 <div class="mt-2 mt-md-0">
-                    <a id="btnRegistrarAcciones" href="@Url.Action("bitacoraElectronicaAgregar", "Seguimiento", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                    <a id="btnRegistrarAcciones" href="@Url.Action("bitacoraElectronicaAgregar", "Laboratorio", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
                         <i class="fa fa-plus-square me-3 p-1" aria-hidden="true"></i>Agregar vistas
                     </a>
                 </div>
@@ -82,11 +82,11 @@
 <script>
 
     function editarVisita(IdBitacora){
-        window.location.href = `/Seguimiento/bitacoraElectronicaEditar/${IdBitacora}`;
+        window.location.href = `/Laboratorio/bitacoraElectronicaEditar/${IdBitacora}`;
     }
 
     function eliminarVista(IdBitacora){
-        window.location.href = `/Seguimiento/bitacoraElectronicaEliminar/${IdBitacora}`;
+        window.location.href = `/Laboratorio/bitacoraElectronicaEliminar/${IdBitacora}`;
     }
 
 </script>

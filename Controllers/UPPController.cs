@@ -48,6 +48,13 @@ namespace Seguimiento.Controllers
         }
 
         //**********API's para el registro de UPP
+        //Función para validar le existencoia de una UPP
+        [HttpGet]
+        public async Task<IActionResult> ValidarClaveUPP(string clave)
+        {
+            var existe = await _context.CatalogoProductoresUpps.AnyAsync(u => u.ClaveUpp == clave);
+            return Ok(new { exists = existe });
+        }
         //Función que regresa la ventana principal de UPP
         public IActionResult UPPInicio()
         {
@@ -152,6 +159,7 @@ namespace Seguimiento.Controllers
                                        //UsuarioNombre = r.IdUsuarioNavigation != null ? r.IdUsuarioNavigation.NombreUsuario : "Sin usuario",
                                        r.ApellidoPaternoProductor,
                                        r.ApellidoMaternoProductor,
+                                       totalUPP = r.CatalogoProductoresUpps.Count()
                                    }).OrderBy(r => r.NombreProductor).ThenBy(r => r.ApellidoPaternoProductor).ThenBy(r => r.ApellidoMaternoProductor).ToListAsync();
             //Regresa información
             return Json(resultado);
@@ -235,14 +243,6 @@ namespace Seguimiento.Controllers
         {
             try
             {
-                //var idUsuarioSesion = HttpContext.Session.GetString("IdUsuario");
-                //modelo.FechaActualizacion = DateTime.Now;
-                //modelo.IdUsuario = idUsuarioSesion;
-                //modelo.CurpProductor = modelo.CurpProductor?.ToUpper();
-                //modelo.NombreProductor = modelo.NombreProductor?.ToUpper();
-                //modelo.ApellidoPaternoProductor = modelo.ApellidoPaternoProductor?.ToUpper();
-                //modelo.ApellidoMaternoProductor = modelo.ApellidoMaternoProductor?.ToUpper();
-                //modelo.DomicilioProductor = modelo.DomicilioProductor?.ToUpper();
                 _context.CatalogoProductores.Remove(modelo);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("UPPInicio", "UPP");
@@ -274,7 +274,7 @@ namespace Seguimiento.Controllers
         {
             var registro = new CatalogoProductoresUpp();
             var idUsuarioSesion = HttpContext.Session.GetString("IdUsuario");
-            ViewBag.nombreProductor = _context.CatalogoProductores.FirstOrDefault(p => p.IdProductor == id);
+            ViewBag.nombreProductor = _context.CatalogoProductores.Where(p => p.IdProductor == id).Select(p => p.NombreProductor + " " + p.ApellidoPaternoProductor + " " + p.ApellidoMaternoProductor).FirstOrDefault();
             registro.FechaCaptura = DateTime.Now;
             registro.FechaActualizacion = DateTime.Now;
             registro.IdProductor = id;
@@ -440,7 +440,8 @@ namespace Seguimiento.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UPPProductorUPPAsociadaVisitasAgregar([FromForm] ProduccionUpp modelo)
         {
-
+            _context.ProduccionUpps.Add(modelo);
+            await _context.SaveChangesAsync();
             return RedirectToAction("UPPProductorUPPAsociadaVisitas", "UPP", new { id = modelo.IdProductorUpp });
         }
         //Genera la vista para agregar visitas a la UPP desde un archivo Excel
@@ -614,7 +615,80 @@ namespace Seguimiento.Controllers
 
             return File(archivoBytes, "text/csv", "Errores_Carga.csv");
         }
-        //**********Fin de API's para el registro de UPP
+
+        public ActionResult UPPProductorUPPAsociadaVisitasEditar(int id)
+        {
+            var registro = _context.ProduccionUpps.FirstOrDefault(up => up.IdRegistroProduccion == id);
+
+            var upp = _context.CatalogoProductoresUpps
+                .Include(x => x.IdProductorNavigation)    // Trae los datos del productor
+                .Include(x => x.CatalogoLocalidade)       // Trae los datos de la localidad (revisa el nombre exacto de esta propiedad en tu modelo)
+                    .ThenInclude(l => l.ClaveMunicipioNavigation) // Trae los datos del municipio
+                .FirstOrDefault(x => x.IdProductorUpp == registro.IdProductorUpp); // O .Id == id, dependiendo de tu llave primaria
+
+
+            ViewBag.claveUPP = upp.ClaveUpp != null ? upp.ClaveUpp : "Sin clave de UPP";
+            ViewBag.Productor = upp.IdProductorNavigation != null ? upp.IdProductorNavigation.NombreProductor + " " + upp.IdProductorNavigation.ApellidoPaternoProductor + " " + upp.IdProductorNavigation.ApellidoMaternoProductor : "";
+            ViewBag.Municipio = upp.CatalogoLocalidade != null && upp.CatalogoLocalidade.ClaveMunicipioNavigation != null ? upp.CatalogoLocalidade.ClaveMunicipioNavigation.NombreMunicipio : "";
+            ViewBag.Localidad = upp.CatalogoLocalidade != null ? upp.CatalogoLocalidade.NombreLocalidad : "";
+            ViewBag.Razas = _context.CatalogoRazas.ToList();
+            ViewBag.TiposProduccion = _context.CatalogoUsos.ToList();
+
+            return View(registro);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UPPProductorUPPAsociadaVisitasEditar([FromForm] ProduccionUpp modelo)
+        {
+            try
+            {
+                _context.ProduccionUpps.Update(modelo);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("UPPProductorUPPAsociadaVisitas", "UPP", new { id = modelo.IdProductorUpp });
+            }
+            catch (Exception ex)
+            {
+                return View(modelo);
+            }
+        }
+
+        public ActionResult UPPProductorUPPAsociadaVisitasEliminar(int id)
+        {
+            var registro = _context.ProduccionUpps.FirstOrDefault(up => up.IdRegistroProduccion == id);
+
+            var upp = _context.CatalogoProductoresUpps
+                .Include(x => x.IdProductorNavigation)    // Trae los datos del productor
+                .Include(x => x.CatalogoLocalidade)       // Trae los datos de la localidad (revisa el nombre exacto de esta propiedad en tu modelo)
+                    .ThenInclude(l => l.ClaveMunicipioNavigation) // Trae los datos del municipio
+                .FirstOrDefault(x => x.IdProductorUpp == registro.IdProductorUpp); // O .Id == id, dependiendo de tu llave primaria
+
+
+            ViewBag.claveUPP = upp.ClaveUpp != null ? upp.ClaveUpp : "Sin clave de UPP";
+            ViewBag.Productor = upp.IdProductorNavigation != null ? upp.IdProductorNavigation.NombreProductor + " " + upp.IdProductorNavigation.ApellidoPaternoProductor + " " + upp.IdProductorNavigation.ApellidoMaternoProductor : "";
+            ViewBag.Municipio = upp.CatalogoLocalidade != null && upp.CatalogoLocalidade.ClaveMunicipioNavigation != null ? upp.CatalogoLocalidade.ClaveMunicipioNavigation.NombreMunicipio : "";
+            ViewBag.Localidad = upp.CatalogoLocalidade != null ? upp.CatalogoLocalidade.NombreLocalidad : "";
+            ViewBag.Razas = _context.CatalogoRazas.ToList();
+            ViewBag.TiposProduccion = _context.CatalogoUsos.ToList();
+
+            return View(registro);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UPPProductorUPPAsociadaVisitasEliminar([FromForm] ProduccionUpp modelo)
+        {
+            try
+            {
+                _context.ProduccionUpps.Remove(modelo);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("UPPProductorUPPAsociadaVisitas", "UPP", new { id = modelo.IdProductorUpp });
+            }
+            catch (Exception ex)
+            {
+                return View(modelo);
+            }
+        }
 
 
 

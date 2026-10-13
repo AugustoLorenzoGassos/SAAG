@@ -19,41 +19,41 @@
                 }
                 <div class="row mt-4">
                     <div class="col-12 col-md-3 form-group">
-                        <label for="curpProductor">CURP:</label>
-                        <input type="text" id="curpProductor" name="curpProductor" value="@Model.CurpProductor" class="form-control" required />
+                        <label class="form-label d-block">CURP:</label>
+                        @Model.CurpProductor
                     </div>
                     <div class="col-12 col-md-3 form-group">
-                        <label for="nombreProductor">Nombre:</label>
-                        <input type="text" id="nombreProductor" name="nombreProductor" value="@Model.NombreProductor" class="form-control" required />
+                        <label class="form-label d-block">Nombre:</label>
+                        @Model.NombreProductor
                     </div>
                     <div class="col-12 col-md-3 form-group">
-                        <label for="apellidoPaternoProductor">Apellido paterno:</label>
-                        <input type="text" id="apellidoPaternoProductor" name="apellidoPaternoProductor" value="@Model.ApellidoPaternoProductor" class="form-control" required />
+                        <label class="form-label d-block">Apellido paterno:</label>
+                        @Model.ApellidoPaternoProductor
                     </div>
                     <div class="col-12 col-md-3 form-group">
-                        <label for="apellidoMaternoProductor">Apellido materno:</label>
-                        <input type="text" id="apellidoMaternoProductor" name="apellidoMaternoProductor" value="@Model.ApellidoMaternoProductor" class="form-control" required />
+                        <label class="form-label d-block">Apellido materno:</label>
+                        @Model.ApellidoMaternoProductor
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-12 col-md-3">
-                        <label for="generoProductor">Sexo</label>
+                        <label class="form-label d-block">Sexo</label>
                         <div class="form-group">
                             <input type="radio" id="generoProductorH" name="generoProductor" class="p-1 me-2" value="H" @(Model.GeneroProductor == "H" ? "checked" : "") />Hombre
                             <input type="radio" id="generoProductorM" name="generoProductor" class="p-1 me-2" value="M" @(Model.GeneroProductor == "M" ? "checked" : "") />Mujer
                         </div>
                     </div>
                     <div class="col-12 col-md-3 form-group">
-                        <label for="telefonoProductor">Telefono:</label>
-                        <input type="tel" id="telefonoProductor" name="telefonoProductor" value="@Model.TelefonoProductor" class="form-control" required />
+                        <label class="form-label d-block">Telefono:</label>
+                        @Model.TelefonoProductor
                     </div>
                     <div class="col-12 col-md-3 form-group">
-                        <label for="correoProductor">Correo electrónico:</label>
-                        <input type="email" id="correoProductor" name="correoProductor" value="@Model.CorreoProductor" class="form-control" required />
+                        <label class="form-label d-block">Correo electrónico:</label>
+                        @Model.CorreoProductor
                     </div>
                     <div class="col-12 col-md-3 form-group">
-                        <label for="domicilioProductor">Domicilio:</label>
-                        <input type="text" id="domicilioProductor" name="domicilioProductor" value="@Model.DomicilioProductor" class="form-control" required />
+                        <label class="form-label d-block">Domicilio:</label>
+                        @Model.DomicilioProductor
                     </div>
                 </div>
                 <label class="text-center w-100 mt-1 mb-1">Especies registgradas</label>

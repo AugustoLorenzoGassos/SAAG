@@ -184,6 +184,9 @@
         tbody.innerHTML = '';
         datos.forEach(item => 
         {
+            const badgeHtml = (item.totalUPP > 0) 
+            ? `<span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle" style="font-size:x-small;">${item.totalUPP}</span>` 
+            : '';
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${item.curpProductor ?? '-'}</td>
@@ -195,6 +198,7 @@
                         <!--Mostrar UPP del productor-->
                         <button type="button" class="btn" onclick="verUPPProductor(${item.idProductor});" title="UPPs asociadas al productor">
                             <i class="fa fa-tasks"></i>
+                            ${badgeHtml}
                         </button>
                         <button type="button" class="btn" onclick="editarProductor(${item.idProductor});" title="Editar datos del productor">
                             <i class="fa fa-pencil"></i>

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Captura de productores";
 }
 
-<div class="container mt-4">
+<div id="formAgregarProductor" class="container mt-4">
     <form action="/UPP/UPPProductorAgregar" method="post">
         @Html.HiddenFor(model => model.IdProductor)
         @Html.AntiForgeryToken()
@@ -77,6 +77,11 @@
                     <div class="col-12 col-md-3 form-group"></div>
                     <div class="col-12 col-md-3 form-group"></div>
                 </div>*@
+                <div id="divErrores" class="alert alert-warning mt-2 fs-5 d-none" role="alert">
+                    <span class="d-block text-center"><i class="fa fa-exclamation-triangle me-1" aria-hidden="true"></i>Lista de errores</span>
+                    <ul class="mt-2" id="listaErrores">
+                    </ul>
+                </div>
             </div>
             <div class="card-footer">
                 <!-- Botones de acción en flex responsivo -->
@@ -98,3 +103,39 @@
         </div>
     </form>
 </div>
+
+<script>
+
+    document.getElementById('formAgregarProductor').addEventListener('submit', function(event) {
+
+        const divErrores = document.getElementById('divErrores');
+        divErrores.classList.add('d-none');
+
+        const contenedorErrores = document.getElementById('listaErrores');
+        contenedorErrores.innerHTML = ''; // Limpiar errores anteriores
+        var erroresEcontrados = false;
+
+        const sexoElement = document.querySelector('input[name="generoProductor"]:checked')?.value;
+        const bovino = document.getElementById('especieRegistadaBovino').checked;
+        const equino = document.getElementById('especieRegistadaEquino').checked;
+        const ovino = document.getElementById('especieRegistadaOvino').checked;
+        const porcino = document.getElementById('especieRegistadaPorcino').checked;
+
+        if (!sexoElement) {
+            contenedorErrores.innerHTML += '<li>Se debe de seleccionar un sexo.</li>';
+            erroresEcontrados = true;
+        }
+        if(!bovino && !equino && !ovino && !porcino) {
+            contenedorErrores.innerHTML += '<li>Se debe de seleccionar al menos una especie registrada.</li>';
+            erroresEcontrados = true;
+        }
+        
+        if (erroresEcontrados) {
+            divErrores.classList.remove('d-none');
+            event.preventDefault(); // Evita el envío del formulario
+            return false; // Evita el envío del formulario
+        }
+
+    });
+
+</script>

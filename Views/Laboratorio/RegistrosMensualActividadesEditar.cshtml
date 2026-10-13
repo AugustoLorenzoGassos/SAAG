@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-4">
-    <form action="/Seguimiento/EditarAccionRegistroMensual" method="POST">
+    <form action="/Laboratorio/RegistrosMensualActividadesEditar" method="POST">
         @Html.AntiForgeryToken()
         @Html.HiddenFor(Model => Model.IdReporteMensualAccion)
         @Html.HiddenFor(Model => Model.IdReporteMensual)
@@ -104,7 +104,7 @@
                 <div class="container-fluid d-flex flex-column flex-md-row w-100 justify-content-start">
                     <div class="me-md-2">
                         <!-- Acción para regresar a la lista visitas -->
-                        <a href="@Url.Action("RegistrosMensualActividades", "Seguimiento", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
+                        <a href="@Url.Action("RegistrosMensualActividades", "Laboratorio", new { id = Model.IdReporteMensual })" class="btn btn-light w-100 w-md-auto">
                             <i class="fa fa-bars me-3" aria-hidden="true"></i>Regresar a la lista de acciones
                         </a>
                     </div>
@@ -121,44 +121,10 @@
 </div>
 
 <script>
+
     document.addEventListener('DOMContentLoaded', function() 
     {
-        //Llena el combo con el catálogo de productores
-        cargarProductores();
+        productores('@Model.IdProductor');
     });
-
-    async function cargarProductores() {
-        //Obtiene el elemento select del DOM
-        const cmbProductores = document.getElementById("IdProductor");
-        //Sección para realizar la petición al controlador y llenar el combo (Try, catch para manejar errores))
-        try {
-            // Realizar la petición GET al controlador
-            const response = await fetch('/Seguimiento/ObtenerProductores');
-            const idProductorGuardado = "@Model.IdProductor";
-            //Error en la respuesta HTTP
-            if (!response.ok) {
-                throw new Error(`Error HTTP: ${response.status}`);
-            }
-            // Convertir la respuesta a JSON del controlador
-            const data = await response.json();
-            // Limpiar opciones anteriores excepto la opción por defecto
-            cmbProductores.innerHTML = '<option value="" disabled selected>Seleccione un productor... </option>';
-            // Recorrer el arreglo devuelto y agregar las opciones al select
-            data.forEach(item => {
-                var nombre = item.nombreProductor + ' ' + item.apellidoPaternoProductor + ' ' + item.apellidoMaternoProductor
-                const option = document.createElement("option");
-                option.value = item.idProductor;
-                option.textContent = nombre;
-                if (item.idProductor == idProductorGuardado) {
-                     option.selected = true;
-                }
-                cmbProductores.appendChild(option);
-            });
-
-        }
-        catch (error) {
-            console.error("Error al cargar la lista de productores:", error);
-        }
-    }
 
 </script>
