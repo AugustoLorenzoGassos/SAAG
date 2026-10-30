@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Seguimiento.Models.SolicitudInternacionDocumento>
+
+@{
+    ViewData["Title"] = "Movilización de ganado - Solicitudes de internación - Expediente";
+}
+
+<div class="container my-4">
+
+    <h3 class="mb-4 text-center bg-dark rounded rounded-1 p-2 text-white">Expediente consolidado</h3>
+
+    @foreach (var doc in Model)
+    {
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <strong>Documento: </strong> @doc.NombreDocumento <!-- O el campo que uses para el título -->
+            </div>
+            <div class="card-body p-0">
+                <!-- Llamas al método individual que ya usas para renderizar cada PDF -->
+                <embed src="/obtener-documento/@doc.NombreDocumento"
+                       type="application/pdf"
+                       width="100%"
+                       height="650px" />
+            </div>
+        </div>
+    }
+</div>

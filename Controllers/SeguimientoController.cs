@@ -29,6 +29,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
+//librerias para enviar mensajes de whats app
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
 using Seguimiento.Models;
 using Seguimiento.Models.DTOs;
 

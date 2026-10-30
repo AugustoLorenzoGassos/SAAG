@@ -21,11 +21,15 @@ public partial class SedarpaContext : DbContext
 
     public virtual DbSet<CatalogoDocumento> CatalogoDocumentos { get; set; }
 
+    public virtual DbSet<CatalogoEntidadesFederativa> CatalogoEntidadesFederativas { get; set; }
+
     public virtual DbSet<CatalogoLaboratorio> CatalogoLaboratorios { get; set; }
 
     public virtual DbSet<CatalogoLocalidade> CatalogoLocalidades { get; set; }
 
     public virtual DbSet<CatalogoMotivoTraslado> CatalogoMotivoTraslados { get; set; }
+
+    public virtual DbSet<CatalogoMotivosRechazo> CatalogoMotivosRechazos { get; set; }
 
     public virtual DbSet<CatalogoMunicipio> CatalogoMunicipios { get; set; }
 
@@ -40,6 +44,8 @@ public partial class SedarpaContext : DbContext
     public virtual DbSet<CatalogoRegione> CatalogoRegiones { get; set; }
 
     public virtual DbSet<CatalogoRegionesEstatal> CatalogoRegionesEstatals { get; set; }
+
+    public virtual DbSet<CatalogoStatusSolicitud> CatalogoStatusSolicituds { get; set; }
 
     public virtual DbSet<CatalogoTipoApoyo> CatalogoTipoApoyos { get; set; }
 
@@ -162,6 +168,22 @@ public partial class SedarpaContext : DbContext
                 .HasColumnName("descDocumentoCorto");
         });
 
+        modelBuilder.Entity<CatalogoEntidadesFederativa>(entity =>
+        {
+            entity.HasKey(e => e.ClaveEstado);
+
+            entity.ToTable("catalogoEntidadesFederativas");
+
+            entity.Property(e => e.ClaveEstado)
+                .HasMaxLength(2)
+                .IsUnicode(false)
+                .HasColumnName("claveEstado");
+            entity.Property(e => e.NombreEstado)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("nombreEstado");
+        });
+
         modelBuilder.Entity<CatalogoLaboratorio>(entity =>
         {
             entity.HasKey(e => e.IdLaboratoio);
@@ -207,9 +229,22 @@ public partial class SedarpaContext : DbContext
 
             entity.Property(e => e.IdMotivoTraslado).HasColumnName("idMotivoTraslado");
             entity.Property(e => e.DescMotivoTraslado)
-                .HasMaxLength(50)
+                .HasMaxLength(70)
                 .IsUnicode(false)
                 .HasColumnName("descMotivoTraslado");
+        });
+
+        modelBuilder.Entity<CatalogoMotivosRechazo>(entity =>
+        {
+            entity.HasKey(e => e.IdMotivoRechazo);
+
+            entity.ToTable("catalogoMotivosRechazo");
+
+            entity.Property(e => e.IdMotivoRechazo).HasColumnName("idMotivoRechazo");
+            entity.Property(e => e.DescMotivoRechazo)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("descMotivoRechazo");
         });
 
         modelBuilder.Entity<CatalogoMunicipio>(entity =>
@@ -233,6 +268,10 @@ public partial class SedarpaContext : DbContext
                 .HasMaxLength(40)
                 .IsUnicode(false)
                 .HasColumnName("partidoAlcalde");
+            entity.Property(e => e.TipoZona)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .HasColumnName("tipoZona");
 
             entity.HasOne(d => d.IdDistritoElectoralNavigation).WithMany(p => p.CatalogoMunicipios)
                 .HasForeignKey(d => d.IdDistritoElectoral)
@@ -352,6 +391,10 @@ public partial class SedarpaContext : DbContext
                 .HasColumnName("nombreUPP");
             entity.Property(e => e.TotalHato).HasColumnName("totalHato");
             entity.Property(e => e.TotalProbados).HasColumnName("totalProbados");
+            entity.Property(e => e.Ubicacion)
+                .HasMaxLength(500)
+                .IsUnicode(false)
+                .HasColumnName("ubicacion");
 
             entity.HasOne(d => d.IdProductorNavigation).WithMany(p => p.CatalogoProductoresUpps)
                 .HasForeignKey(d => d.IdProductor)
@@ -418,6 +461,19 @@ public partial class SedarpaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("nombreRegionEstatal");
+        });
+
+        modelBuilder.Entity<CatalogoStatusSolicitud>(entity =>
+        {
+            entity.HasKey(e => e.IdStatusSolicitud);
+
+            entity.ToTable("catalogoStatusSolicitud");
+
+            entity.Property(e => e.IdStatusSolicitud).HasColumnName("idStatusSolicitud");
+            entity.Property(e => e.DescStatusSolicitud)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("descStatusSolicitud");
         });
 
         modelBuilder.Entity<CatalogoTipoApoyo>(entity =>
@@ -774,20 +830,62 @@ public partial class SedarpaContext : DbContext
                 .HasMaxLength(15)
                 .IsUnicode(false)
                 .HasColumnName("claveUPP");
+            entity.Property(e => e.CorreoElectronico)
+                .HasMaxLength(500)
+                .IsUnicode(false)
+                .HasColumnName("correoElectronico");
             entity.Property(e => e.Destino)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("destino");
+            entity.Property(e => e.DictamenBr)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("dictamenBR");
+            entity.Property(e => e.DictamenTb)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("dictamenTB");
+            entity.Property(e => e.Factura)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("factura");
             entity.Property(e => e.FechaCaptura)
                 .HasColumnType("datetime")
                 .HasColumnName("fechaCaptura");
+            entity.Property(e => e.FechaCierreAtencion)
+                .HasColumnType("datetime")
+                .HasColumnName("fechaCierreAtencion");
+            entity.Property(e => e.FechaInicioAtencion)
+                .HasColumnType("datetime")
+                .HasColumnName("fechaInicioAtencion");
+            entity.Property(e => e.FechaRecepcion)
+                .HasColumnType("datetime")
+                .HasColumnName("fechaRecepcion");
             entity.Property(e => e.FechaSolicitud).HasColumnName("fechaSolicitud");
+            entity.Property(e => e.FolioReemo)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("folioREEMO");
+            entity.Property(e => e.GuiaTraslado)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("guiaTraslado");
             entity.Property(e => e.HembrasMovilizar).HasColumnName("hembrasMovilizar");
+            entity.Property(e => e.IdUsuario)
+                .HasMaxLength(8)
+                .IsUnicode(false)
+                .HasColumnName("idUsuario");
             entity.Property(e => e.MachosMovilizar).HasColumnName("machosMovilizar");
-            entity.Property(e => e.MarcaVehúclo)
+            entity.Property(e => e.MarcaVehiculo)
                 .HasMaxLength(50)
                 .IsUnicode(false)
-                .HasColumnName("marcaVehúclo");
+                .HasColumnName("marcaVehiculo");
+            entity.Property(e => e.MarcajeCn)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("marcajeCN");
+            entity.Property(e => e.MotivoRechazo).HasColumnName("motivoRechazo");
             entity.Property(e => e.MotivoTraslado).HasColumnName("motivoTraslado");
             entity.Property(e => e.NombreChofer)
                 .HasMaxLength(100)
@@ -797,10 +895,18 @@ public partial class SedarpaContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("nombreSolicitante");
+            entity.Property(e => e.NumeroCelular)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("numeroCelular");
             entity.Property(e => e.NumeroFlejes)
-                .HasMaxLength(100)
+                .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("numeroFlejes");
+            entity.Property(e => e.Observaciones)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("observaciones");
             entity.Property(e => e.Origen)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -809,6 +915,11 @@ public partial class SedarpaContext : DbContext
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("placasVehiculo");
+            entity.Property(e => e.PuntosVerificacion)
+                .HasMaxLength(200)
+                .IsUnicode(false)
+                .HasColumnName("puntosVerificacion");
+            entity.Property(e => e.StatusSolicitud).HasColumnName("statusSolicitud");
             entity.Property(e => e.TipoGanado).HasColumnName("tipoGanado");
 
             entity.HasOne(d => d.ClaveUppNavigation).WithMany(p => p.SolicitudInternacions)
@@ -817,10 +928,22 @@ public partial class SedarpaContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_solicitudInternacion_catalogoProductoresUPP");
 
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.SolicitudInternacions)
+                .HasForeignKey(d => d.IdUsuario)
+                .HasConstraintName("FK_solicitudInternacion_catalogoUsuarios");
+
+            entity.HasOne(d => d.MotivoRechazoNavigation).WithMany(p => p.SolicitudInternacions)
+                .HasForeignKey(d => d.MotivoRechazo)
+                .HasConstraintName("FK_solicitudInternacion_catalogoMotivosRechazo");
+
             entity.HasOne(d => d.MotivoTrasladoNavigation).WithMany(p => p.SolicitudInternacions)
                 .HasForeignKey(d => d.MotivoTraslado)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_solicitudInternacion_catalogoMotivoTraslado");
+
+            entity.HasOne(d => d.StatusSolicitudNavigation).WithMany(p => p.SolicitudInternacions)
+                .HasForeignKey(d => d.StatusSolicitud)
+                .HasConstraintName("FK_solicitudInternacion_catalogoStatusSolicitud");
 
             entity.HasOne(d => d.TipoGanadoNavigation).WithMany(p => p.SolicitudInternacions)
                 .HasForeignKey(d => d.TipoGanado)

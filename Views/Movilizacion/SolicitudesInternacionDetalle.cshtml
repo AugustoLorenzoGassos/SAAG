@@ -5,102 +5,216 @@
 }
 
 <div class="container mt-4">
-    <h2>Detalles de la solicitud de internación</h2>
     <div class="card">
         <div class="card-header bg-secondary text-white bg-gradient">
             <h4 class="m-0">Solicitud de internación</h4>
         </div>
         <div class="card-body">
+
             <div class="row">
                 <div class="col-12 col-md-6">
                     <label for="fechaSolicitud">Fecha de Solicitud:</label>
                     <input id="fechaSolicitud" name="FechaSolicitud" type="text" class="form-control" value="@Model.FechaSolicitud" placeholder="fecha de solicitud" />
                 </div>
                 <div class="col-12 col-md-6">
-                    <label for="nombreSolicitante">Nombre de quien solicita:</label>
-                    <input id="nombreSolicitante" name="NombreSolicitante" type="text" class="form-control" value="@Model.NombreSolicitante" placeholder="Nombre de quien solicita" />
                 </div>
             </div>
-            <h6 class="mt-3 mb-0"><strong>Datos del traslado</strong></h6>
-            <hr />
+
+            <div class="row mt-3">
+                <div class="col-12 col-md-6 p-2">
+                    <h4 class="w-100 text-center border-bottom mb-2 p-2">Datos del origen</h4>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <div class="input-group-text" data-bs-toggle="tooltip" data-bs-title="Validar clave de UPP/PSG del origen" id="btnGroupAddonO"><i class="fa fa-check" aria-hidden="true" style="cursor: pointer;"></i></div>
+                                <input type="text" id="txtUPPOrigen" name="origen" class="form-control" placeholder="Clave de UPP/PSG del origen" aria-label="Input group example" aria-describedby="btnGroupAddonO" value="@Model.Origen" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row d-none mt-2" id="datosOrigen">
+                        <div class="col-12">
+                            <label id="txtNombreRemitente"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtPredioRemitente"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtUbicacionRemitente"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtMunicipioRemitente"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtEstadoRemitente"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtZonaRemitente"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtStatusRemitente"></label>
+                        </div>
+                    </div>
+                    <h5 id="alertaOrigen" class="d-none m-3 text-center alert alert-success"></h5>
+                </div>
+                <div class="col-12 col-md-6 p-2">
+                    <h4 class="w-100 text-center border-bottom mb-2 p-2">Datos del destino</h4>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <div class="input-group-text" id="btnGroupAddonD" data-bs-toggle="tooltip" data-bs-title="Validar clave de UPP/PSG del destino"><i class="fa fa-check" aria-hidden="true" onclick="buscarUpp('D');" style="cursor: pointer;"></i></div>
+                                <input type="text" id="txtUPPDestino" name="destino" class="form-control" placeholder="Clave de UPP/PSG del destino" aria-label="Input group example" aria-describedby="btnGroupAddonD" value="@Model.Destino" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row d-none mt-2" id="datosDestino">
+                        <div class="col-12">
+                            <label id="txtNombreDestino"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtPredioDestino"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtUbicacionDestino"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtMunicipioDestino"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtEstadoDestino"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtZonaDestino"></label>
+                        </div>
+                        <div class="col-12">
+                            <label id="txtStatusDestino"></label>
+                        </div>
+                    </div>
+                    <h5 id="alertaDestino" class="d-none m-3 text-center alert alert-success"></h5>
+                </div>
+            </div>
+
             <div class="row">
+                <div class="col-12 col-md-6">
+                    <label for="correoElectronico" data-bs-toggle="tooltip" data-bs-title="Correo electrónico para recibir notificaciones del trámite">Correo electrónico:</label>
+                    <input id="correoElectronico" name="correoElectronico" type="email" value="@Model.CorreoElectronico" class="form-control" placeholder="usuario@ejemplo.com" readonly />
+                </div>
+                <div class="col-12 col-md-6">
+                    <label for="numeroCelular" data-bs-toggle="tooltip" data-bs-title="Número de celular para recibir notificaciones del trámite">Número de celular:</label>
+                    <input id="numeroCelular" name="numeroCelular" type="text" value="@Model.NumeroCelular" class="form-control" placeholder="9999999999 (Sólo números sin espacios o guiones a 10 posiciones)" readonly />
+                </div>
+            </div>
+
+            <h6 class="mt-3 mb-0 text-center"><strong>DATOS DE LA MOVILIZACIÓN</strong></h6>
+            <div class="row mt-2 mb-2">
+                <div class="col-12 col-md-4">
+                    <label for="tipoMovilizacion">Motivo:</label>
+                    <input type="text" id="tipoMovilizacion" value="@Model.MotivoTrasladoNavigation.DescMotivoTraslado" class="form-control" readonly />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="guiaTraslado">Guía de traslado:</label>
+                    <input id="guiaTraslado" name="guiaTraslado" type="text" value"@Model.GuiaTraslado" class="form-control" placeholder="Guía de traslado" readonly />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="folioREEMO">REEMO:</label>
+                    <input id="folioREEMO" name="folioREEMO" type="text" value="@Model.FolioReemo" class="form-control" placeholder="Certificado zoosanitario para movilización" readonly />
+                </div>
+            </div>
+            <div class="row mt-2 mb-2">
                 <div class="col-12 col-md-4">
                     <label for="tipoGanado">Tipo de Ganado:</label>
-                    <input id="tipoGanado" name="TipoGanado" type="text" class="form-control" value="@Model.TipoGanadoNavigation.DescTipoGanado" placeholder="Tipo de Ganado" />
+                    <input id="tipoGanado" name="TipoGanado" type="text" class="form-control" value="@Model.TipoGanadoNavigation.DescTipoGanado" placeholder="Tipo de Ganado" readonly />
                 </div>
-                <div class="col-12 col-md-4">
-                    <label for="motivoInternacion">Motivo de Internación:</label>
-                    <input id="motivoInternacion" name="NombreSolicitante" type="text" class="form-control" value="@Model.MotivoTrasladoNavigation.DescMotivoTraslado" placeholder="Nombre de quien solicita" />
-                </div>
-                <div class="col-12 col-md-4">
-                    <label for="certificadoZoosanitario">Certificado zoosanitario para movilización:</label>
-                    <input id="certificadoZoosanitario" name="CertificadoMovilizacion" type="text" class="form-control" value="@Model.CertificadoMovilizacion" placeholder="Certificado zoosanitario para movilización" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 col-md-4">
-                    <label for="origenTraslado">Origen:</label>
-                    <input id="origenTraslado" name="Origen" type="text" class="form-control" value="@Model.Origen" placeholder="Origen" />
-                </div>
-                <div class="col-12 col-md-4">
-                    <label for="destinoTraslado">Destino:</label>
-                    <input id="destinoTraslado" name="Destino" type="text" class="form-control" value="@Model.Destino" placeholder="Destino" />
-                </div>
-                <div class="col-12 col-md-4">
-                    <label for="nombreUpp">Nombre de la UPP:</label>
-                    <input id="nombreUpp" name="ClaveUpp" type="text" class="form-control" value="@Model.ClaveUpp" placeholder="UPP" />
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-12 col-md-4">
                     <label for="hembras">Hembras:</label>
-                <input id="hembras" name="HembrasMovilizar" type="number" class="form-control" value="@Model.HembrasMovilizar" placeholder="Hembras" />
+                    <input id="hembras" name="HembrasMovilizar" type="number" value="@Model.HembrasMovilizar" class="form-control" placeholder="Hembras" readonly />
                 </div>
                 <div class="col-12 col-md-4">
                     <label for="machos">Machos:</label>
-                    <input id="machos" name="MachosMovilizar" type="number" class="form-control" value="@Model.MachosMovilizar" placeholder="Machos" />
-                </div>
-                <div class="col-12 col-md-4">
-                    <label for="total">Total:</label>
-                    <input id="total" name="Total" type="text" class="form-control " placeholder="Total" readonly />
+                    <input id="machos" name="MachosMovilizar" type="number" value="@Model.MachosMovilizar" class="form-control" placeholder="Machos" readonly />
                 </div>
             </div>
-            <h6 class="mt-3 mb-0"><strong>Datos del vehículo</strong></h6>
-            <hr />
-            <div class="row">
-                <div class="col-12 col-md-4">
-                    <label for="numeroPlacas">Número de Placas:</label>
-                    <input id="numeroPlacas" name="PlacasVehiculo" type="text" class="form-control" value="@Model.PlacasVehiculo" placeholder="Número de Placas" />
-                </div>
+            <div class="row mt-2 mb-2">
                 <div class="col-12 col-md-4">
                     <label for="marcaVehiculo">Marca del Vehículo:</label>
-                    <input id="marcaVehiculo" name="MarcaVehiculo" type="text" class="form-control" value="@Model.MarcaVehúclo" placeholder="Marca del Vehículo" />
+                    <input id="marcaVehiculo" name="marcaVehiculo" type="text" value="@Model.MarcaVehiculo" class="form-control" placeholder="Marca del Vehículo" readonly />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="numeroPlacas">Número de Placas:</label>
+                    <input id="numeroPlacas" name="PlacasVehiculo" type="text" value="@Model.PlacasVehiculo" class="form-control" placeholder="Número de Placas" readonly />
                 </div>
                 <div class="col-12 col-md-4">
                     <label for="nombreChofer">Nombre del Chofer:</label>
-                    <input id="nombreChofer" name="NombreChofer" type="text" class="form-control" value="@Model.NombreChofer" placeholder="Nombre del Chofer" />
+                    <input id="nombreChofer" name="NombreChofer" type="text" value="@Model.NombreChofer" class="form-control " placeholder="Nombre del Chofer" readonly>
+                </div>
+                <div class="mt-2 mb-2">
+                    <label for="puntosVerificacion">Puntos de verificación en la ruta de ingreso y/o tránsito:</label>
+                    <input id="puntosVerificacion" name="puntosVerificacion" type="text" value="@Model.PuntosVerificacion" class="form-control w-100" placeholder="Puntos de verificación en la ruta de ingreso y/o tránsito" readonly />
                 </div>
             </div>
-            <div class="row">
+
+            <h6 class="mt-3 mb-0 text-center"><strong>REQUERIMIENTOS PARA LA MOVILIZACIÓN</strong></h6>
+            <div class="row mt-2 mb-2">
                 <div class="col-12 col-md-4">
-                    <label for="numeroFlejes">Número de Flejes:</label>
-                    <input id="numeroFlejes" name="NumeroFlejes" type="text" class="form-control" value="@Model.NumeroFlejes" placeholder="Número de Flejes" />
+                    <label for="certificadoMovilizacion">Certificado Zoosanitario:</label>
+                    <input id="certificadoMovilizacion" name="certificadoMovilizacion" type="text" value="@Model.CertificadoMovilizacion" class="form-control " placeholder="Certificado zoosanitario" readonly />
                 </div>
                 <div class="col-12 col-md-4">
+                    <label for="dictamenTB">Dictamen negativo de Tb:</label>
+                    <input id="dictamenTB" name="dictamenTB" type="text" value="@Model.DictamenTb" class="form-control " placeholder="Dictamen negativo de Tb" readonly />
                 </div>
                 <div class="col-12 col-md-4">
+                    <label for="dictamenBR">Dictamen negativo de Br:</label>
+                    <input id="dictamenBR" name="dictamenBR" type="text" value="@Model.DictamenBr" class="form-control " placeholder="Dictamen negativo de Br" readonly />
                 </div>
             </div>
-                
-            <p id="mensajeDocumentos" class="alert alert-dark p-2 text-center mt-2 d-none">Documentos cargados</p>
-            @*<ul id="listaDocumentos" class="list-group d-none">
-            </ul>*@
+            <div class="row mt-2 mb-2">
+                <div class="col-12 col-md-4">
+                    <label for="numeroFlejes">Folio del fleje:</label>
+                    <input id="numeroFlejes" name="numeroFlejes" type="text" value="@Model.NumeroFlejes" class="form-control " placeholder="Vehículo flejado" readonly />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="factura">Factura:</label>
+                    <input id="factura" name="factura" type="text" value="@Model.Factura" class="form-control " placeholder="Factura" readonly />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label for="marcajeCN">Marcaje CN:</label>
+                    <input id="marcajeCN" name="marcajeCN" type="text" value="@Model.MarcajeCn" class="form-control " placeholder="Marcaje CN" readonly />
+                </div>
+            </div>
+            <p id="mensajeDocumentos" class="alert alert-dark p-2 text-center mt-3 d-none">Documentos cargados</p>
+            <a href="@Url.Action("VisorMultiple", "Movilizacion", new { ids = string.Join(",", Model.SolicitudInternacionDocumentos.Select(d => d.IdSolicitudInternacionDocumento)) })"
+               id="btnVerJuntos"
+                target="_blank"
+                class="btn btn-primary">
+                <i class="bi bi-folder-symlink me-2"></i> Abrir juntos
+            </a>
             <div id="listaDocumentos" class="container"></div>
         </div>
         <div class="card-footer">
-            <a href="@Url.Action("movilizacionGanadoInicio", "Movilizacion")" class="btn btn-ligth">
+            <a href="@Url.Action("movilizacionGanadoPermisos", "Movilizacion")" class="btn btn-ligth">
                 <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de solicitues
             </a>
+
+            <a href="@Url.Action("movilizacionGanadoPermisosNotificar", "Movilizacion", new { id = Model.IdSolicitudInternacion })" class="btn btn-ligth">
+                <i class="bi bi-envelope me-2"></i>Enviar notificación
+            </a>
+
+            @if (Model.StatusSolicitud == 1)
+            {
+                <a href="@Url.Action("movilizacionGanadoPermisosIniciarAtencion", "Movilizacion", new { id = Model.IdSolicitudInternacion})" class="btn btn-ligth">
+                    <i class="bi bi-play-circle me-2"></i>Iniciar proceso de atención
+                </a>
+            }
+            else if (Model.StatusSolicitud == 2)
+            {
+                <a href="@Url.Action("movilizacionGanadoPermisosAceptar", "Movilizacion", new { id = Model.IdSolicitudInternacion, id1 = 4 })" class="btn btn-ligth">
+                    <i class="bi bi-check-circle me-2"></i>Aceptar solicitud
+                </a>
+                <a href="@Url.Action("movilizacionGanadoPermisosAceptar", "Movilizacion", new { id = Model.IdSolicitudInternacion, id1 = 3 })" class="btn btn-ligth">
+                    <i class="bi bi-x-circle me-2"></i>Rechazar solicitud
+                </a>
+            }
+
         </div>
     </div>
 </div>
@@ -109,7 +223,66 @@
 
     document.addEventListener("DOMContentLoaded", function() {
         cargarListaDocumentos();
+        buscarUpp('O');
+        buscarUpp('D');
     });
+
+    async function buscarUpp(desde) 
+    {
+        
+        let uppOrigen = "";
+
+        if (desde == 'O') {
+            uppOrigen = document.getElementById("txtUPPOrigen").value;
+        } else {
+            uppOrigen = document.getElementById("txtUPPDestino").value;
+        }
+        
+        if (uppOrigen.length > 0) 
+        {
+            const url = `/Movilizacion/buscarUPP/${uppOrigen}`;
+            try 
+            {
+                const response = await fetch(url);
+                if (response.ok) 
+                {
+                    const data = await response.json();
+                    if (desde == 'O') 
+                    {
+                        document.getElementById("datosOrigen").classList.remove("d-none");
+                        document.getElementById("txtNombreRemitente").innerHTML = `<strong>Remitente:</strong> ${data.nombreProductor}`;
+                        document.getElementById("txtPredioRemitente").innerHTML = `<strong>Nombre del predio:</strong> ${data.nombrePredio}`;
+                        document.getElementById("txtUbicacionRemitente").innerHTML = `<strong>Ubicación:</strong> ${data.ubicacion}`;
+                        document.getElementById("txtMunicipioRemitente").innerHTML = `<strong>Municipio:</strong> ${data.nombreMunicipio}`;
+                        document.getElementById("txtEstadoRemitente").innerHTML = `<strong>Estado:</strong> ${data.nombreEstado}`;
+                        document.getElementById("txtZonaRemitente").innerHTML = `<strong>Región:</strong> ZONA ${data.tipoZona}`;
+                        document.getElementById("txtStatusRemitente").innerHTML = `<strong>Estatus:</strong> ${data.tipoEstatus}`;
+                        document.getElementById("alertaOrigen").classList.remove("d-none");
+                        document.getElementById("alertaOrigen").innerHTML = "Datos del origen registrado correctamente.";
+                        uppOrigenEcontrada = true;
+                    }
+                    else 
+                    {
+                        document.getElementById("datosDestino").classList.remove("d-none");
+                        document.getElementById("txtNombreDestino").innerHTML = `<strong>Remitente:</strong> ${data.nombreProductor}`;
+                        document.getElementById("txtPredioDestino").innerHTML = `<strong>Nombre del predio:</strong> ${data.nombrePredio}`;
+                        document.getElementById("txtUbicacionDestino").innerHTML = `<strong>Ubicación:</strong> ${data.ubicacion}`;
+                        document.getElementById("txtMunicipioDestino").innerHTML = `<strong>Municipio:</strong> ${data.nombreMunicipio}`;
+                        document.getElementById("txtEstadoDestino").innerHTML = `<strong>Estado:</strong> ${data.nombreEstado}`;
+                        document.getElementById("txtZonaDestino").innerHTML = `<strong>Región:</strong> ZONA ${data.tipoZona}`;
+                        document.getElementById("txtStatusDestino").innerHTML = `<strong>Estatus:</strong> ${data.tipoEstatus}`;
+                        document.getElementById("alertaDestino").classList.remove("d-none");
+                        document.getElementById("alertaDestino").innerHTML = "Datos del destino registrado correctamente.";
+                    }
+                }
+            }
+            catch(error) 
+            {
+                console.error("Error al buscar la UPP/PSG:", error);
+            }
+        }
+
+    }
 
     async function cargarListaDocumentos() {
 
@@ -124,17 +297,17 @@
             if (documentos.length === 0) {
                 document.getElementById('mensajeDocumentos').classList.remove('d-none');
                 document.getElementById('listaDocumentos').classList.remove('d-none');
+                //document.getElementById('btnVerJuntos').classList.add('d-none');
                 document.getElementById('listaDocumentos').innerHTML = `<li class="list-group-item text-muted alert alert-warning">No hay documentos registrados para esta solicitud.</li>`;
                 //return;
             } else {
                 //document.getElementById('listaDocumentos').classList.remove('d-none');
                 //document.getElementById('listaDocumentos').innerHTML = '';
-
                 const contenedorLista = document.getElementById('listaDocumentos');
                 contenedorLista.className = 'd-flex flex-wrap gap-3'; // Clases de Bootstrap para hacerlo flex
                 contenedorLista.innerHTML = ''; // Limpiamos por si acaso
                 document.getElementById('mensajeDocumentos').classList.remove('d-none');
-
+                //document.getElementById('btnVerJuntos').classList.remove('d-none');
                 // Recorrer los registros y crear los elementos <li>
                 documentos.forEach(doc => {
                     //Valida el tipo de documento para mostrarlo en un iframe o como imagen

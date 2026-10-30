@@ -1,0 +1,116 @@
+﻿@model Seguimiento.Models.SolicitudInternacion
+
+@{
+    ViewData["Title"] = "Movilización de ganado - Solicitudes de internación - Confirmación";
+}
+
+<form id="formSolicitudValidacion" action="/movilizacion/movilizacionGanadoPermisosAceptarNotificar" method="post">
+
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.IdSolicitudInternacion)
+    @Html.HiddenFor(model => model.FechaSolicitud)
+    @Html.HiddenFor(model => model.Origen)
+    @Html.HiddenFor(model => model.Destino)
+    @Html.HiddenFor(model => model.CorreoElectronico)
+    @Html.HiddenFor(model => model.NumeroCelular)
+    @Html.HiddenFor(model => model.MotivoTraslado)
+    @Html.HiddenFor(model => model.GuiaTraslado)
+    @Html.HiddenFor(model => model.FolioReemo)
+    @Html.HiddenFor(model => model.TipoGanado)
+    @Html.HiddenFor(model => model.HembrasMovilizar)
+    @Html.HiddenFor(model => model.MachosMovilizar)
+    @Html.HiddenFor(model => model.MarcaVehiculo)
+    @Html.HiddenFor(model => model.PlacasVehiculo)
+    @Html.HiddenFor(model => model.NombreChofer)
+    @Html.HiddenFor(model => model.PuntosVerificacion)
+    @Html.HiddenFor(model => model.CertificadoMovilizacion)
+    @Html.HiddenFor(model => model.DictamenBr)
+    @Html.HiddenFor(model => model.DictamenTb)
+    @Html.HiddenFor(model => model.NumeroFlejes)
+    @Html.HiddenFor(model => model.Factura)
+    @Html.HiddenFor(model => model.MarcajeCn)
+    @Html.HiddenFor(model => model.FechaCaptura)
+    @Html.HiddenFor(model => model.StatusSolicitud)
+    @Html.HiddenFor(model => model.IdUsuario)
+    @Html.HiddenFor(model => model.FechaRecepcion)
+    @Html.HiddenFor(model => model.FechaInicioAtencion)
+    @Html.HiddenFor(model => model.FechaCierreAtencion)
+
+    <div class="container  mt-3">
+
+        <div class="card">
+            
+            <div class="card-header bg-secondary text-white bg-gradient ">
+                <h4 class="m-0">Movilización de ganado - Permisos de internación - Confirmación</h4>
+            </div>
+
+            <div class="card-body">
+
+                <input id="IdSolicitudInternacion" name="IdSolicitudInternacion" type="hidden" value="@Model.IdSolicitudInternacion" />
+                <input id="StatusSolicitud" name="StatusSolicitud" type="hidden" value="@Model.StatusSolicitud" />
+
+                <h5 id="mensajeConfirmacion" class="p-3 m-3 text-center alert"></h5>
+                <div id="motivoRechazo" class="d-none">
+                    <select id="cmbMotivoRechazo" name="motivoRechazo" class="form-select w-100">
+                        <option value=0>Seleccione un motivo de rechazo ...</option>
+                        <option value=1>Documentación incompleta</option>
+                    </select>
+                    <label for="txtMotivoRechazo">Observaciones:</label>
+                    <textarea id="txtMotivoRechazo" name="observaciones" class="form-control w-100"></textarea>
+                    <label id="lblMensaje" class="alert alert-warning mt-3 p-3 w-100 d-none d-block"></label>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <a href="@Url.Action("movilizacionGanadoPermisos", "Movilizacion")" class="btn btn-ligth">
+                    <i class="fa fa-bars me-1" aria-hidden="true"></i>Regresar a la lista de solicitues
+                </a>
+                <button type="submit" class="btn btn-ligth">
+                    <i class="bi bi-envelope me-2"></i>Enviar notificación
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+</form>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const mensaje = document.getElementById('mensajeConfirmacion');
+        const rechazo = document.getElementById('motivoRechazo');
+        const error = document.getElementById('lblMensaje');
+        
+        const status = @Model.StatusSolicitud;
+        const idSolicitud = @Model.IdSolicitudInternacion;
+        const origenSolicitud = '@Model.Origen';
+        const destinoSolicitud = '@Model.Destino';
+        const usuario = '@Model.IdUsuarioNavigation.NombreUsuario';
+
+        if (status == 4) {
+            mensaje.classList.add("alert-success");
+            mensaje.innerHTML = `La solicitud <strong>${idSolicitud}</strong> con <strong>origen en [${origenSolicitud}]</strong> y <strong>destino en [${destinoSolicitud}]</strong> fue acepatada.</br></br>Usuario asignado: ${usuario}`;
+            rechazo.classList.add("d-none");
+        } else {
+            mensaje.classList.add("alert-danger");
+            mensaje.innerHTML = `La solicitud <strong>${idSolicitud}</strong> con <strong>origen en [${origenSolicitud}]</strong> y <strong>destino en [${destinoSolicitud}]</strong> fue rechazada.</br></br>Usuario asignado: ${usuario}`;
+            rechazo.classList.remove("d-none");
+        }
+
+        document.getElementById('formSolicitudValidacion').addEventListener('submit', function(event) {
+            const cmbRechazo = document.querySelector('#cmbMotivoRechazo')?.value;
+            if (status == 3 && cmbRechazo == "0"){
+                error.classList.remove("d-none");
+                error.innerHTML = "<i class='bi bi-exclamation-triangle me-2'></i>Error: Se debe de seleccionar un motivo para el rechazo";
+                event.preventDefault();
+                return false;
+            }
+        });
+
+    });
+
+
+
+</script>

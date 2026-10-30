@@ -21,6 +21,8 @@ public partial class CatalogoProductoresUpp
 
     public double? Longitud { get; set; }
 
+    public string? Ubicacion { get; set; }
+
     public short? TotalHato { get; set; }
 
     public short? TotalProbados { get; set; }
